@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20200427200650_dbsetcompany1.cs" />
+    <Compile Remove="Migrations\20200427200650_dbsetcompany1.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.min.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap4.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap4.min.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.foundation.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.foundation.min.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.jqueryui.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.jqueryui.min.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.semanticui.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.semanticui.min.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\jquery.dataTables.js" />
+    <None Include="wwwroot\DataTables\DataTables-1.10.20\js\jquery.dataTables.min.js" />
+    <None Include="wwwroot\DataTables\datatables.js" />
+    <None Include="wwwroot\DataTables\datatables.min.js" />
+    <None Include="wwwroot\Icon\css\open-iconic-bootstrap.less" />
+    <None Include="wwwroot\Icon\css\open-iconic-bootstrap.scss" />
+    <None Include="wwwroot\Icon\css\open-iconic-bootstrap.styl" />
+    <None Include="wwwroot\Icon\css\open-iconic-foundation.less" />
+    <None Include="wwwroot\Icon\css\open-iconic-foundation.scss" />
+    <None Include="wwwroot\Icon\css\open-iconic-foundation.styl" />
+    <None Include="wwwroot\Icon\css\open-iconic.less" />
+    <None Include="wwwroot\Icon\css\open-iconic.scss" />
+    <None Include="wwwroot\Icon\css\open-iconic.styl" />
+    <None Include="wwwroot\Icon\fonts\open-iconic.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Refosus.Common\Refosus.Common.csproj" />
+  </ItemGroup>
+
+</Project>
