@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data.Entities;
 
 namespace Refosus.Web.Data
@@ -10,8 +9,12 @@ namespace Refosus.Web.Data
         {
 
         }
-        public DbSet <CompanyEntity> Companies { get; set; }
-        public DbSet<Refosus.Web.Data.Entities.CampusEntity> CampusEntity { get; set; }
+        public DbSet<CountryEntity> Countries { get; set; }
+        public DbSet<DepartmentEntity> Deparments { get; set; }
+        public DbSet<CityEntity> Cities { get; set; }
+        public DbSet<CompanyEntity> Companies { get; set; }
+        public DbSet<CampusEntity> Campus { get; set; }
+        public DbSet<CampusDetailsEntity> CampusDetails { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -22,5 +25,6 @@ namespace Refosus.Web.Data
                 .HasIndex(t => t.Code)
                 .IsUnique();
         }
+        public DbSet<Refosus.Web.Data.Entities.CityEntity> CityEntity { get; set; }
     }
 }

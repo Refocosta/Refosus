@@ -1,0 +1,52 @@
+﻿@model Refosus.Web.Models.CampusDetailsViewModel
+@{
+    ViewData["Title"] = "AddCampusDetails";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Aregar compañia de la sede: @Model.Campus.Name</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <form asp-action="AddCampusDetails" enctype="multipart/form-data">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <a class="card-title">Crear </a>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <input type="hidden" asp-for="CampusId" />
+                                <div class="col-sm-7">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <partial name="_CampusDetails" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <input type="submit" value="Agregar" class="btn btn-primary col-sm-2" />
+                            <a asp-action="DetailsCampus" asp-route-id="@Model.CampusId" class="btn btn-success col-sm-2 ">Listado</a>
+                        </div>
+
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

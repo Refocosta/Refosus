@@ -3,43 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200429015808_Conuntries")]
+    partial class Conuntries
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.CampusDetailsEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CampusId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampusId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("CampusDetails");
-                });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CampusEntity", b =>
                 {
@@ -52,7 +32,11 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
-                    b.Property<int?>("CityId")
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.Property<int?>("CityEntityId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreateDate")
@@ -68,9 +52,9 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("CityEntityId");
 
-                    b.ToTable("Campus");
+                    b.ToTable("CampusEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CityEntity", b =>
@@ -80,7 +64,10 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("DepartmentId")
+                    b.Property<int>("Conuntry")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ConuntryEntityId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsActive")
@@ -93,7 +80,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("ConuntryEntityId");
 
                     b.ToTable("CityEntity");
                 });
@@ -104,6 +91,9 @@ namespace Refosus.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CampusEntityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(450)");
@@ -121,6 +111,8 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CampusEntityId");
+
                     b.HasIndex("Code")
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
@@ -131,7 +123,7 @@ namespace Refosus.Web.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("Refosus.Web.Data.Entities.CountryEntity", b =>
+            modelBuilder.Entity("Refosus.Web.Data.Entities.ConuntryEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,64 +140,28 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.DepartmentEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("Deparments");
-                });
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.CampusDetailsEntity", b =>
-                {
-                    b.HasOne("Refosus.Web.Data.Entities.CampusEntity", "Campus")
-                        .WithMany("CampusDetails")
-                        .HasForeignKey("CampusId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
+                    b.ToTable("Conuntries");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CampusEntity", b =>
                 {
-                    b.HasOne("Refosus.Web.Data.Entities.CityEntity", "City")
+                    b.HasOne("Refosus.Web.Data.Entities.CityEntity", null)
                         .WithMany("Campus")
-                        .HasForeignKey("CityId");
+                        .HasForeignKey("CityEntityId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CityEntity", b =>
                 {
-                    b.HasOne("Refosus.Web.Data.Entities.DepartmentEntity", "Department")
+                    b.HasOne("Refosus.Web.Data.Entities.ConuntryEntity", null)
                         .WithMany("Cities")
-                        .HasForeignKey("DepartmentId");
+                        .HasForeignKey("ConuntryEntityId");
                 });
 
-            modelBuilder.Entity("Refosus.Web.Data.Entities.DepartmentEntity", b =>
+            modelBuilder.Entity("Refosus.Web.Data.Entities.CompanyEntity", b =>
                 {
-                    b.HasOne("Refosus.Web.Data.Entities.CountryEntity", "Country")
-                        .WithMany("Departments")
-                        .HasForeignKey("CountryId");
+                    b.HasOne("Refosus.Web.Data.Entities.CampusEntity", null)
+                        .WithMany("Companies")
+                        .HasForeignKey("CampusEntityId");
                 });
 #pragma warning restore 612, 618
         }

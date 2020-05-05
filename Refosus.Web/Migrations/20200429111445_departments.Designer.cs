@@ -3,43 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200429111445_departments")]
+    partial class departments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.CampusDetailsEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CampusId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CampusId");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("CampusDetails");
-                });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CampusEntity", b =>
                 {
@@ -173,18 +153,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Deparments");
-                });
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.CampusDetailsEntity", b =>
-                {
-                    b.HasOne("Refosus.Web.Data.Entities.CampusEntity", "Campus")
-                        .WithMany("CampusDetails")
-                        .HasForeignKey("CampusId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
+                    b.ToTable("DepartmentEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.CampusEntity", b =>

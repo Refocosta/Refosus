@@ -1,6 +1,6 @@
-﻿using Refosus.Common.Enum;
-using Refosus.Web.Data.Entities;
-using Refosus.Web.Helpers;
+﻿using Refosus.Web.Data.Entities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,9 +20,52 @@ namespace Refosus.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckCompaniesAsync();
+            //await CheckCountriesAsync();
             //await CheckRolesAsync();
             //await CheckUserAsync("1010", "Administrador", "Refosus", "didneynv.refosus@gmail.com", "3133366284", "Refocosta Principal", UserType.Administrador);
         }
+        /*
+        private async Task CheckCountriesAsync()
+        {
+            if (!_context.Countries.Any())
+            {
+                AddCountry("Colombia");
+                await _context.SaveChangesAsync();
+            }
+        }*/
+        /*
+        private void AddCountry(string name)
+        {
+            DateTime createDate = DateTime.Today.ToUniversalTime();
+            _context.Companies.Add(new CountryEntity
+            {
+                Name = name,
+                IsActive = true,
+                Cities = new List<CityEntity>
+                {
+                    new CityEntity
+                    {
+                        Name="Bogota",
+                        IsActive=true,
+                        Campus=new List<CampusEntity>
+                        {
+                            new CampusEntity
+                            {
+                                Name="Principal",
+                                Address="Principal",
+                                IsActive=true,
+                                CreateDate= createDate,
+                                City=
+                            }
+                        }
+
+
+                    }
+
+                }
+            }); ; ;
+        }
+        */
         private async Task CheckCompaniesAsync()
         {
             if (!_context.Companies.Any())
@@ -35,6 +78,7 @@ namespace Refosus.Web.Data
         {
             _context.Companies.Add(new CompanyEntity { Name = name, LogoPath = $"~/Images/Companies/{name}.jpg", Code = code });
         }
+
         /*
         private async Task CheckRolesAsync()
         {

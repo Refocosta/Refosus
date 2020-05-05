@@ -1,0 +1,137 @@
+﻿@model Refosus.Web.Data.Entities.CountryEntity
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Detalles @Html.DisplayFor(model => model.Name)</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <a class="card-title">Detalles del Pais</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-7">
+                                <div class="form-group col-sd-9">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Name)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Name)" disabled>
+                                </div>
+                                <div class="form-group col-sd-9">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.IsActive)</label>
+                                    @Html.DisplayFor(model => model.IsActive, new { @class = "custom-control-input" })
+                                </div>
+                                <div class="form-group col-sd-9">
+                                    <label class="control-label">Departamentos</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Departments.Count)" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Editar</a>
+                            <a asp-action="AddDepartment" asp-route-id="@Model.Id" class="btn btn-primary col-sm-3">Agregar Departamento</a>
+                            <a asp-action="Index" class="btn btn-success col-sm-2 ">Listado</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="card card-green">
+                    <div class="card-header">
+                        <a class="card-title">Departamentos en el País</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table class="table table-hover table-striped display" id="tblDatos">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(model => model.Name)
+                                            </th>
+                                            <th>
+                                                Activo?
+                                            </th>
+                                            <th>
+                                                # Ciudades
+                                            </th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Departments.OrderBy(d => d.Name))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.IsActive)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Cities.Count)
+                                                </td>
+                                                <td>
+                                                    <a asp-action="EditDepartment" asp-route-id="@item.Id" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
+                                                    <a asp-action="DetailsDepartment" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                    <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+
+
+        $(document).ready(function () {
+
+            var item_to_delete;
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Countries/DeleteDepartment/' + item_to_delete;
+            });
+        });
+    </script>
+}
+
+
+

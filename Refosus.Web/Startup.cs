@@ -27,6 +27,7 @@ namespace Refosus.Web
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
+            services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddControllersWithViews();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

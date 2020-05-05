@@ -1,0 +1,53 @@
+﻿@model Refosus.Web.Models.CampusViewModel
+@{
+    ViewData["Title"] = "EditCampus";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1>Editar sede @Html.DisplayFor(model => model.Name) de la ciudad @Model.City.Name</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-sm-12 connectedSortable">
+                <form asp-action="EditCampus" enctype="multipart/form-data">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <a class="card-title">Editar </a>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    <input type="hidden" asp-for="CityId" />
+                                    <input type="hidden" asp-for="Id" />
+                                    <input type="hidden" asp-for="CreateDate" />
+
+                                    <partial name="_Campus" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" />
+                            <a asp-action="DetailsCity" asp-route-id="@Model.CityId" class="btn btn-success col-sm-2 ">Listado</a>
+                        </div>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
