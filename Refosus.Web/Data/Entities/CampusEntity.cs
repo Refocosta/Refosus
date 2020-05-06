@@ -37,5 +37,6 @@ namespace Refosus.Web.Data.Entities
 
         public ICollection<CampusDetailsEntity> CampusDetails { get; set; }
 
+        public ICollection<UserEntity> Users { get; set; }
     }
 }

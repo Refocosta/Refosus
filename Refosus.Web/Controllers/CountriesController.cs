@@ -329,7 +329,7 @@ namespace Refosus.Web.Controllers
             {
                 return NotFound();
             }
-            CityEntity cityEntity = await _context.CityEntity.FindAsync(id);
+            CityEntity cityEntity = await _context.Cities.FindAsync(id);
             if (cityEntity == null)
             {
                 return NotFound();

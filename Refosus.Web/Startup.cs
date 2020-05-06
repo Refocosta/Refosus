@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Refosus.Web.Data;
+using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 
 namespace Refosus.Web
@@ -23,11 +25,25 @@ namespace Refosus.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusConnection"));
             });
 
-            //services.AddScoped<IUserHelper, UserHelper>();
+            services.AddIdentity<UserEntity, IdentityRole>(options =>
+            {
+                //options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
+                //options.SignIn.RequireConfirmedEmail = true;
+
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+            }).AddEntityFrameworkStores<DataContext>();
+
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
             services.AddScoped<ICombosHelper, CombosHelper>();
+            services.AddScoped<IUserHelper, UserHelper>();
             services.AddControllersWithViews();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -43,8 +59,12 @@ namespace Refosus.Web
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

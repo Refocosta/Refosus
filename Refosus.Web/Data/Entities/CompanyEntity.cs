@@ -21,6 +21,6 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Activa?")]
         public bool IsActive { get; set; }
         
-
+        public ICollection<UserEntity> Users { get; set; }
     }
 }
