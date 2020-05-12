@@ -17,9 +17,17 @@ namespace Refosus.Web
         {
             Configuration = configuration;
         }
+
         public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Account/NotAuthorized";
+                options.AccessDeniedPath = "/Account/NotAuthorized";
+            });
+
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusConnection"));
@@ -29,14 +37,13 @@ namespace Refosus.Web
             {
                 //options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
                 //options.SignIn.RequireConfirmedEmail = true;
-
                 options.User.RequireUniqueEmail = true;
                 options.Password.RequireDigit = false;
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 4;
+                options.Password.RequiredLength = 6;
             }).AddEntityFrameworkStores<DataContext>();
 
             services.AddTransient<SeedDb>();
@@ -57,6 +64,7 @@ namespace Refosus.Web
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -20,6 +20,7 @@ namespace Refosus.Web.Helpers
 
         Task<CampusDetailsEntity> ToCampusDetailsEntityAsync(CampusDetailsViewModel model, bool isNew);
         CampusDetailsViewModel ToCampusDetailsViewModel(CampusDetailsEntity campusDetailsEntity);
-
+        Task<MenuEntity> ToMenuEntityAsync(MenuViewModel model, string path, bool isNew);
+        MenuViewModel ToMenuViewModel(MenuEntity menuEntity);
     }
 }

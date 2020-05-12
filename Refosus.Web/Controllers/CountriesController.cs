@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
@@ -8,8 +9,10 @@ using Refosus.Web.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace Refosus.Web.Controllers
 {
+    [Authorize (Roles = "Administrador")]
     public class CountriesController : Controller
     {
         private readonly DataContext _context;

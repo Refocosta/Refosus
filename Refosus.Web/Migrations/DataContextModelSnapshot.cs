@@ -307,6 +307,39 @@ namespace Refosus.Web.Migrations
                     b.ToTable("Deparments");
                 });
 
+            modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Action")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Controller")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LogoPath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MenusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MenusId");
+
+                    b.ToTable("Menus");
+                });
+
             modelBuilder.Entity("Refosus.Web.Data.Entities.UserEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -494,6 +527,13 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.CountryEntity", "Country")
                         .WithMany("Departments")
                         .HasForeignKey("CountryId");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>
+                {
+                    b.HasOne("Refosus.Web.Data.Entities.MenuEntity", "Menus")
+                        .WithMany()
+                        .HasForeignKey("MenusId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.UserEntity", b =>

@@ -1,14 +1,13 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
-
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Refosus</title>
+    <!--IConos-->
     <link href="~/Icon/css/open-iconic-bootstrap.css" rel="stylesheet" />
     <link href="~/DataTables/datatables.min.css" rel="stylesheet" />
     <link href="~/DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
@@ -44,33 +43,56 @@
 
 
 </head>
-<body class="hold-transition sidebar-mini">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Refosus.Web</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index">Compañias</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
+<body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
+        <nav class="main-header navbar navbar-expand  navbar-dark">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                </li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Menu">Menu Principal</a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Información</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="ChangeUser">@User.Identity.Name</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Logout">Salir</a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Login">Ingresar</a>
+                    </li>
+                }
+            </ul>
+
+        </nav>
+
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <a class="brand-link" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/Images/Parameters/LogoRefosus.jpg" alt="Refosus Logo" class="brand-image img-circle elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text font-weight-light">Refosus</span>
+            </a>
+            <div id="Menu"></div>
+        </aside>
+
+
 
 
         <div class="content-wrapper">
@@ -78,15 +100,17 @@
         </div>
 
 
+
+        <footer class="main-footer">
+            <strong><a href="https://www.refocosta.com/">Refosus</a> </strong>WEB
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2020 - Refosus.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-
-
 
 
     <!-- jQuery -->
@@ -118,13 +142,12 @@
     <!-- AdminLTE App -->
     <script src="~/Content/dist/js/adminlte.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="~/Content/dist/js/pages/dashboard.js"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="~/Content/dist/js/demo.js"></script>
 
 
 
-    
+
     <script nomodule="" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     <script src="~/js/jquery-3.5.0.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -132,5 +155,10 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/DataTables/datatables.min.js"></script>
     @RenderSection("Scripts", required: false)
+<script>
+    $(document).ready(function () {
+        $("#Menu").load("/Home/_Menu");
+    });
+</script>
 </body>
 </html >

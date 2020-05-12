@@ -26,6 +26,7 @@ namespace Refosus.Web.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckRolesAsync();
             await CheckUserAsync("1010", "Administrador", "Refosus", "didneynie12@gmail.com", "3133366284", "Refocosta Principal", UserType.Administrador);
+            await CheckUserAsync("1010", "Administrador", "Refosus", "didneynie11@gmail.com", "3133366284", "Refocosta Principal", UserType.Usuario);
 
             await CheckCompaniesAsync();
             await CheckCountriesAsync();

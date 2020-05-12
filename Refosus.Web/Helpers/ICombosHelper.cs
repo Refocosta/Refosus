@@ -7,5 +7,6 @@ namespace Refosus.Web.Helpers
     {
         IEnumerable<SelectListItem> GetComboCampus();
         IEnumerable<SelectListItem> GetComboCompany();
+        IEnumerable<SelectListItem> GetComboMenus();
     }
 }

@@ -138,5 +138,54 @@ namespace Refosus.Web.Helpers
                 Companies = _combosHelper.GetComboCompany()
             };
         }
+
+        public async Task<MenuEntity> ToMenuEntityAsync(MenuViewModel model, string path, bool isNew)
+        {
+                return new MenuEntity
+                {
+                    Id = isNew ? 0 : model.Id,
+                    Name = model.Name,
+                    Controller = model.Controller,
+                    Action = model.Action,
+                    LogoPath = path,
+                    IsActive = model.IsActive,
+                    Menus = await _context.Menus.FindAsync(model.MenuId)
+                };
+        }
+
+        public MenuViewModel ToMenuViewModel(MenuEntity menuEntity)
+        {
+            MenuViewModel model =new MenuViewModel();
+
+            if (menuEntity.Menus == null)
+            {
+                return new MenuViewModel
+                {
+                    Id = menuEntity.Id,
+                    Name = menuEntity.Name,
+                    Controller = menuEntity.Controller,
+                    Action = menuEntity.Action,
+                    IsActive = menuEntity.IsActive,
+                    LogoPath = menuEntity.LogoPath,
+                    Menus = _combosHelper.GetComboMenus()
+                };
+            }
+            else
+            {
+                return new MenuViewModel
+                {
+                    Id = menuEntity.Id,
+                    Name = menuEntity.Name,
+                    Controller = menuEntity.Controller,
+                    Action = menuEntity.Action,
+                    IsActive = menuEntity.IsActive,
+                    MenuId = menuEntity.Menus.Id,
+                    LogoPath = menuEntity.LogoPath,
+                    Menus = _combosHelper.GetComboMenus()
+                };
+            }
+
+            
+        }
     }
 }

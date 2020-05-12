@@ -53,5 +53,23 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+        public IEnumerable<SelectListItem> GetComboMenus()
+        {
+            List<SelectListItem> list = _context.Menus.Select(t =>
+
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Menu]",
+                Value = "0"
+            });
+            return list;
+        }
     }
 }
