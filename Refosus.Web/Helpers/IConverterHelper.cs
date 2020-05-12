@@ -22,5 +22,9 @@ namespace Refosus.Web.Helpers
         CampusDetailsViewModel ToCampusDetailsViewModel(CampusDetailsEntity campusDetailsEntity);
         Task<MenuEntity> ToMenuEntityAsync(MenuViewModel model, string path, bool isNew);
         MenuViewModel ToMenuViewModel(MenuEntity menuEntity);
+        #region RoleMenu
+        Task<RoleMenuEntity> ToRoleMenuEntityAsync(RoleMenusViewModel model, bool isNew);
+        RoleMenusViewModel ToRoleMenuViewModel(RoleMenuEntity roleMenuEntity);
+        #endregion
     }
 }

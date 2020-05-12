@@ -8,13 +8,26 @@ namespace Refosus.Web.Helpers
 {
     public interface IUserHelper
     {
-        Task<UserEntity> GetUserByEmailAsync(string email);
+        #region Usuarios
         Task<IdentityResult> AddUserAsync(UserEntity user, string password);
-        Task CheckRoleAsync(string roleName);
-        Task AddUserToRoleAsync(UserEntity user, string roleName);
-        Task<bool> IsUserInRoleAsync(UserEntity user, string roleName);
-        Task<IList<string>> GetUserRolesAsync(UserEntity user);
+        Task<UserEntity> GetUserByEmailAsync(string email);
+        #endregion
+
+        #region Cuenta
         Task<SignInResult> LoginAsync(LoginViewModel model);
         Task LogoutAsync();
+        Task<bool> IsUserInRoleAsync(UserEntity user, string roleName);
+        Task<IList<string>> GetUserRolesAsync(UserEntity user);
+        Task AddUserToRoleAsync(UserEntity user, string roleName);
+        #endregion
+
+        #region Roles
+        Task< List<RoleEntity>> GetRoles();
+        Task CheckRoleAsync(string roleName);
+        Task<RoleEntity> GetRoleByIdAsync(string id);
+        Task RemoveRoleAsync(RoleEntity role);
+        #endregion
+
+
     }
 }

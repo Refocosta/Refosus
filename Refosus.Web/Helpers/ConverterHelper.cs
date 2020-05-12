@@ -141,6 +141,8 @@ namespace Refosus.Web.Helpers
 
         public async Task<MenuEntity> ToMenuEntityAsync(MenuViewModel model, string path, bool isNew)
         {
+            if (model.Menus == null)
+            {
                 return new MenuEntity
                 {
                     Id = isNew ? 0 : model.Id,
@@ -149,15 +151,30 @@ namespace Refosus.Web.Helpers
                     Action = model.Action,
                     LogoPath = path,
                     IsActive = model.IsActive,
-                    Menus = await _context.Menus.FindAsync(model.MenuId)
+                    Menu = await _context.Menus.FindAsync(model.MenuId)
                 };
+            }
+            else
+            {
+                return new MenuEntity
+                {
+                    Id = isNew ? 0 : model.Id,
+                    Name = model.Name,
+                    Controller = model.Controller,
+                    Action = model.Action,
+                    LogoPath = path,
+                    IsActive = model.IsActive,
+                    Menu = null
+                };
+            }
+                
         }
 
         public MenuViewModel ToMenuViewModel(MenuEntity menuEntity)
         {
             MenuViewModel model =new MenuViewModel();
 
-            if (menuEntity.Menus == null)
+            if (menuEntity.Menu == null)
             {
                 return new MenuViewModel
                 {
@@ -179,13 +196,36 @@ namespace Refosus.Web.Helpers
                     Controller = menuEntity.Controller,
                     Action = menuEntity.Action,
                     IsActive = menuEntity.IsActive,
-                    MenuId = menuEntity.Menus.Id,
+                    MenuId = menuEntity.Menu.Id,
                     LogoPath = menuEntity.LogoPath,
                     Menus = _combosHelper.GetComboMenus()
                 };
             }
 
             
+        }
+
+        public async Task<RoleMenuEntity> ToRoleMenuEntityAsync(RoleMenusViewModel model, bool isNew)
+        {
+            return new RoleMenuEntity
+            {
+                Id = isNew ? 0 : model.Id,
+                Role = await _context.Roles.FindAsync(model.RoleId),
+                Menu = await _context.Menus.FindAsync(model.MenuId)
+            };
+        }
+
+        public RoleMenusViewModel ToRoleMenuViewModel(RoleMenuEntity roleMenuEntity)
+        {
+            return new RoleMenusViewModel
+            {
+                Id = roleMenuEntity.Id,
+                Role = roleMenuEntity.Role,
+                RoleId = roleMenuEntity.Role.Id,
+                Menu = roleMenuEntity.Menu,
+                MenuId = roleMenuEntity.Menu.Id,
+                Menus = _combosHelper.GetComboMenus()
+            };
         }
     }
 }

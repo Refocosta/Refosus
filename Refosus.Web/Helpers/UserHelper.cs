@@ -9,55 +9,60 @@ namespace Refosus.Web.Helpers
     public class UserHelper : IUserHelper
     {
         private readonly UserManager<UserEntity> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<RoleEntity> _roleManager;
         private readonly SignInManager<UserEntity> _signInManager;
 
         public UserHelper(
             UserManager<UserEntity> userManager,
-            RoleManager<IdentityRole> roleManager,
+            RoleManager<RoleEntity> roleManager,
             SignInManager<UserEntity> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
+        #region Usuarios
         public async Task<IdentityResult> AddUserAsync(UserEntity user, string password)
         {
             return await _userManager.CreateAsync(user, password);
         }
-
-        public async Task AddUserToRoleAsync(UserEntity user, string roleName)
-        {
-            await _userManager.AddToRoleAsync(user, roleName);
-        }
-
-        public async Task CheckRoleAsync(string roleName)
-        {
-            bool roleExists = await _roleManager.RoleExistsAsync(roleName);
-            if (!roleExists)
-            {
-                await _roleManager.CreateAsync(new IdentityRole
-                {
-                    Name = roleName
-                });
-            }
-        }
-
         public async Task<UserEntity> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<bool> IsUserInRoleAsync(UserEntity user, string roleName)
+        #endregion
+
+
+        #region Roles
+        public async Task CheckRoleAsync(string roleName)
         {
-            return await _userManager.IsInRoleAsync(user, roleName);
+            bool roleExists = await _roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
+            {
+                await _roleManager.CreateAsync(new RoleEntity
+                {
+                    Name = roleName,
+                    IsActive = true
+                });
+            }
+
+        }
+        public async Task<RoleEntity> GetRoleByIdAsync(string id)
+        {
+            return await _roleManager.FindByIdAsync(id);
+        }
+        public async Task RemoveRoleAsync(RoleEntity role)
+        {
+            if (role != null)
+            {
+                await _roleManager.DeleteAsync(role);
+            }
         }
 
-        public async Task<IList<string>> GetUserRolesAsync(UserEntity user)
-        {
-            return await _userManager.GetRolesAsync(user);
-        }
+        #endregion
 
+        #region Cuenta
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
         {
 
@@ -72,6 +77,28 @@ namespace Refosus.Web.Helpers
         public async Task LogoutAsync()
         {
             await _signInManager.SignOutAsync();
+        }
+        #endregion
+
+
+        public async Task AddUserToRoleAsync(UserEntity user, string roleName)
+        {
+            await _userManager.AddToRoleAsync(user, roleName);
+        }
+        
+        public async Task<bool> IsUserInRoleAsync(UserEntity user, string roleName)
+        {
+            return await _userManager.IsInRoleAsync(user, roleName);
+        }
+
+        public async Task<IList<string>> GetUserRolesAsync(UserEntity user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
+
+        public Task<List<RoleEntity>> GetRoles()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

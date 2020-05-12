@@ -32,7 +32,7 @@ namespace Refosus.Web.Controllers
         {
             return View(await _context
                 .Menus
-                .Include(t => t.Menus)
+                .Include(t => t.Menu)
                 .OrderBy(t => t.Name)
                 .ToListAsync());
         }
@@ -74,7 +74,7 @@ namespace Refosus.Web.Controllers
             }
 
             MenuEntity menuEntity = await _context.Menus
-                .Include(g => g.Menus)
+                .Include(g => g.Menu)
                 .FirstOrDefaultAsync(g => g.Id == id);
 
             if (menuEntity == null)
@@ -92,7 +92,7 @@ namespace Refosus.Web.Controllers
             }
 
             MenuEntity menuEntity = await _context.Menus
-                .Include(g => g.Menus)
+                .Include(g => g.Menu)
                 .FirstOrDefaultAsync(g => g.Id == id);
             if (menuEntity == null)
             {

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,18 +32,18 @@ namespace Refosus.Web
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusConnection"));
             });
 
-            services.AddIdentity<UserEntity, IdentityRole>(options =>
-            {
+            services.AddIdentity<UserEntity, RoleEntity>(options =>
+             {
                 //options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
                 //options.SignIn.RequireConfirmedEmail = true;
                 options.User.RequireUniqueEmail = true;
-                options.Password.RequireDigit = false;
-                options.Password.RequiredUniqueChars = 0;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 6;
-            }).AddEntityFrameworkStores<DataContext>();
+                 options.Password.RequireDigit = false;
+                 options.Password.RequiredUniqueChars = 0;
+                 options.Password.RequireLowercase = false;
+                 options.Password.RequireNonAlphanumeric = false;
+                 options.Password.RequireUppercase = false;
+                 options.Password.RequiredLength = 6;
+             }).AddEntityFrameworkStores<DataContext>();
 
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();

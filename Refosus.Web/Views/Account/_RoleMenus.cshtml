@@ -1,0 +1,6 @@
+﻿@model Refosus.Web.Models.RoleMenusViewModel
+<div class="form-group col-sm-12">
+    <label asp-for="MenuId" class="control-label"></label>
+    <select asp-for="MenuId" asp-items="Model.Menus" class="form-control"></select>
+    <span asp-validation-for="MenuId" class="text-danger"></span>
+</div>

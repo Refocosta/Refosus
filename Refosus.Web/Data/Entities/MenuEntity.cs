@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Refosus.Web.Data.Entities
 {
@@ -22,7 +23,8 @@ namespace Refosus.Web.Data.Entities
         public bool IsActive { get; set; }
 
         [Display(Name = "Dependencia")]
-        public MenuEntity Menus { get; set; }
+        public MenuEntity Menu { get; set; }
 
+        public ICollection<RoleMenuEntity> roleMenus { get; set; }
     }
 }
