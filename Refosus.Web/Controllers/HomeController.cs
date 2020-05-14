@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using Refosus.Web.Models;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
@@ -18,14 +17,17 @@ namespace Refosus.Web.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IUserHelper _userHelper;
         private readonly DataContext _context;
+        private readonly ISecurityHelper _securityHelper;
 
         public HomeController(ILogger<HomeController> logger,
             IUserHelper userHelper,
-            DataContext context)
+            DataContext context,
+            ISecurityHelper securityHelper)
         {
             _logger = logger;
             _userHelper = userHelper;
             _context = context;
+            _securityHelper = securityHelper;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -40,26 +42,19 @@ namespace Refosus.Web.Controllers
             if (User.Identity.IsAuthenticated == true)
             {
                 UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-                var result = await _userHelper.GetUserRolesAsync(user);
+                List<RoleMenuEntity> menus = await _securityHelper.GetMenusRoleAsync(user);
+                return PartialView("_menu", menus);
             }
-
-            List<string> countries = new List<string>();
-            countries.Add("USA");
-            countries.Add("UK");
-            countries.Add("India");
-            return PartialView("_Menu", countries);
+            return NotFound();
         }
-
         public IActionResult Menu()
         {
             return View();
         }
-
         public IActionResult Privacy()
         {
             return View();
         }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

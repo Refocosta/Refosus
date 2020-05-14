@@ -21,6 +21,7 @@ namespace Refosus.Web.Helpers
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
+
         #region Usuarios
         public async Task<IdentityResult> AddUserAsync(UserEntity user, string password)
         {

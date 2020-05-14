@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -89,7 +90,13 @@
                      style="opacity: .8">
                 <span class="brand-text font-weight-light">Refosus</span>
             </a>
-            <div id="Menu"></div>
+            <div class="sidebar">
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                        <div id="Menu"></div>
+                    </ul>
+                </nav>
+            </div>
         </aside>
 
 
@@ -155,10 +162,8 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/DataTables/datatables.min.js"></script>
     @RenderSection("Scripts", required: false)
-<script>
-    $(document).ready(function () {
+    <script>
         $("#Menu").load("/Home/_Menu");
-    });
-</script>
+    </script>
 </body>
-</html >
+</html>
