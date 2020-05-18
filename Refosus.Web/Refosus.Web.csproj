@@ -51,4 +51,8 @@
     <ProjectReference Include="..\Refosus.Common\Refosus.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\News\" />
+  </ItemGroup>
+
 </Project>

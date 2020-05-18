@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Refosus.Web.Models
 {
-    public class CompanyViewModel : CompanyEntity
+    public class NewViewModel : NewEntity
     {
         [Display(Name = "Logo")]
         public IFormFile LogoFile { get; set; }

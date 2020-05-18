@@ -1,4 +1,6 @@
-﻿using Refosus.Common.Enum;
+﻿using Microsoft.AspNetCore.Razor.Language;
+using Microsoft.EntityFrameworkCore;
+using Refosus.Common.Enum;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using System;
@@ -30,7 +32,52 @@ namespace Refosus.Web.Data
 
             await CheckCompaniesAsync();
             await CheckCountriesAsync();
+            await CheckMenusAsync();
+            await CheckMenusRoleAsync();
         }
+        private async Task CheckMenusAsync()
+        {
+            if (!_context.Menus.Any())
+            {
+                await AddMenuAsync("Principal", "", "", 0);
+                await AddMenuAsync("Parametros", "", "", 1);
+                await AddMenuAsync("Seguridad", "", "", 1);
+                await AddMenuAsync("Noticias", "Home", "IndexNews", 1);
+
+                await AddMenuAsync("Compañias", "Companies", "Index", 2);
+                await AddMenuAsync("Paises", "Countries", "Index", 2);
+
+                await AddMenuAsync("Menus", "Menus", "Index", 3);
+                await AddMenuAsync("Roles", "Account", "IndexRoles", 3);
+            }
+        }
+
+        private async Task AddMenuAsync(string name, string controller,string action,int id)
+        {
+            var menu = _context.Menus.FirstOrDefault(o => o.Id == id);
+            _context.Menus.Add(new MenuEntity { Name = name,Controller= controller,Action= action, LogoPath = $"~/Images/Menus/{name}.jpg",Menu= menu, IsActive = true });
+            await _context.SaveChangesAsync();
+        }
+
+
+        private async Task CheckMenusRoleAsync()
+        {
+            if (!_context.RoleMenus.Any())
+            {
+                AddMenusRole();
+                await _context.SaveChangesAsync();
+            }
+        }
+        private void AddMenusRole()
+        {
+            var menus = _context.Menus.ToList();
+            var role = _context.Roles.FirstOrDefault(o => o.Name == "Administrador");
+            foreach (var item in menus)
+            {
+                _context.RoleMenus.Add(new RoleMenuEntity { Menu = item, Role = role });
+            }
+        }
+
 
         private async Task CheckCountriesAsync()
         {

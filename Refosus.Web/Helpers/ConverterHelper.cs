@@ -15,6 +15,8 @@ namespace Refosus.Web.Helpers
             _context = context;
             _combosHelper = combosHelper;
         }
+
+        #region Companies
         public CompanyEntity ToCompanyEntity(CompanyViewModel model, string path, bool isNew)
         {
             return new CompanyEntity
@@ -36,7 +38,9 @@ namespace Refosus.Web.Helpers
                 Code = companyEntity.Code
             };
         }
+        #endregion
 
+        #region Departments
         public async Task<DepartmentEntity> ToDepartmentEntityAsync(DepartmentViewModel model, bool isNew)
         {
             return new DepartmentEntity
@@ -61,6 +65,9 @@ namespace Refosus.Web.Helpers
                 CountryId = departmentEntity.Country.Id
             };
         }
+        #endregion
+
+        #region Cities
         public async Task<CityEntity> ToCityEntityAsync(CityViewModel model, bool isNew)
         {
             return new CityEntity
@@ -85,7 +92,9 @@ namespace Refosus.Web.Helpers
                 DepartmentId = cityEntity.Department.Id
             };
         }
+        #endregion
 
+        #region Campus
         public async Task<CampusEntity> ToCampusEntityAsync(CampusViewModel model, bool isNew)
         {
             return new CampusEntity
@@ -111,10 +120,12 @@ namespace Refosus.Web.Helpers
                 CreateDate = campusEntity.CreateDate,
                 City = campusEntity.City,
                 CityId = campusEntity.City.Id,
-                
+
             };
         }
+        #endregion
 
+        #region CampusDetaills
         public async Task<CampusDetailsEntity> ToCampusDetailsEntityAsync(CampusDetailsViewModel model, bool isNew)
         {
             return new CampusDetailsEntity
@@ -138,7 +149,9 @@ namespace Refosus.Web.Helpers
                 Companies = _combosHelper.GetComboCompany()
             };
         }
+        #endregion
 
+        #region Menus
         public async Task<MenuEntity> ToMenuEntityAsync(MenuViewModel model, string path, bool isNew)
         {
             if (model.Menus == null)
@@ -167,12 +180,12 @@ namespace Refosus.Web.Helpers
                     Menu = null
                 };
             }
-                
+
         }
 
         public MenuViewModel ToMenuViewModel(MenuEntity menuEntity)
         {
-            MenuViewModel model =new MenuViewModel();
+            MenuViewModel model = new MenuViewModel();
 
             if (menuEntity.Menu == null)
             {
@@ -202,9 +215,11 @@ namespace Refosus.Web.Helpers
                 };
             }
 
-            
-        }
 
+        }
+        #endregion
+
+        #region RoleMenu
         public async Task<RoleMenuEntity> ToRoleMenuEntityAsync(RoleMenusViewModel model, bool isNew)
         {
             return new RoleMenuEntity
@@ -227,5 +242,37 @@ namespace Refosus.Web.Helpers
                 Menus = _combosHelper.GetComboMenus()
             };
         }
+        #endregion
+
+        #region News
+
+        NewEntity IConverterHelper.ToNewEntity(NewViewModel model, string path, bool isNew)
+        {
+            return new NewEntity
+            {
+                Id = isNew ? 0 : model.Id,
+                LogoPath = path,
+                Colour = model.Colour,
+                Content = model.Content,
+                Size=model.Size,
+                Title=model.Title,
+                Public=model.Public
+            };
+        }
+
+        NewViewModel IConverterHelper.ToNewViewModel(NewEntity newEntity)
+        {
+            return new NewViewModel
+            {
+                Id = newEntity.Id,
+                LogoPath = newEntity.LogoPath,
+                Colour = newEntity.Colour,
+                Content = newEntity.Content,
+                Size = newEntity.Size,
+                Title = newEntity.Title,
+                Public = newEntity.Public
+            };
+        }
+        #endregion
     }
 }

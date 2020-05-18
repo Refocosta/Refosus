@@ -44,7 +44,6 @@ namespace Refosus.Web
                  options.Password.RequireUppercase = false;
                  options.Password.RequiredLength = 6;
              }).AddEntityFrameworkStores<DataContext>();
-
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();

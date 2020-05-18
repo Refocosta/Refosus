@@ -19,12 +19,15 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Menu">Menu Principal</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Menu">Menu</a>
                     </li>
                 }
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Información</a>
-                </li>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Información</a>
+                    </li>
+                }
             </ul>
             <ul class="navbar-nav ml-auto">
                 @if (User.Identity.IsAuthenticated)
@@ -48,9 +51,7 @@
 
 
         <div class="content-wrapper">
-            <main role="main" class="pb-3">
                 @RenderBody()
-            </main>
         </div>
 
 

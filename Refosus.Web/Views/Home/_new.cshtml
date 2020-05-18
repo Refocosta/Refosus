@@ -1,0 +1,76 @@
+﻿@model Refosus.Web.Models.NewViewModel
+
+<div class="form-group col-sm-12">
+    <label asp-for="Colour" class="control-label"></label>
+    <select asp-for="Colour" class="form-control">
+        <option value="yellow">Amarillo</option>
+        <option value="blue">Azul</option>
+        <option value="info">Azul claro</option>
+        <option value="navy">Azul Oscuro</option>
+        <option value="white">Blanco</option>
+        <option value="cyan">Cian</option>
+        <option value="fuchsia">Fucsia</option>
+        <option value="gray">Gris</option>
+        <option value="gray-dark">Gris Oscuto</option>
+        <option value="indigo">lila</option>
+        <option value="maroon">Marron</option>
+        <option value="purple">Morado</option>
+        <option value="orange">Naranja</option>
+        <option value="dark">Negro</option>
+        <option value="red">Rojo</option>
+        <option value="pink">Rosado</option>
+        <option value="default">Sin Color</option>
+        <option value="light">Tema claro</option>
+        <option value="lightblue">Tema claro azul</option>
+        <option value="green">Verde</option>
+        <option value="lime">Verde claro</option>
+        <option value="olive">Verde Oliva</option>
+        <option value="teal">Verde Claro</option>
+    </select>
+    <span asp-validation-for="Colour" class="text-danger"></span>
+</div>
+
+
+<div class="form-group col-sm-12">
+    <label asp-for="Size" class="control-label"></label>
+    <select asp-for="Size" class="form-control">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+    </select>
+    <span asp-validation-for="Size" class="text-danger"></span>
+</div>
+
+<div class="form-group col-sm-12">
+    <label asp-for="Title" class="control-label"></label>
+    <input asp-for="Title" class="form-control" />
+    <span asp-validation-for="Title" class="text-danger"></span>
+</div>
+
+<div class="form-group col-sm-12">
+    <label asp-for="Content" class="control-label"></label>
+    <input asp-for="Content" class="form-control" />
+    <span asp-validation-for="Content" class="text-danger"></span>
+</div>
+
+<div class="form-group col-sm-12">
+    <label asp-for="LogoFile" class="control-label"></label>
+    <input asp-for="LogoFile" type="file" class="form-control" />
+    <span asp-validation-for="LogoFile" class="text-danger"></span>
+</div>
+<div class="form-group col-sm-12">
+    <div class="custom-control custom-checkbox">
+        <input asp-for="Public" type="checkbox" class="custom-control-input" />
+        <label asp-for="Public" class="custom-control-label"></label>
+        <span asp-validation-for="Public" class="text-danger"></span>
+    </div>
+</div>

@@ -125,6 +125,16 @@ namespace Refosus.Web.Controllers
         }
         #endregion
 
+        #region Users
+        public async Task<IActionResult> IndexUsers()
+        {
+            return View(await _context.
+                Users
+                .OrderBy(t => t.FirstName)
+                .ToListAsync());
+        }
+        #endregion
+
 
 
         #region RoleMenu

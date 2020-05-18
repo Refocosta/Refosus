@@ -14,37 +14,16 @@
     <link href="~/DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
 
 
-
-
-    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bbootstrap 4 -->
-    <link rel="stylesheet" href="~/Content/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="~/Content/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="~/Content/plugins/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link href="~/Content/dist/css/adminlte.min.css" rel="stylesheet" />
-    <!-- overlayScrollbars -->
     <link rel="stylesheet" href="~/Content/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="~/Content/plugins/daterangepicker/daterangepicker.css">
-    <!-- summernote -->
-    <link rel="stylesheet" href="~/Content/plugins/summernote/summernote-bs4.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
-
+    <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
 
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-
-
-
+    <link href="~/Content/dist/css/adminlte.min.css" rel="stylesheet" />
 
 </head>
-<body class="hold-transition sidebar-mini layout-fixed">
+<body class="sidebar-mini layout-fixed sidebar-collapse">
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand  navbar-dark">
             <ul class="navbar-nav">
@@ -57,12 +36,15 @@
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Menu">Menu Principal</a>
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Menu">Menu</a>
                     </li>
                 }
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Información</a>
-                </li>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Privacy">Información</a>
+                    </li>
+                }
             </ul>
             <ul class="navbar-nav ml-auto">
                 @if (User.Identity.IsAuthenticated)
@@ -98,16 +80,9 @@
                 </nav>
             </div>
         </aside>
-
-
-
-
         <div class="content-wrapper">
             @RenderBody()
         </div>
-
-
-
         <footer class="main-footer">
             <strong><a href="https://www.refocosta.com/">Refosus</a> </strong>WEB
             <div class="float-right d-none d-sm-inline-block">
@@ -118,8 +93,6 @@
             <!-- Control sidebar content goes here -->
         </aside>
     </div>
-
-
     <!-- jQuery -->
     <script src="~/Content/plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->

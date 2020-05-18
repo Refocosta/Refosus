@@ -18,6 +18,7 @@ namespace Refosus.Web.Data
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<MenuEntity> Menus { get; set; }
         public DbSet<RoleMenuEntity> RoleMenus { get; set; }
+        public DbSet<NewEntity> News { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
