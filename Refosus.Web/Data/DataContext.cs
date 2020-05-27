@@ -17,8 +17,12 @@ namespace Refosus.Web.Data
         public DbSet<CampusDetailsEntity> CampusDetails { get; set; }
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<MenuEntity> Menus { get; set; }
+        public DbSet<MessageEntity> Messages { get; set; }
+        public DbSet<MessageTypeEntity> MessagesTypes { get; set; }
+        public DbSet<MessageStateEntity> MessagesStates { get; set; }
         public DbSet<RoleMenuEntity> RoleMenus { get; set; }
         public DbSet<NewEntity> News { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

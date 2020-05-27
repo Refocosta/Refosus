@@ -1,7 +1,9 @@
-﻿using Refosus.Web.Data;
+﻿using Microsoft.VisualStudio.Web.CodeGeneration;
+using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Refosus.Web.Helpers
 {
@@ -271,6 +273,47 @@ namespace Refosus.Web.Helpers
                 Size = newEntity.Size,
                 Title = newEntity.Title,
                 Public = newEntity.Public
+            };
+        }
+
+        #endregion
+
+        #region Message
+        public async Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew)
+        {
+            return new MessageEntity
+            {
+                Id = isNew ? 0 : model.Id,
+
+                Type= await _context.MessagesTypes.FindAsync(model.TypeId),
+                Sender = model.Sender,
+                Reference = model.Reference,
+                CreateDate = model.CreateDateLocal.ToUniversalTime(),
+                UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
+                State = await _context.MessagesStates.FindAsync(model.StateId),
+                User = await _context.Users.FindAsync(model.CreateUser)
+            };
+        }
+        public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
+        {
+            return new MessagetransactionEntity
+            {
+                Id = 0,
+                Message =model,
+                UserCreate = model.User,
+                UserUpdate =model.User,
+                UpdateDate = model.Transaction.UpdateDateLocal.ToUniversalTime(),
+                StateCreate = model.Transaction.StateCreate,
+                StateUpdate=model.State,
+                Observation = model.Transaction.Observation
+            };
+        }
+
+        public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
+        {
+            return new MessageViewModel
+            {
+                
             };
         }
         #endregion

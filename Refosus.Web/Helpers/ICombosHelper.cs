@@ -8,5 +8,8 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboCampus();
         IEnumerable<SelectListItem> GetComboCompany();
         IEnumerable<SelectListItem> GetComboMenus();
+        IEnumerable<SelectListItem> GetComboMessageType();
+        IEnumerable<SelectListItem> GetComboMessageState();
+        IEnumerable<SelectListItem> GetComboActiveUser();
     }
 }

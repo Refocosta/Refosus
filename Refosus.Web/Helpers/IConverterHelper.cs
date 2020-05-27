@@ -1,8 +1,5 @@
 ﻿using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Refosus.Web.Helpers
@@ -47,6 +44,12 @@ namespace Refosus.Web.Helpers
         #region News
         NewEntity ToNewEntity(NewViewModel model, string path, bool isNew);
         NewViewModel ToNewViewModel(NewEntity teamEntity);
+        #endregion
+
+        #region Message
+        Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew);
+        Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model);
+        MessageViewModel ToMessageViewModel(MessageEntity messagentity);
         #endregion
     }
 }

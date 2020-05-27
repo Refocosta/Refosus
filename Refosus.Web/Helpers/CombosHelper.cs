@@ -71,5 +71,61 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+
+        public IEnumerable<SelectListItem> GetComboMessageType()
+        {
+            List<SelectListItem> list = _context.MessagesTypes.Select(t =>
+
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Tipo]",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboMessageState()
+        {
+            List<SelectListItem> list = _context.MessagesStates.Select(t =>
+
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Stado]",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboActiveUser()
+        {
+            List<SelectListItem> list = _context.Users
+                .Where(t => t.IsActive == true)
+                .Select(t =>
+
+              new SelectListItem
+              {
+                  Text = t.FullName,
+                  Value = $"{t.Id}"
+              })
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Usuario]",
+                Value = "0"
+            });
+            return list;
+        }
     }
 }

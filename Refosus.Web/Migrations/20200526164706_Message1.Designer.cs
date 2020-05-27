@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200526164706_Message1")]
+    partial class Message1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -403,38 +405,12 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("MessageId")
+                    b.Property<int?>("MessageEntityId")
                         .HasColumnType("int");
-
-                    b.Property<string>("Observation")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("StateCreateId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StateUpdateId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserCreateId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserUpdateId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MessageId");
-
-                    b.HasIndex("StateCreateId");
-
-                    b.HasIndex("StateUpdateId");
-
-                    b.HasIndex("UserCreateId");
-
-                    b.HasIndex("UserUpdateId");
+                    b.HasIndex("MessageEntityId");
 
                     b.ToTable("MessagetransactionEntity");
                 });
@@ -736,25 +712,9 @@ namespace Refosus.Web.Migrations
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessagetransactionEntity", b =>
                 {
-                    b.HasOne("Refosus.Web.Data.Entities.MessageEntity", "Message")
+                    b.HasOne("Refosus.Web.Data.Entities.MessageEntity", null)
                         .WithMany("Transaction")
-                        .HasForeignKey("MessageId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.MessageStateEntity", "StateCreate")
-                        .WithMany()
-                        .HasForeignKey("StateCreateId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.MessageStateEntity", "StateUpdate")
-                        .WithMany()
-                        .HasForeignKey("StateUpdateId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserCreate")
-                        .WithMany()
-                        .HasForeignKey("UserCreateId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserUpdate")
-                        .WithMany()
-                        .HasForeignKey("UserUpdateId");
+                        .HasForeignKey("MessageEntityId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.RoleMenuEntity", b =>
