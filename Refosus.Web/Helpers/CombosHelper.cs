@@ -55,7 +55,9 @@ namespace Refosus.Web.Helpers
         }
         public IEnumerable<SelectListItem> GetComboMenus()
         {
-            List<SelectListItem> list = _context.Menus.Select(t =>
+            List<SelectListItem> list = _context.Menus
+                .Where(t=>t.Hidden==true)
+                .Select(t =>
 
               new SelectListItem
               {
@@ -71,7 +73,7 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
-
+        
         public IEnumerable<SelectListItem> GetComboMessageType()
         {
             List<SelectListItem> list = _context.MessagesTypes.Select(t =>
@@ -92,7 +94,9 @@ namespace Refosus.Web.Helpers
         }
         public IEnumerable<SelectListItem> GetComboMessageState()
         {
-            List<SelectListItem> list = _context.MessagesStates.Select(t =>
+            List<SelectListItem> list = _context.MessagesStates
+                .Where(t=> t.Active==true)
+                .Select(t =>
 
               new SelectListItem
               {
@@ -103,7 +107,27 @@ namespace Refosus.Web.Helpers
                 .ToList();
             list.Insert(0, new SelectListItem
             {
-                Text = "[Seleccione un Stado]",
+                Text = "[Seleccione un Estado]",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboMessageBillState()
+        {
+            List<SelectListItem> list = _context.MessagesBillState
+                .Where(t => t.Active == true)
+                .Select(t =>
+
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Estado]",
                 Value = "0"
             });
             return list;
@@ -111,7 +135,7 @@ namespace Refosus.Web.Helpers
         public IEnumerable<SelectListItem> GetComboActiveUser()
         {
             List<SelectListItem> list = _context.Users
-                .Where(t => t.IsActive == true)
+                .Where(t=>t.IsActive==true)
                 .Select(t =>
 
               new SelectListItem
@@ -119,6 +143,7 @@ namespace Refosus.Web.Helpers
                   Text = t.FullName,
                   Value = $"{t.Id}"
               })
+
                 .ToList();
             list.Insert(0, new SelectListItem
             {

@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Razor.Language;
-using Microsoft.EntityFrameworkCore;
-using Refosus.Common.Enum;
+﻿using Refosus.Common.Enum;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using System;
@@ -27,8 +25,11 @@ namespace Refosus.Web.Data
         {
             await _context.Database.EnsureCreatedAsync();
             await CheckRolesAsync();
-            await CheckUserAsync("1010", "Administrador", "Refosus", "didneynie12@gmail.com", "3133366284", "Refocosta Principal", UserType.Administrador);
-            await CheckUserAsync("1010", "Administrador", "Refosus", "didneynie11@gmail.com", "3133366284", "Refocosta Principal", UserType.Usuario);
+            await CheckMessageBillState();
+            await CheckMessageTypes();
+            await CheckMessageState();
+            await CheckUserAsync("1010", "Administrador", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
+            await CheckUserAsync("1010", "Usuario", "Refosus", "didneyn@gmail.com", "3133366284", "Refocosta Principal");
 
             await CheckCompaniesAsync();
             await CheckCountriesAsync();
@@ -42,6 +43,7 @@ namespace Refosus.Web.Data
                 await AddMenuAsync("Principal", "", "", 0);
                 await AddMenuAsync("Parametros", "", "", 1);
                 await AddMenuAsync("Seguridad", "", "", 1);
+                await AddMenuAsync("Mensajeria", "", "", 1);
                 await AddMenuAsync("Noticias", "Home", "IndexNews", 1);
 
                 await AddMenuAsync("Compañias", "Companies", "Index", 2);
@@ -49,13 +51,17 @@ namespace Refosus.Web.Data
 
                 await AddMenuAsync("Menus", "Menus", "Index", 3);
                 await AddMenuAsync("Roles", "Account", "IndexRoles", 3);
+                await AddMenuAsync("Usuarios", "Account", "IndexUsers", 3);
+
+                await AddMenuAsync("Mensajes", "Messages", "Index", 4);
+                await AddMenuAsync("Mis Mensajes", "Messages", "IndexMe", 4);
             }
         }
 
-        private async Task AddMenuAsync(string name, string controller,string action,int id)
+        private async Task AddMenuAsync(string name, string controller, string action, int id)
         {
-            var menu = _context.Menus.FirstOrDefault(o => o.Id == id);
-            _context.Menus.Add(new MenuEntity { Name = name,Controller= controller,Action= action, LogoPath = $"~/Images/Menus/{name}.jpg",Menu= menu, IsActive = true });
+            MenuEntity menu = _context.Menus.FirstOrDefault(o => o.Id == id);
+            _context.Menus.Add(new MenuEntity { Name = name, Controller = controller, Action = action, LogoPath = $"~/Images/Menus/{name}.jpg", Menu = menu, IsActive = true });
             await _context.SaveChangesAsync();
         }
 
@@ -70,14 +76,61 @@ namespace Refosus.Web.Data
         }
         private void AddMenusRole()
         {
-            var menus = _context.Menus.ToList();
-            var role = _context.Roles.FirstOrDefault(o => o.Name == "Administrador");
-            foreach (var item in menus)
+            List<MenuEntity> menus = _context.Menus.ToList();
+            RoleEntity role = _context.Roles.FirstOrDefault(o => o.Name == "Administrador");
+            foreach (MenuEntity item in menus)
             {
                 _context.RoleMenus.Add(new RoleMenuEntity { Menu = item, Role = role });
             }
         }
-
+        private async Task CheckMessageTypes()
+        {
+            if (!_context.MessagesTypes.Any())
+            {
+                foreach (string type in Enum.GetNames(typeof(MessageType)))
+                {
+                    _context.MessagesTypes.Add(
+                        new MessageTypeEntity
+                        {
+                            Name = type,
+                            Active = true
+                        }
+                        );
+                }
+            }
+        }
+        private async Task CheckMessageState()
+        {
+            if (!_context.MessagesStates.Any())
+            {
+                foreach (string state in Enum.GetNames(typeof(MessageState)))
+                {
+                    _context.MessagesStates.Add(
+                        new MessageStateEntity
+                        {
+                            Name = state,
+                            Active = true
+                        }
+                        );
+                }
+            }
+        }
+        private async Task CheckMessageBillState()
+        {
+            if (!_context.MessagesBillState.Any())
+            {
+                foreach (string state in Enum.GetNames(typeof(MessageBillState)))
+                {
+                    _context.MessagesBillState.Add(
+                        new MessageBillStateEntity
+                        {
+                            Name = state,
+                            Active = true
+                        }
+                        );
+                }
+            }
+        }
 
         private async Task CheckCountriesAsync()
         {
@@ -149,15 +202,14 @@ namespace Refosus.Web.Data
             await _userHelper.CheckRoleAsync(UserType.Administrador.ToString());
             await _userHelper.CheckRoleAsync(UserType.Usuario.ToString());
         }
-        
+
         private async Task<UserEntity> CheckUserAsync(
             string document,
             string firstName,
             string lastName,
             string email,
             string phone,
-            string address,
-            UserType userType)
+            string address)
         {
             UserEntity user = await _userHelper.GetUserByEmailAsync(email);
             if (user == null)
@@ -171,14 +223,12 @@ namespace Refosus.Web.Data
                     UserName = email,
                     PhoneNumber = phone,
                     Address = address,
-                    Campus= _context.Campus.FirstOrDefault(),
-                    Company =_context.Companies.FirstOrDefault(),
-                    IsActive = true,
-                    UserType = userType
-
+                    Campus = _context.Campus.FirstOrDefault(),
+                    Company = _context.Companies.FirstOrDefault(),
+                    IsActive = true
                 };
                 await _userHelper.AddUserAsync(user, "123456789");
-                await _userHelper.AddUserToRoleAsync(user, userType.ToString());
+                await _userHelper.AddUserToRoleAsync(user, "Administrador");
             }
             return user;
         }

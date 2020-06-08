@@ -1,29 +1,22 @@
 ﻿@model Refosus.Web.Models.MessageViewModel
+    <div class="row">
+        <div class="col col-sm-4">
+            <label asp-for="Sender" class="control-label"></label>
+            <input asp-for="Sender" class="form-control" />
+            <span asp-validation-for="Sender" class="text-danger"></span>
+        </div>
+        <div class="col col-sm-4">
+            <label asp-for="Reference" class="control-label"></label>
+            <input asp-for="Reference" class="form-control" />
+            <span asp-validation-for="Reference" class="text-danger"></span>
+        </div>
+        <div class="col col-sm-4">
+            <label asp-for="TypeId" class="control-label"></label>
+            <select asp-for="TypeId" asp-items="Model.MessageType" class="form-control"></select>
+            <span asp-validation-for="TypeId" class="text-danger"></span>
+        </div>
+    </div>
 
-
-<div class="form-group col-sm-12">
-    <label asp-for="Sender" class="control-label"></label>
-    <input asp-for="Sender" class="form-control" />
-    <span asp-validation-for="Sender" class="text-danger"></span>
-</div>
-
-<div class="form-group col-sm-12">
-    <label asp-for="Reference" class="control-label"></label>
-    <input asp-for="Reference" class="form-control" />
-    <span asp-validation-for="Reference" class="text-danger"></span>
-</div>
-
-<div class="form-group col-sm-12">
-    <label asp-for="TypeId" class="control-label"></label>
-    <select asp-for="TypeId" asp-items="Model.MessageType" class="form-control"></select>
-    <span asp-validation-for="TypeId" class="text-danger"></span>
-</div>
-
-<div class="form-group col-sm-12">
-    <label asp-for="StateId" class="control-label"></label>
-    <select asp-for="StateId" asp-items="Model.MessageState" class="form-control"></select>
-    <span asp-validation-for="StateId" class="text-danger"></span>
-</div>
 
 <div class="form-group col-sm-12">
     <label asp-for="CreateUser" class="control-label"></label>
@@ -33,6 +26,6 @@
 
 <div class="form-group col-sm-12">
     <label asp-for="Transaction.Observation" class="control-label"></label>
-    <input asp-for="Transaction.Observation" class="form-control" />
+    <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
     <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
 </div>

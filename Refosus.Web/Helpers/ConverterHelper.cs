@@ -1,9 +1,8 @@
-﻿using Microsoft.VisualStudio.Web.CodeGeneration;
+﻿using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Refosus.Web.Helpers
 {
@@ -12,7 +11,7 @@ namespace Refosus.Web.Helpers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
 
-        public ConverterHelper(DataContext context,ICombosHelper combosHelper)
+        public ConverterHelper(DataContext context, ICombosHelper combosHelper)
         {
             _context = context;
             _combosHelper = combosHelper;
@@ -256,9 +255,9 @@ namespace Refosus.Web.Helpers
                 LogoPath = path,
                 Colour = model.Colour,
                 Content = model.Content,
-                Size=model.Size,
-                Title=model.Title,
-                Public=model.Public
+                Size = model.Size,
+                Title = model.Title,
+                Public = model.Public
             };
         }
 
@@ -285,7 +284,7 @@ namespace Refosus.Web.Helpers
             {
                 Id = isNew ? 0 : model.Id,
 
-                Type= await _context.MessagesTypes.FindAsync(model.TypeId),
+                Type = await _context.MessagesTypes.FindAsync(model.TypeId),
                 Sender = model.Sender,
                 Reference = model.Reference,
                 CreateDate = model.CreateDateLocal.ToUniversalTime(),
@@ -299,12 +298,12 @@ namespace Refosus.Web.Helpers
             return new MessagetransactionEntity
             {
                 Id = 0,
-                Message =model,
+                Message = model,
                 UserCreate = model.User,
-                UserUpdate =model.User,
+                UserUpdate = model.User,
                 UpdateDate = model.Transaction.UpdateDateLocal.ToUniversalTime(),
                 StateCreate = model.Transaction.StateCreate,
-                StateUpdate=model.State,
+                StateUpdate = model.State,
                 Observation = model.Transaction.Observation
             };
         }
@@ -313,7 +312,113 @@ namespace Refosus.Web.Helpers
         {
             return new MessageViewModel
             {
-                
+                MessageType = _combosHelper.GetComboMessageType(),
+                MessageState = _combosHelper.GetComboMessageState(),
+                Users = _combosHelper.GetComboActiveUser(),
+                MessageBillState = _combosHelper.GetComboMessageBillState(),
+
+                Id = messagentity.Id,
+                Type = messagentity.Type,
+                TypeId = messagentity.Type.Id,
+                Sender = messagentity.Sender,
+                Reference = messagentity.Reference,
+                CreateDate = messagentity.CreateDateLocal,
+                UpdateDate = messagentity.UpdateDateLocal,
+                State = messagentity.State,
+                StateId = messagentity.State.Id,
+                StateBill = messagentity.StateBill,
+                StateBillId= messagentity.StateBill.Id,
+                User = messagentity.User,
+                CreateUser = messagentity.User.Id,
+                AutUser=messagentity.UserAut.Id,
+                DateAut= messagentity.DateAutLocal,
+                ProUser =messagentity.UserPros.Id,
+                DateProcess = messagentity.DateProcessLocal
+            };
+        }
+        public MessageViewModel ToMessageViewModelNone(MessageEntity messagentity)
+        {
+            return new MessageViewModel
+            {
+                MessageType = _combosHelper.GetComboMessageType(),
+                MessageState = _combosHelper.GetComboMessageState(),
+                Users = _combosHelper.GetComboActiveUser(),
+                MessageBillState = _combosHelper.GetComboMessageBillState(),
+
+                Id = messagentity.Id,
+                Type = messagentity.Type,
+                TypeId = messagentity.Type.Id,
+                Sender = messagentity.Sender,
+                Reference = messagentity.Reference,
+                CreateDate = messagentity.CreateDateLocal,
+                UpdateDate = messagentity.UpdateDateLocal,
+                State = messagentity.State,
+                StateId = messagentity.State.Id,
+                StateBill = messagentity.StateBill,
+                StateBillId = messagentity.StateBill.Id,
+                User = messagentity.User,
+                CreateUser = messagentity.User.Id,
+                DateAut = messagentity.DateAutLocal,
+                DateProcess = messagentity.DateProcessLocal
+            };
+        }
+        public MessageViewModel ToMessageViewModelAut(MessageEntity messagentity)
+        {
+            return new MessageViewModel
+            {
+                MessageType = _combosHelper.GetComboMessageType(),
+                MessageState = _combosHelper.GetComboMessageState(),
+                Users = _combosHelper.GetComboActiveUser(),
+                MessageBillState = _combosHelper.GetComboMessageBillState(),
+
+                Id = messagentity.Id,
+                Type = messagentity.Type,
+                TypeId = messagentity.Type.Id,
+                Sender = messagentity.Sender,
+                Reference = messagentity.Reference,
+                CreateDate = messagentity.CreateDateLocal,
+                UpdateDate = messagentity.UpdateDateLocal,
+                State = messagentity.State,
+                StateId = messagentity.State.Id,
+                StateBill = messagentity.StateBill,
+                StateBillId = messagentity.StateBill.Id,
+                User = messagentity.User,
+                CreateUser = messagentity.User.Id,
+                AutUser = messagentity.UserAut.Id,
+                DateAut = messagentity.DateAutLocal,
+                DateProcess = messagentity.DateProcessLocal
+            };
+        }
+        #endregion
+        #region Users
+        public async Task<UserEntity> ToUserEntityAsync(UserViewModel model, bool isNew)
+        {
+            return new UserEntity
+            {
+                Id = isNew ? "" : model.Id,
+                Document = model.Document,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                UserName = model.UserName,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                Campus = await _context.Campus.FirstOrDefaultAsync(),
+                Company = await _context.Companies.FindAsync(model.CompanyId),
+                IsActive = true
+            };
+        }
+
+        public UserViewModel ToUserViewModel(UserEntity model)
+        {
+            return new UserViewModel
+            {
+                Id = model.Id,
+                Document = model.Document,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email
+
             };
         }
         #endregion

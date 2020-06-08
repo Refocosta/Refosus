@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Refosus.Web.Data;
@@ -79,6 +80,74 @@ namespace Refosus.Web.Controllers
             return View(newViewModel);
         }
 
+        public async Task<IActionResult> DetailsNew(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            NewEntity newEntity = await _context.News
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (newEntity == null)
+            {
+                return NotFound();
+            }
+            return View(newEntity);
+        }
+
+        public async Task<IActionResult> EditNew(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            NewEntity newEntity = await _context.News
+                .FirstOrDefaultAsync(g => g.Id == id);
+            if (newEntity == null)
+            {
+                return NotFound();
+            }
+            NewViewModel newViewModel = _converterHelper.ToNewViewModel(newEntity);
+            return View(newViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditNew(int id, NewViewModel model)
+        {
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                string path = model.LogoPath;
+                if (model.LogoFile != null)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.LogoFile, "News");
+                }
+
+                NewEntity newEntity =  _converterHelper.ToNewEntity(model, path, false);
+
+                _context.Update(newEntity);
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(IndexNews));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+            return View(model);
+        }
+
+
         public async Task<IActionResult> DeleteNew(int? id)
         {
             if (id == null)
@@ -100,6 +169,7 @@ namespace Refosus.Web.Controllers
 
         public async Task<IActionResult> _MenuAsync()
         {
+            string url = Request.HttpContext.Request.GetDisplayUrl();
             if (User.Identity.IsAuthenticated == true)
             {
                 UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);

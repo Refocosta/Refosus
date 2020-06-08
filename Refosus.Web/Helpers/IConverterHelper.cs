@@ -50,6 +50,14 @@ namespace Refosus.Web.Helpers
         Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew);
         Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model);
         MessageViewModel ToMessageViewModel(MessageEntity messagentity);
+        MessageViewModel ToMessageViewModelNone(MessageEntity messagentity);
+        MessageViewModel ToMessageViewModelAut(MessageEntity messagentity);
+
+        #endregion
+
+        #region Users
+        Task<UserEntity> ToUserEntityAsync(UserViewModel model, bool isNew);
+        UserViewModel ToUserViewModel(UserEntity model);
         #endregion
     }
 }

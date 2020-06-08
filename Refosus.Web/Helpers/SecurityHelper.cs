@@ -92,5 +92,27 @@ namespace Refosus.Web.Helpers
             }
             return null;
         }
+        public async Task<List<RoleEntity>> GetRoleByUserAsync(UserEntity userEntity)
+        {
+            if (userEntity != null)
+            {
+                Task<IList<string>> roles = _userHelper.GetUserRolesAsync(userEntity);
+                if (roles != null)
+                {
+                    List<RoleEntity> Salida = new List<RoleEntity>();
+                    for (int i = 0; i < roles.Result.Count; i++)
+                    {
+                        Salida.Add(
+                            await _context.Roles
+                        .OrderBy(t => t.Name)
+                        .FirstOrDefaultAsync(t => t.Name == roles.Result[i])
+                        );
+
+                    }
+                    return Salida;
+                }
+            }
+            return null;
+        }
     }
 }

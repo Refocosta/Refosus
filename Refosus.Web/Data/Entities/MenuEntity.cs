@@ -22,6 +22,9 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Activa?")]
         public bool IsActive { get; set; }
 
+        [Display(Name = "Visible?")]
+        public bool Hidden { get; set; }
+
         [Display(Name = "Dependencia")]
         public MenuEntity Menu { get; set; }
 

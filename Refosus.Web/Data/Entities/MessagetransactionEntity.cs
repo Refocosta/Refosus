@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Refosus.Web.Data.Entities
 {
@@ -36,5 +33,21 @@ namespace Refosus.Web.Data.Entities
 
         [Display(Name = "Observaciones")]
         public string Observation { get; set; }
+
+        [Display(Name = "Estado Anterior de Factura")]
+        public MessageBillStateEntity StateBillCreate { get; set; }
+
+        [Display(Name = "Estado Nuevo de Factura")]
+        public MessageBillStateEntity StateBillUpdate { get; set; }
+
+        [Display(Name = "Usuario Que Aprobo")]
+        public UserEntity UserBillCreate { get; set; }
+
+        [Display(Name = "Usuario Que Tramito")]
+        public UserEntity UserBillUpdate { get; set; }
+
+        [Display(Name = "Descripcion")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public string Description { get; set; }
     }
 }

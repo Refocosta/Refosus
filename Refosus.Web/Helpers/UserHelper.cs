@@ -86,7 +86,11 @@ namespace Refosus.Web.Helpers
         {
             await _userManager.AddToRoleAsync(user, roleName);
         }
-        
+        public async Task RemoveUserToRoleAsync(UserEntity user, string roleName)
+        {
+            await _userManager.RemoveFromRoleAsync(user, roleName);
+        }
+
         public async Task<bool> IsUserInRoleAsync(UserEntity user, string roleName)
         {
             return await _userManager.IsInRoleAsync(user, roleName);

@@ -50,5 +50,35 @@ namespace Refosus.Web.Data.Entities
         public UserEntity User { get; set; }
         public ICollection<MessagetransactionEntity> Transaction { get; set; }
 
+        [Display(Name = "Usuario que Autoriza")]
+        public UserEntity UserAut { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha de Autorizacion")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
+        public DateTime DateAut { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha de Autorizacion")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}", ApplyFormatInEditMode = false)]
+        public DateTime DateAutLocal => DateAut.ToLocalTime();
+
+        [Display(Name = "Usuario que Procesa")]
+        public UserEntity UserPros { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha del Proceso")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
+        public DateTime DateProcess { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha del Proceso")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}", ApplyFormatInEditMode = false)]
+        public DateTime DateProcessLocal => DateProcess.ToLocalTime();
+
+        [Display(Name = "Estado de Factura")]
+        public MessageBillStateEntity StateBill { get; set; }
+
+        public ICollection<MessageFileEntity> MessageFiles { get; set; }
     }
 }

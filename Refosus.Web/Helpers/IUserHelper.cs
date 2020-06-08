@@ -19,6 +19,7 @@ namespace Refosus.Web.Helpers
         Task<bool> IsUserInRoleAsync(UserEntity user, string roleName);
         Task<IList<string>> GetUserRolesAsync(UserEntity user);
         Task AddUserToRoleAsync(UserEntity user, string roleName);
+        Task RemoveUserToRoleAsync(UserEntity user, string roleName);
         #endregion
 
         #region Roles

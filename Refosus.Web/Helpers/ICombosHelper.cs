@@ -10,6 +10,7 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboMenus();
         IEnumerable<SelectListItem> GetComboMessageType();
         IEnumerable<SelectListItem> GetComboMessageState();
+        IEnumerable<SelectListItem> GetComboMessageBillState();
         IEnumerable<SelectListItem> GetComboActiveUser();
     }
 }

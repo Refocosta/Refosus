@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using Refosus.Web.Models;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
@@ -18,16 +16,19 @@ namespace Refosus.Web.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IConverterHelper _converterHelper;
+        private readonly ISecurityHelper _securityHelper;
 
         public AccountController(IUserHelper userHelper,
             DataContext dataContext,
             ICombosHelper combosHelper,
-            IConverterHelper converterHelper)
+            IConverterHelper converterHelper,
+            ISecurityHelper securityHelper)
         {
             _userHelper = userHelper;
             _context = dataContext;
             _combosHelper = combosHelper;
             _converterHelper = converterHelper;
+            _securityHelper = securityHelper;
         }
         public IActionResult Login()
         {
@@ -43,7 +44,7 @@ namespace Refosus.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _userHelper.LoginAsync(model);
+                Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded)
                 {
                     if (Request.Query.Keys.Contains("ReturnUrl"))
@@ -52,10 +53,10 @@ namespace Refosus.Web.Controllers
                     }
                     return RedirectToAction("Index", "Home");
                 }
-                ModelState.AddModelError(String.Empty, "Usuario o contraseña incorrectos.");
+                ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
             }
             return View(model);
-        } 
+        }
         public async Task<IActionResult> Logout()
         {
             await _userHelper.LogoutAsync();
@@ -71,7 +72,7 @@ namespace Refosus.Web.Controllers
         {
             return View(await _context.
                 Roles
-                .Include(t =>t.roleMenus)
+                .Include(t => t.roleMenus)
                 .OrderBy(t => t.Name)
                 .ToListAsync());
         }
@@ -107,7 +108,9 @@ namespace Refosus.Web.Controllers
             }
             return View(role);
         }
-        public async Task<IActionResult> DeleteRole(String id)
+
+
+        public async Task<IActionResult> DeleteRole(string id)
         {
             if (id == null)
             {
@@ -130,9 +133,82 @@ namespace Refosus.Web.Controllers
         {
             return View(await _context.
                 Users
+                .Include(t => t.Company)
                 .OrderBy(t => t.FirstName)
                 .ToListAsync());
         }
+
+        public IActionResult AddUser()
+        {
+            UserViewModel model = new UserViewModel
+            {
+                Companies = _combosHelper.GetComboCompany()
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                UserEntity user = await _userHelper.GetUserByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    user = await _converterHelper.ToUserEntityAsync(model, true);
+                    user.Company = await _context.Companies.FirstOrDefaultAsync(t => t.Id == model.CompanyId);
+                    await _userHelper.AddUserAsync(user, model.Password);
+                }
+                return RedirectToAction("IndexUsers", new RouteValueDictionary(
+                new { controller = "Account", action = "IndexUsers" }));
+
+            }
+            return View(model);
+        }
+
+        public async Task<IActionResult> DetailsUser(string email)
+        {
+            if (email == null)
+            {
+                return NotFound();
+            }
+            UserRolesViewModel modelView = new UserRolesViewModel
+            {
+                user = await _context.Users
+                .Include(g => g.Company)
+                .FirstOrDefaultAsync(g => g.Email == email)
+            };
+
+            modelView.roles = await _securityHelper.GetRoleByUserAsync(modelView.user);
+
+            if (modelView == null)
+            {
+                return NotFound();
+            }
+            return View(modelView);
+        }
+        public async Task<IActionResult> DeleteUserRole(string email, string name)
+        {
+            {
+                if (email == null && name == null)
+                {
+                    NotFound();
+                }
+                UserEntity modelUser = await _context.Users
+                .FirstOrDefaultAsync(g => g.Email == email)
+                ;
+                if (modelUser == null)
+                {
+                    return NotFound();
+                }
+                await _userHelper.RemoveUserToRoleAsync(modelUser, name);
+                return RedirectToAction("DetailsUser", new RouteValueDictionary(
+                        new { controller = "Account", action = "DetailsUser", email = email }));
+
+            }
+        }
+
         #endregion
 
 
@@ -191,7 +267,7 @@ namespace Refosus.Web.Controllers
                 _context.RoleMenus.Remove(roleMenuEntity);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("DetailsRole", new RouteValueDictionary(
-                        new { controller = "Account", action = "DetailsRole"}));
+                        new { controller = "Account", action = "DetailsRole" }));
             }
         }
         #endregion

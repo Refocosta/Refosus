@@ -1,0 +1,113 @@
+﻿@model Refosus.Web.Models.MessageViewModel
+@{
+    ViewData["Title"] = "EditMeMessage";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Actualizar Mensajeria</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <form asp-action="EditMeMessage" enctype="multipart/form-data">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <a class="card-title">Actualizar </a>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-7">
+
+                                    <div class="row">
+
+                                        <input type="hidden" asp-for="CreateDate" />
+                                        <input type="hidden" asp-for="StateIdOld" />
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="form-group col col-sm-6">
+                                            <label asp-for="Id" class="control-label">Consecutivo</label>
+                                            <input asp-for="Id" class="form-control" disabled />
+                                            <span asp-validation-for="Id" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col col-sm-6">
+                                            <label asp-for="StateId" class="control-label"></label>
+                                            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control"></select>
+                                            <span asp-validation-for="StateId" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <partial name="_Message" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            @if (Model.StateId == 3)
+                            {
+                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" disabled />
+                                <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog" disabled>Cerrar</button>
+                            }
+                            else
+                            {
+                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2"  id="btnRefresh"/>
+                                <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
+                            }
+                            <a asp-action="IndexMe" class="btn btn-success col-sm-2 ">Listado</a>
+                        </div>
+
+                    </div>
+                    <partial name="_CloseMessageDialog" />
+                </form>
+            </section>
+        </div>
+    </div>
+</section>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+
+
+        $(document).ready(function () {
+            document.getElementById("StateId").disabled = true;
+            document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
+            // Delete item
+            var item_to_closeMessage;
+            $('.closeItem').click((e) => {
+                item_to_closeMessage = e.currentTarget.dataset.id;
+            });
+
+            $("#btnYesDelete").click(function () {
+                document.getElementById("StateId").disabled = false;
+                document.getElementById("StateId").value = 3;
+            });
+            $("#btnRefresh").click(function () {
+                document.getElementById("StateId").disabled = false
+                
+                if (document.getElementById("StateIdOld").value == 5) {
+                    document.getElementById("StateId").value = 2;
+                }
+                if (document.getElementById("StateIdOld").value == 1) {
+                    document.getElementById("StateId").value = 2;
+                }
+            });
+            $("#CreateUser").change(function () {
+                document.getElementById("StateId").value = 5;
+            });
+        });
+    </script>
+}
+

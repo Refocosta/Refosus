@@ -18,7 +18,9 @@ namespace Refosus.Web.Data
         public DbSet<CompanyEntity> Companies { get; set; }
         public DbSet<MenuEntity> Menus { get; set; }
         public DbSet<MessageEntity> Messages { get; set; }
+        public DbSet<MessagetransactionEntity> MessagesTransaction { get; set; }
         public DbSet<MessageTypeEntity> MessagesTypes { get; set; }
+        public DbSet<MessageBillStateEntity> MessagesBillState { get; set; }
         public DbSet<MessageStateEntity> MessagesStates { get; set; }
         public DbSet<RoleMenuEntity> RoleMenus { get; set; }
         public DbSet<NewEntity> News { get; set; }

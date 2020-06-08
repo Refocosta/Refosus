@@ -1,0 +1,67 @@
+﻿@model Refosus.Web.Models.MessageViewModel
+
+
+
+<div class="modal fade" id="InfoBillDialog" tabindex="-1" role="dialog" aria-labelledby="InfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="InfoModalLabel">Informacion de la Factura</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col col-sd-6">
+                    <label asp-for="StateBillId" class="control-label"></label>
+                    <select asp-for="StateBillId" asp-items="Model.MessageBillState" class="form-control" disabled></select>
+                    <span asp-validation-for="StateBillId" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label asp-for="AutUser" class="control-label"></label>
+                    <select asp-for="AutUser" asp-items="Model.Users" class="form-control" disabled></select>
+                    <span asp-validation-for="AutUser" class="text-danger"></span>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label asp-for="ProUser" class="control-label"></label>
+                    <select asp-for="ProUser" asp-items="Model.Users" class="form-control" disabled></select>
+                    <span asp-validation-for="ProUser" class="text-danger"></span>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col col-sd-6">
+                        <label class="control-label">@Html.DisplayNameFor(model => model.DateAutLocal)</label>
+                        <input class="form-control" value="  @Html.DisplayFor(model => model.DateAutLocal)" disabled>
+                    </div>
+                    <div class="form-group col col-sd-6">
+                        <label class="control-label">@Html.DisplayNameFor(model => model.DateProcessLocal)</label>
+                        <input class="form-control" value="  @Html.DisplayFor(model => model.DateProcessLocal)" disabled>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                @if (Model.StateBill == null || Model.StateBill.Name == "Nuevo")
+                {
+                    <button type="button" data-id="@Model.Id" class="btn btn-danger  receiveItem" id="btnReceive">Recibir Factura</button>
+                }
+                else
+                {
+                    @if (Model.StateBill.Name == "Recibido")
+                    {
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- AuthorizeItem"  id="btnAuthorize">Aprobar Factura</button>
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- RefuseItem"  id="btnRefuse">Rechazar Factura</button>
+                    }
+                    @if (Model.StateBill.Name == "Aprobado")
+                    {
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- FinishedItem"  id="btnFinished">Procesar Factura</button>
+                    }
+                }
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+

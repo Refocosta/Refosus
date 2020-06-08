@@ -293,6 +293,9 @@ namespace Refosus.Web.Migrations
                     b.Property<string>("Controller")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Hidden")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -313,6 +316,26 @@ namespace Refosus.Web.Migrations
                     b.ToTable("Menus");
                 });
 
+            modelBuilder.Entity("Refosus.Web.Data.Entities.MessageBillStateEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MessagesBillState");
+                });
+
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -321,6 +344,12 @@ namespace Refosus.Web.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateAut")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateProcess")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Reference")
@@ -333,6 +362,9 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
+                    b.Property<int?>("StateBillId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("StateId")
                         .HasColumnType("int");
 
@@ -342,18 +374,50 @@ namespace Refosus.Web.Migrations
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserAutId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserProsId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("StateBillId");
 
                     b.HasIndex("StateId");
 
                     b.HasIndex("TypeId");
 
+                    b.HasIndex("UserAutId");
+
                     b.HasIndex("UserId");
 
+                    b.HasIndex("UserProsId");
+
                     b.ToTable("Messages");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.MessageFileEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("messageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("messageId");
+
+                    b.ToTable("MessageFileEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageStateEntity", b =>
@@ -403,11 +467,21 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("MessageId")
                         .HasColumnType("int");
 
                     b.Property<string>("Observation")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StateBillCreateId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StateBillUpdateId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("StateCreateId")
                         .HasColumnType("int");
@@ -417,6 +491,12 @@ namespace Refosus.Web.Migrations
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("UserBillCreateId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserBillUpdateId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserCreateId")
                         .HasColumnType("nvarchar(450)");
@@ -428,15 +508,23 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("MessageId");
 
+                    b.HasIndex("StateBillCreateId");
+
+                    b.HasIndex("StateBillUpdateId");
+
                     b.HasIndex("StateCreateId");
 
                     b.HasIndex("StateUpdateId");
+
+                    b.HasIndex("UserBillCreateId");
+
+                    b.HasIndex("UserBillUpdateId");
 
                     b.HasIndex("UserCreateId");
 
                     b.HasIndex("UserUpdateId");
 
-                    b.ToTable("MessagetransactionEntity");
+                    b.ToTable("MessagesTransaction");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.NewEntity", b =>
@@ -609,9 +697,6 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
-                    b.Property<int>("UserType")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CampusId");
@@ -721,6 +806,10 @@ namespace Refosus.Web.Migrations
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageEntity", b =>
                 {
+                    b.HasOne("Refosus.Web.Data.Entities.MessageBillStateEntity", "StateBill")
+                        .WithMany()
+                        .HasForeignKey("StateBillId");
+
                     b.HasOne("Refosus.Web.Data.Entities.MessageStateEntity", "State")
                         .WithMany()
                         .HasForeignKey("StateId");
@@ -729,9 +818,24 @@ namespace Refosus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("TypeId");
 
+                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserAut")
+                        .WithMany()
+                        .HasForeignKey("UserAutId");
+
                     b.HasOne("Refosus.Web.Data.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserPros")
+                        .WithMany()
+                        .HasForeignKey("UserProsId");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.MessageFileEntity", b =>
+                {
+                    b.HasOne("Refosus.Web.Data.Entities.MessageEntity", "message")
+                        .WithMany("MessageFiles")
+                        .HasForeignKey("messageId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessagetransactionEntity", b =>
@@ -740,6 +844,14 @@ namespace Refosus.Web.Migrations
                         .WithMany("Transaction")
                         .HasForeignKey("MessageId");
 
+                    b.HasOne("Refosus.Web.Data.Entities.MessageBillStateEntity", "StateBillCreate")
+                        .WithMany()
+                        .HasForeignKey("StateBillCreateId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.MessageBillStateEntity", "StateBillUpdate")
+                        .WithMany()
+                        .HasForeignKey("StateBillUpdateId");
+
                     b.HasOne("Refosus.Web.Data.Entities.MessageStateEntity", "StateCreate")
                         .WithMany()
                         .HasForeignKey("StateCreateId");
@@ -747,6 +859,14 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.MessageStateEntity", "StateUpdate")
                         .WithMany()
                         .HasForeignKey("StateUpdateId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserBillCreate")
+                        .WithMany()
+                        .HasForeignKey("UserBillCreateId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserBillUpdate")
+                        .WithMany()
+                        .HasForeignKey("UserBillUpdateId");
 
                     b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserCreate")
                         .WithMany()

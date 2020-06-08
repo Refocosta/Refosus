@@ -15,5 +15,10 @@ namespace Refosus.Web.Data.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Name { get; set; }
         public bool Active { get; set; }
+
+        public static implicit operator MessageStateEntity(MessageTypeEntity v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

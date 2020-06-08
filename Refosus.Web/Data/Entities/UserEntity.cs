@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Refosus.Common.Enum;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Refosus.Web.Data.Entities
@@ -31,9 +32,6 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Foto")]
         public string PictureFullPath { get; set; }
 
-        [Display(Name = "Tipo de Usuario")]
-        public UserType UserType { get; set; }
-
         [Display(Name = "Sede")]
         public CampusEntity Campus { get; set; }
 
@@ -48,5 +46,7 @@ namespace Refosus.Web.Data.Entities
 
         [Display(Name = "Activo?")]
         public bool IsActive { get; set; }
+
+        
     }
 }

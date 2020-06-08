@@ -29,7 +29,9 @@ namespace Refosus.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
+                
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusConnection"));
+                
             });
 
             services.AddIdentity<UserEntity, RoleEntity>(options =>

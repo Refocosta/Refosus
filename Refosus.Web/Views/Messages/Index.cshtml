@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-12">
-                <h1>Mensageria</h1>
+                <h1>Mensajeria</h1>
             </div>
         </div>
     </div>
@@ -34,6 +34,9 @@
                                 <table class="table table-hover table-striped display" id="tblDatos">
                                     <thead>
                                         <tr>
+                                            <th>
+                                                consecutivo
+                                            </th>
                                             <th>
                                                 @Html.DisplayNameFor(model => model.Sender)
                                             </th>
@@ -63,6 +66,9 @@
                                         @foreach (var item in Model)
                                         {
                                         <tr>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Id)
+                                            </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Sender)
                                             </td>

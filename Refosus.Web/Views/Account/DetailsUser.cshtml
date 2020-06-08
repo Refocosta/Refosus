@@ -1,0 +1,136 @@
+﻿@model Refosus.Web.Models.UserRolesViewModel
+@{
+    ViewData["Title"] = "DetailsUser";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-12">
+                <h1>Detalles Del usuario</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <a class="card-title">Detalles del usuario</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-7">
+
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <a asp-action="EditUser" asp-route-email="@Model.user.Id" class="btn btn-warning col-sm-2"> Editar</a>
+                            <a asp-action="AddUserRole" asp-route-email="@Model.user.Id" class="btn btn-primary col-sm-2"><i class="oi oi-plus" style="color:white"></i> Peril</a>
+                            <a asp-action="IndexUsers" class="btn btn-success col-sm-2 ">Listado</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="card card-green">
+                    <div class="card-header">
+                        <a class="card-title">Roles Asignados</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table class="table table-hover table-striped display" id="tblDatos">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Nombre
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.roles.OrderBy(d => d.Name))
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Name)
+                                                </td>
+                                                <td>
+                                                    <button data-email="@Model.user.Email" data-name="@item.Name" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+<partial name="_DeleteDialog" />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+
+
+        $(document).ready(function () {
+
+            var item_to_delete;
+            var item_to_delete2;
+            var item_to_delete3;
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.email;
+                item_to_delete2 = e.currentTarget.dataset.name;
+                item_to_delete3 = '?email=' + item_to_delete + '&name=' + item_to_delete2
+            });
+            $("#btnYesDelete").click(function () {
+                window.location.href = "/Account/DeleteUserRole" + item_to_delete3;
+            });
+        });
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}
+
+
+
