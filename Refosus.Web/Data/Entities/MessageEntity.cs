@@ -40,18 +40,29 @@ namespace Refosus.Web.Data.Entities
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha de Actualización")]
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime UpdateDateLocal => UpdateDate.ToLocalTime();
+
+        [Display(Name = "Creado Por")]
+        public UserEntity UserCreate { get; set; }
+
+        [Display(Name = "Enviado Por")]
+        public UserEntity UserSender { get; set; }
+
+        [Display(Name = "Enviado A")]
+        public UserEntity User { get; set; }
 
         [Display(Name = "Estado")]
         public MessageStateEntity State { get; set; }
 
-        [Display(Name = "Usuario Asignado")]
-        public UserEntity User { get; set; }
-        public ICollection<MessagetransactionEntity> Transaction { get; set; }
+        [Display(Name = "Estado de Factura")]
+        public MessageBillStateEntity StateBill { get; set; }
 
         [Display(Name = "Usuario que Autoriza")]
         public UserEntity UserAut { get; set; }
+
+        [Display(Name = "Usuario que Procesa")]
+        public UserEntity UserPros { get; set; }
 
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha de Autorizacion")]
@@ -63,9 +74,6 @@ namespace Refosus.Web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}", ApplyFormatInEditMode = false)]
         public DateTime DateAutLocal => DateAut.ToLocalTime();
 
-        [Display(Name = "Usuario que Procesa")]
-        public UserEntity UserPros { get; set; }
-
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha del Proceso")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
@@ -76,9 +84,7 @@ namespace Refosus.Web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss}", ApplyFormatInEditMode = false)]
         public DateTime DateProcessLocal => DateProcess.ToLocalTime();
 
-        [Display(Name = "Estado de Factura")]
-        public MessageBillStateEntity StateBill { get; set; }
-
+        public ICollection<MessagetransactionEntity> Transaction { get; set; }
         public ICollection<MessageFileEntity> MessageFiles { get; set; }
     }
 }

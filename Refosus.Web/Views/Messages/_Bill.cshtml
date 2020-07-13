@@ -30,32 +30,31 @@
 
 
                 <div class="row">
+
                     <div class="form-group col col-sd-6">
-                        <label class="control-label">@Html.DisplayNameFor(model => model.DateAutLocal)</label>
-                        <input class="form-control" value="  @Html.DisplayFor(model => model.DateAutLocal)" disabled>
+                        <label asp-for="DateAut" class="control-label"></label>
+                        <input asp-for="DateAut" class="form-control" disabled />
+                        <span asp-validation-for="DateAut" class="text-danger"></span>
                     </div>
                     <div class="form-group col col-sd-6">
-                        <label class="control-label">@Html.DisplayNameFor(model => model.DateProcessLocal)</label>
-                        <input class="form-control" value="  @Html.DisplayFor(model => model.DateProcessLocal)" disabled>
+                        <label asp-for="DateProcessLocal" class="control-label"></label>
+                        <input asp-for="DateProcessLocal" class="form-control" disabled />
+                        <span asp-validation-for="DateProcessLocal" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
 
-                @if (Model.StateBill == null || Model.StateBill.Name == "Nuevo")
+                @if (Model.StateBill != null )
                 {
-                    <button type="button" data-id="@Model.Id" class="btn btn-danger  receiveItem" id="btnReceive">Recibir Factura</button>
-                }
-                else
-                {
-                    @if (Model.StateBill.Name == "Recibido")
+                    @if (Model.StateBill.Name == "Nuevo")
                     {
-                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- AuthorizeItem"  id="btnAuthorize">Aprobar Factura</button>
-                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- RefuseItem"  id="btnRefuse">Rechazar Factura</button>
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- AuthorizeItem" id="btnAuthorize">Aprobar Factura</button>
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- RefuseItem" id="btnRefuse">Rechazar Factura</button>
                     }
                     @if (Model.StateBill.Name == "Aprobado")
                     {
-                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- FinishedItem"  id="btnFinished">Procesar Factura</button>
+                        <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- FinishedItem" id="btnFinished">Procesar Factura</button>
                     }
                 }
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>

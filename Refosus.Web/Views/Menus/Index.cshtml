@@ -81,7 +81,6 @@
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
                                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
                                         <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
-
                                     </td>
                                 </tr>
                                 }
@@ -98,22 +97,16 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
     <script type="text/javascript">
-
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
-
-
         $(document).ready(function () {
-
             // Delete item
             var item_to_delete;
             $('.deleteItem').click((e) => {
                 item_to_delete = e.currentTarget.dataset.id;
             });
-
             $("#btnYesDelete").click(function () {
                 window.location.href = '/Menus/Delete/' + item_to_delete;
             });

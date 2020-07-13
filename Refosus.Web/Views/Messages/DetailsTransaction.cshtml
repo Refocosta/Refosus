@@ -53,13 +53,17 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="form-group col col-sd-4">
+                            <div class="form-group col col-sd-6">
                                 <label class="control-label">@Html.DisplayNameFor(model => model.Observation)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.Observation)" disabled>
+                                <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Observation)</textarea>
+                            </div>
+                            <div class="form-group col col-sd-6">
+                                <label class="control-label">@Html.DisplayNameFor(model => model.Description)</label>
+                                <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Description)</textarea>
                             </div>
                         </div>
                         <div class="card-footer ">
-                            <a asp-action="DetailsMessage" asp-route-id="@Model.Message.Id" class="btn btn-success col-sm-2 ">Listado</a>
+                            <a asp-action="DetailsMessage" asp-route-id="@Model.Message.Id" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
                     </div>
                 </div>

@@ -118,11 +118,8 @@ namespace Refosus.Web.Controllers
                 {
                     path = await _imageHelper.UploadImageAsync(model.LogoFile, "Menus");
                 }
-                
                 MenuEntity menuEntity = await _converterHelper.ToMenuEntityAsync(model, path, false);
-                
                 _context.Update(menuEntity);
-
                 try
                 {
                     await _context.SaveChangesAsync();
@@ -146,7 +143,6 @@ namespace Refosus.Web.Controllers
             model.Menus = _combosHelper.GetComboMenus();
             return View(model);
         }
-
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -164,7 +160,5 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index", new RouteValueDictionary(
                     new { controller = "Menus", action = "Index" }));
         }
-
-
     }
 }

@@ -56,7 +56,7 @@ namespace Refosus.Web.Helpers
         public IEnumerable<SelectListItem> GetComboMenus()
         {
             List<SelectListItem> list = _context.Menus
-                .Where(t=>t.Hidden==true)
+                .Where(t=>t.Hidden==false)
                 .Select(t =>
 
               new SelectListItem

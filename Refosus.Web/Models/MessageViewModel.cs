@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Refosus.Web.Data.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ namespace Refosus.Web.Models
     {
         [Display(Name = "Tipo")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una compañia.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un tipo de mensaje.")]
         public int TypeId { get; set; }
         [Display(Name = "Estado")]
         public int StateId { get; set; }
@@ -26,13 +27,20 @@ namespace Refosus.Web.Models
         [Display(Name = "Usuario que Proceso")]
         public string ProUser { get; set; }
 
+        [Display(Name = "Usuario que Envia")]
+        public string SenderUser { get; set; }
 
         public IEnumerable<SelectListItem> MessageType { get; set; }
         public IEnumerable<SelectListItem> MessageState { get; set; }
 
         public IEnumerable<SelectListItem> MessageBillState { get; set; }
         public IEnumerable<SelectListItem> Users { get; set; }
-        public MessagetransactionEntity Transaction { get; set; }
+        public new MessagetransactionEntity Transaction { get; set; }
+
+        [Display(Name = "Adunto")]
+        public IEnumerable<IFormFile> File { get; set; }
+        public string Archivo { get; internal set; }
+
 
     }
 }

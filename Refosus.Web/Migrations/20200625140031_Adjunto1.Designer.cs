@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200625140031_Adjunto1")]
+    partial class Adjunto1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -417,9 +419,6 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Ext")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -433,7 +432,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("messageId");
 
-                    b.ToTable("MessagesFile");
+                    b.ToTable("MessageFileEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageStateEntity", b =>

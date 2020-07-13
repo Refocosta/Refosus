@@ -41,13 +41,13 @@ namespace Refosus.Web.Data.Entities
         public MessageBillStateEntity StateBillUpdate { get; set; }
 
         [Display(Name = "Usuario Que Aprobo")]
-        public UserEntity UserBillCreate { get; set; }
+        public UserEntity UserBillAutho { get; set; }
 
         [Display(Name = "Usuario Que Tramito")]
-        public UserEntity UserBillUpdate { get; set; }
+        public UserEntity UserBillFinished { get; set; }
 
         [Display(Name = "Descripcion")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [MinLength(1, ErrorMessage = "El campo {0} no puede estar vacio.")]
         public string Description { get; set; }
     }
 }

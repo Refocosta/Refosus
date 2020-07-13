@@ -30,7 +30,7 @@ namespace Refosus.Web
             services.AddDbContext<DataContext>(cfg =>
             {
                 
-                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusConnection"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusLocal"));
                 
             });
 
@@ -52,6 +52,7 @@ namespace Refosus.Web
             services.AddScoped<ICombosHelper, CombosHelper>();
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<ISecurityHelper, SecurityHelper>();
+            services.AddScoped<IFileHelper, FileHelper>();
             services.AddControllersWithViews();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

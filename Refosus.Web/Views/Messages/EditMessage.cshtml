@@ -23,10 +23,14 @@
 
                                 </div>
                                 <div class="col col-sm-3 text-right">
-                                    @if (Model.Type.Name == "Factura")
+                                    @if (Model.Type != null)
                                     {
-                                        <button type="button" data-id="@Model.Id" class="btn btn-warning  receiveItem " data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
+                                        @if (Model.Type.Name == "Factura")
+                                        {
+                                            <button type="button" data-id="@Model.Id" class="btn btn-warning  receiveItem " data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
+                                        }
                                     }
+
                                 </div>
                                 <div class="col col-sm-1">
                                     <div class="card-tools text-right">
@@ -34,11 +38,7 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
                         </div>
-
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-12">
@@ -47,6 +47,7 @@
 
                                         <input type="hidden" asp-for="CreateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
+                                        <input type="hidden" asp-for="SenderUser" />
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <div class="form-group col col-sm-4">
                                             <label asp-for="Id" class="control-label">Consecutivo</label>
@@ -69,26 +70,48 @@
                         <div class="card-footer ">
                             <div class="row">
                                 <div class="col col-8">
-
-                                    @if (Model.StateId == 3)
+                                    @if (Model.Type != null)
                                     {
-                                        <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" disabled />
-                                        @if (Model.Type.Name != "Factura")
+                                        @if (Model.Type.Name == "Factura")
                                         {
-                                            <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog" disabled>Cerrar</button>
+                                            @if (Model.StateId != 4)
+                                            {
+                                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @if (Model.Type.Name == "Paquete")
+                                            {
+                                                @if (Model.StateId == 3)
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-warning col-sm-2 receiveItem" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
+                                                }
+                                                @if (Model.StateId == 6)
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (Model.StateId == 1 || Model.StateId == 5 || Model.StateId == 2)
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
+                                                }
+                                                @if (Model.StateId == 6)
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
+                                                }
+
+                                            }
                                         }
                                     }
-                                    else
-                                    {
-                                        <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
-                                        @if (Model.Type.Name != "Factura")
-                                        {
-                                            <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
-                                        }
-
-                                    }
-                                    <a asp-action="Index" class="btn btn-success col-sm-2 ">Listado</a>
-
+                                    <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                                 </div>
                                 <div class="col col-4">
 
@@ -97,7 +120,9 @@
                         </div>
 
                     </div>
+
                     <partial name="_CloseMessageDialog" />
+                    <partial name="_CloseMessagePackage" />
                     <partial name="_Bill" />
                 </form>
             </section>
@@ -108,7 +133,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
+<script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
@@ -117,82 +142,86 @@
             document.getElementById("StateId").disabled = true;
             document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
 
-
-            // Delete item
-            var item_to_closeMessage;
-            $('.closeItem').click((e) => {
-                item_to_closeMessage = e.currentTarget.dataset.id;
-            });
-
-            $("#btnYesDelete").click(function () {
-                document.getElementById("StateId").disabled = false;
-                document.getElementById("StateId").value = 3;
-            });
-
             var item_to_ReceiveMessage;
             var note;
+
+
+            
+            //Recibir Paquete
+            //Capturar Datos
             $('.receiveItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note=document.getElementById("Transaction_Observation").value;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesPackage").click(function () {
+                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+            //Operacion Recibir Factura
+            $("#btnReceiveBill").click(function () {
+                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
 
+            //Operacion Factura
+            $("#btnReceive").click(function () {
+                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+
+
+
+            //Cerrar Elemento
+            var item_to_closeMessage;
+            //Capturar Datos
+            $('.closeItem').click((e) => {
+                item_to_closeMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Messages/FinishedMessage?id=' + item_to_closeMessage + "&" + "note=" + note;
+            });
+            
+
+            //Capturar Datos
             $('.AuthorizeItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
                 note = document.getElementById("Transaction_Observation").value;
             });
+            //Autorizar Factura
+            $("#btnAuthorize").click(function () {
+                window.location.href = '/Messages/AuthorizeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
 
+            //Autorizar Rechazar
+            $("#btnRefuse").click(function () {
+                window.location.href = '/Messages/RefuseMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+            //Capturar Datos
             $('.RefuseItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
                 note = document.getElementById("Transaction_Observation").value;
             });
+
+
+
+            //Capturar Datos
             $('.FinishedItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
                 note = document.getElementById("Transaction_Observation").value;
             });
-
-
-            $("#btnReceive").click(function () {
-                document.getElementById("StateBillId").disabled = false;
-                document.getElementById("StateBillId").value = 2;
-                document.getElementById("StateBillId").disabled = true;
-                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-
-            $("#btnAuthorize").click(function () {
-                document.getElementById("StateBillId").disabled = false;
-                document.getElementById("StateBillId").value = 3;
-                document.getElementById("StateBillId").disabled = true;
-                window.location.href = '/Messages/AuthorizeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-            $("#btnRefuse").click(function () {
-                document.getElementById("StateBillId").disabled = false;
-                document.getElementById("StateBillId").value = 4;
-                document.getElementById("StateBillId").disabled = true;
-                window.location.href = '/Messages/RefuseMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
+            //Autorizar Cerrar
             $("#btnFinished").click(function () {
-                document.getElementById("StateBillId").disabled = false;
-                document.getElementById("StateBillId").value = 4;
-                document.getElementById("StateBillId").disabled = true;
                 window.location.href = '/Messages/FinishedMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
 
 
+            $("#btnRefresh").click(function () {
+                document.getElementById("TypeId").disabled = false;
+            });
 
             $("#btnRefresh").click(function () {
                 document.getElementById("StateId").disabled = false
-
-                if (document.getElementById("StateIdOld").value == 5) {
-                    document.getElementById("StateId").value = 2;
-                }
-                if (document.getElementById("StateIdOld").value == 1) {
-                    document.getElementById("StateId").value = 2;
-                }
-            });
-            $("#CreateUser").change(function () {
-                document.getElementById("StateId").value = 5;
             });
         });
-    </script>
+</script>
 }
-

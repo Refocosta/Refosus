@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200611144100_bill06")]
+    partial class bill06
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -377,16 +379,10 @@ namespace Refosus.Web.Migrations
                     b.Property<string>("UserAutId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("UserCreateId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("UserProsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserSenderId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -399,13 +395,9 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("UserAutId");
 
-                    b.HasIndex("UserCreateId");
-
                     b.HasIndex("UserId");
 
                     b.HasIndex("UserProsId");
-
-                    b.HasIndex("UserSenderId");
 
                     b.ToTable("Messages");
                 });
@@ -417,13 +409,7 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Ext")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("messageId")
@@ -433,7 +419,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("messageId");
 
-                    b.ToTable("MessagesFile");
+                    b.ToTable("MessageFileEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageStateEntity", b =>
@@ -837,10 +823,6 @@ namespace Refosus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("UserAutId");
 
-                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserCreate")
-                        .WithMany()
-                        .HasForeignKey("UserCreateId");
-
                     b.HasOne("Refosus.Web.Data.Entities.UserEntity", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -848,10 +830,6 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserPros")
                         .WithMany()
                         .HasForeignKey("UserProsId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserSender")
-                        .WithMany()
-                        .HasForeignKey("UserSenderId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageFileEntity", b =>

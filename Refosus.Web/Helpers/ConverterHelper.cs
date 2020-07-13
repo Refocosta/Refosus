@@ -290,7 +290,9 @@ namespace Refosus.Web.Helpers
                 CreateDate = model.CreateDateLocal.ToUniversalTime(),
                 UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
                 State = await _context.MessagesStates.FindAsync(model.StateId),
-                User = await _context.Users.FindAsync(model.CreateUser)
+                User = await _context.Users.FindAsync(model.CreateUser),
+                StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+                UserSender = await _context.Users.FindAsync(model.SenderUser)
             };
         }
         public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
@@ -327,13 +329,15 @@ namespace Refosus.Web.Helpers
                 State = messagentity.State,
                 StateId = messagentity.State.Id,
                 StateBill = messagentity.StateBill,
-                StateBillId= messagentity.StateBill.Id,
+                StateBillId = messagentity.StateBill.Id,
                 User = messagentity.User,
                 CreateUser = messagentity.User.Id,
-                AutUser=messagentity.UserAut.Id,
-                DateAut= messagentity.DateAutLocal,
-                ProUser =messagentity.UserPros.Id,
-                DateProcess = messagentity.DateProcessLocal
+                AutUser = messagentity.UserAut.Id,
+                DateAut = messagentity.DateAutLocal,
+                ProUser = messagentity.UserPros.Id,
+                DateProcess = messagentity.DateProcessLocal,
+                UserSender = messagentity.UserSender,
+                SenderUser = messagentity.UserSender.Id
             };
         }
         public MessageViewModel ToMessageViewModelNone(MessageEntity messagentity)
@@ -359,7 +363,9 @@ namespace Refosus.Web.Helpers
                 User = messagentity.User,
                 CreateUser = messagentity.User.Id,
                 DateAut = messagentity.DateAutLocal,
-                DateProcess = messagentity.DateProcessLocal
+                DateProcess = messagentity.DateProcessLocal,
+                UserSender= messagentity.UserSender,
+                SenderUser =messagentity.UserSender.Id
             };
         }
         public MessageViewModel ToMessageViewModelAut(MessageEntity messagentity)
@@ -386,7 +392,9 @@ namespace Refosus.Web.Helpers
                 CreateUser = messagentity.User.Id,
                 AutUser = messagentity.UserAut.Id,
                 DateAut = messagentity.DateAutLocal,
-                DateProcess = messagentity.DateProcessLocal
+                DateProcess = messagentity.DateProcessLocal,
+                UserSender = messagentity.UserSender,
+                SenderUser = messagentity.UserSender.Id
             };
         }
         #endregion
@@ -395,7 +403,6 @@ namespace Refosus.Web.Helpers
         {
             return new UserEntity
             {
-                Id = isNew ? "" : model.Id,
                 Document = model.Document,
                 FirstName = model.FirstName,
                 LastName = model.LastName,

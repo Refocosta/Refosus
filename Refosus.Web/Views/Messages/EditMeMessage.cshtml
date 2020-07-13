@@ -3,14 +3,8 @@
     ViewData["Title"] = "EditMeMessage";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
 <section class="content-header">
     <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Actualizar Mensajeria</h1>
-            </div>
-        </div>
     </div>
 </section>
 <section class="content">
@@ -20,52 +14,112 @@
                 <form asp-action="EditMeMessage" enctype="multipart/form-data">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <a class="card-title">Actualizar </a>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            <div class="row">
+                                <div class="col col-sm-6">
+                                    <a class="card-title">Actualizar Mensajeria</a>
+                                </div>
+                                <div class="col col-sm-2">
+
+                                </div>
+                                <div class="col col-sm-3 text-right">
+                                    @if (Model.Type != null)
+                                    {
+                                        @if (Model.Type.Name == "Factura")
+                                        {
+                                            <button type="button" data-id="@Model.Id" class="btn btn-warning  receiveItem " data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
+                                        }
+                                    }
+
+                                </div>
+                                <div class="col col-sm-1">
+                                    <div class="card-tools text-right">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-sm-7">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                    </div>
 
                                     <div class="row">
 
                                         <input type="hidden" asp-for="CreateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                        <div class="form-group col col-sm-6">
+                                        <input type="hidden" asp-for="SenderUser" />
+                                        
+                                        <div class="form-group col col-sm-4">
                                             <label asp-for="Id" class="control-label">Consecutivo</label>
                                             <input asp-for="Id" class="form-control" disabled />
                                             <span asp-validation-for="Id" class="text-danger"></span>
                                         </div>
-                                        <div class="form-group col col-sm-6">
+                                        <div class="form-group col col-sm-4">
                                             <label asp-for="StateId" class="control-label"></label>
-                                            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control"></select>
+                                            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control" disabled></select>
                                             <span asp-validation-for="StateId" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <partial name="_Message" />
+
+                                </div>
+                                <div class="col-sm-5">
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer ">
-                            @if (Model.StateId == 3)
-                            {
-                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" disabled />
-                                <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog" disabled>Cerrar</button>
-                            }
-                            else
-                            {
-                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2"  id="btnRefresh"/>
-                                <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
-                            }
-                            <a asp-action="IndexMe" class="btn btn-success col-sm-2 ">Listado</a>
+                            <div class="row">
+                                <div class="col col-8">
+                                    @if (Model.Type != null)
+                                    {
+                                        @if (Model.Type.Name == "Factura")
+                                        {
+                                            @if (Model.State.Name != "Tramitado")
+                                            {
+                                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            @if (Model.Type.Name == "Paquete")
+                                            {
+                                                @if (Model.State.Name == "En Transito")
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-warning col-sm-2 receiveItem" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                @if (Model.State.Name == "Ingresado")
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
+                                                }
+                                                @if (Model.State.Name == "Recibido")
+                                                {
+                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                                </div>
+                                <div class="col col-4">
+
+                                </div>
+                            </div>
                         </div>
 
                     </div>
+
                     <partial name="_CloseMessageDialog" />
+                    <partial name="_CloseMessagePackage" />
+                    <partial name="_Bill" />
                 </form>
             </section>
         </div>
@@ -80,34 +134,90 @@
             $('#myInput').trigger('focus')
         })
 
-
         $(document).ready(function () {
             document.getElementById("StateId").disabled = true;
             document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
-            // Delete item
-            var item_to_closeMessage;
-            $('.closeItem').click((e) => {
-                item_to_closeMessage = e.currentTarget.dataset.id;
+
+            var item_to_ReceiveMessage;
+            var note;
+
+
+
+            //Recibir Paquete
+            //Capturar Datos
+            $('.receiveItem').click((e) => {
+                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesPackage").click(function () {
+                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+            //Operacion Recibir Factura
+            $("#btnReceiveBill").click(function () {
+                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
 
-            $("#btnYesDelete").click(function () {
-                document.getElementById("StateId").disabled = false;
-                document.getElementById("StateId").value = 3;
+            //Operacion Factura
+            $("#btnReceive").click(function () {
+                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
+
+
+
+            //Cerrar Elemento
+            var item_to_closeMessage;
+            //Capturar Datos
+            $('.closeItem').click((e) => {
+                item_to_closeMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesDelete").click(function () {
+                window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_closeMessage + "&" + "note=" + note;
+            });
+
+
+            //Capturar Datos
+            $('.AuthorizeItem').click((e) => {
+                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Autorizar Factura
+            $("#btnAuthorize").click(function () {
+                window.location.href = '/Messages/AuthorizeMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+
+            //Autorizar Rechazar
+            $("#btnRefuse").click(function () {
+                window.location.href = '/Messages/RefuseMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+            //Capturar Datos
+            $('.RefuseItem').click((e) => {
+                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+
+
+
+            //Capturar Datos
+            $('.FinishedItem').click((e) => {
+                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Autorizar Cerrar
+            $("#btnFinished").click(function () {
+                window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+            });
+
+
+            $("#btnRefresh").click(function () {
+                document.getElementById("TypeId").disabled = false;
+            });
+
             $("#btnRefresh").click(function () {
                 document.getElementById("StateId").disabled = false
-                
-                if (document.getElementById("StateIdOld").value == 5) {
-                    document.getElementById("StateId").value = 2;
-                }
-                if (document.getElementById("StateIdOld").value == 1) {
-                    document.getElementById("StateId").value = 2;
-                }
-            });
-            $("#CreateUser").change(function () {
-                document.getElementById("StateId").value = 5;
             });
         });
     </script>
 }
-

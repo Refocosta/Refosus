@@ -11,7 +11,12 @@ namespace Refosus.Web.Data.Entities
         public int Id { get; set; }
         public MessageEntity message { get; set; }
 
+        [Display(Name = "Nombre")]
+        public string Name { get; set; }
+
         [Display(Name = "Archivo")]
         public string FilePath { get; set; }
+        [Display(Name = "Ext")]
+        public string Ext { get; set; }
     }
 }

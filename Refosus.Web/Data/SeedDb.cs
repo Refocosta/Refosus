@@ -24,15 +24,23 @@ namespace Refosus.Web.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await CheckRolesAsync();
-            await CheckMessageBillState();
-            await CheckMessageTypes();
-            await CheckMessageState();
             await CheckUserAsync("1010", "Administrador", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
-            await CheckUserAsync("1010", "Usuario", "Refosus", "didneyn@gmail.com", "3133366284", "Refocosta Principal");
+            await CheckRoles();
+            await CheckRolesUser();
+
 
             await CheckCompaniesAsync();
             await CheckCountriesAsync();
+
+            #region Message
+            await CheckMessageTypesAsync();
+            await CheckMessageStateAsync();
+            await CheckMessageBillStateAsync();
+            #endregion
+
+
+
+
             await CheckMenusAsync();
             await CheckMenusRoleAsync();
         }
@@ -55,6 +63,7 @@ namespace Refosus.Web.Data
 
                 await AddMenuAsync("Mensajes", "Messages", "Index", 4);
                 await AddMenuAsync("Mis Mensajes", "Messages", "IndexMe", 4);
+                await AddMenuAsync("Facturacion Pendiente", "Messages", "IndexBillPending", 4);
             }
         }
 
@@ -70,11 +79,11 @@ namespace Refosus.Web.Data
         {
             if (!_context.RoleMenus.Any())
             {
-                AddMenusRole();
+                await AddMenusRole();
                 await _context.SaveChangesAsync();
             }
         }
-        private void AddMenusRole()
+        private async Task AddMenusRole()
         {
             List<MenuEntity> menus = _context.Menus.ToList();
             RoleEntity role = _context.Roles.FirstOrDefault(o => o.Name == "Administrador");
@@ -83,54 +92,68 @@ namespace Refosus.Web.Data
                 _context.RoleMenus.Add(new RoleMenuEntity { Menu = item, Role = role });
             }
         }
-        private async Task CheckMessageTypes()
+
+
+
+        #region Message
+        private async Task CheckMessageTypesAsync()
         {
             if (!_context.MessagesTypes.Any())
             {
-                foreach (string type in Enum.GetNames(typeof(MessageType)))
-                {
-                    _context.MessagesTypes.Add(
-                        new MessageTypeEntity
-                        {
-                            Name = type,
-                            Active = true
-                        }
-                        );
-                }
+                await AddMessageTypeAsync("Carta", true);
+                await AddMessageTypeAsync("Factura", true);
+                await AddMessageTypeAsync("Paquete", true);
+                await _context.SaveChangesAsync();
             }
         }
-        private async Task CheckMessageState()
+        private async Task AddMessageTypeAsync(string name, bool active)
+        {
+            _context.MessagesTypes.Add(new MessageTypeEntity { Name = name, Active = active });
+        }
+
+        private async Task CheckMessageStateAsync()
         {
             if (!_context.MessagesStates.Any())
             {
-                foreach (string state in Enum.GetNames(typeof(MessageState)))
-                {
-                    _context.MessagesStates.Add(
-                        new MessageStateEntity
-                        {
-                            Name = state,
-                            Active = true
-                        }
-                        );
-                }
+                await AddMessageStateAsync("Ingresado", true);
+                await AddMessageStateAsync("Recibido", true);
+                await AddMessageStateAsync("En Transito", true);
+                await AddMessageStateAsync("En Proceso", true);
+                await AddMessageStateAsync("Tramitado", true);
+                await _context.SaveChangesAsync();
             }
         }
-        private async Task CheckMessageBillState()
+        private async Task AddMessageStateAsync(string name, bool active)
+        {
+            _context.MessagesStates.Add(new MessageStateEntity { Name = name, Active = active });
+        }
+
+        private async Task CheckMessageBillStateAsync()
         {
             if (!_context.MessagesBillState.Any())
             {
-                foreach (string state in Enum.GetNames(typeof(MessageBillState)))
-                {
-                    _context.MessagesBillState.Add(
-                        new MessageBillStateEntity
-                        {
-                            Name = state,
-                            Active = true
-                        }
-                        );
-                }
+                await AddMessagesBillStateAsync("Nuevo", true);
+                await AddMessagesBillStateAsync("Otro", true);
+                await AddMessagesBillStateAsync("Aprobado", true);
+                await AddMessagesBillStateAsync("Rechazado", true);
+                await AddMessagesBillStateAsync("Procesado", true);
+                await _context.SaveChangesAsync();
             }
         }
+        private async Task AddMessagesBillStateAsync(string name, bool active)
+        {
+            _context.MessagesBillState.Add(new MessageBillStateEntity { Name = name, Active = active });
+        }
+        #endregion
+
+
+
+
+
+
+
+
+
 
         private async Task CheckCountriesAsync()
         {
@@ -184,24 +207,44 @@ namespace Refosus.Web.Data
         {
             if (!_context.Companies.Any())
             {
-                AddCompany("Refocosta", "4A00");
-                AddCompany("Refomass", null);
-                AddCompany("Refoenergy", null);
-                AddCompany("Refopanel", null);
-                AddCompany("Canalclima", null);
+                await AddCompany("Refocosta", "4A00");
+                await AddCompany("Refomass", null);
+                await AddCompany("Refoenergy", null);
+                await AddCompany("Refopanel", null);
+                await AddCompany("Canalclima", null);
                 await _context.SaveChangesAsync();
             }
         }
-        private void AddCompany(string name, string code)
+        private async Task AddCompany(string name, string code)
         {
             _context.Companies.Add(new CompanyEntity { Name = name, LogoPath = $"~/Images/Companies/{name}.jpg", Code = code, IsActive = true });
         }
 
-        private async Task CheckRolesAsync()
+
+
+
+
+
+        private async Task CheckRoles()
         {
-            await _userHelper.CheckRoleAsync(UserType.Administrador.ToString());
-            await _userHelper.CheckRoleAsync(UserType.Usuario.ToString());
+            if (!_context.Roles.Any())
+            {
+                await _userHelper.CheckRoleAsync("Administrador");
+            }
         }
+        private async Task CheckRolesUser()
+        {
+            UserEntity user = await _userHelper.GetUserByEmailAsync("didneyn@refocosta.com");
+            int count = _userHelper.GetUserRolesAsync(user).Result.Count;
+            if (count == 0)
+            {
+                await _userHelper.AddUserToRoleAsync(user, "Administrador");
+            }
+        }
+
+
+
+
 
         private async Task<UserEntity> CheckUserAsync(
             string document,
@@ -228,7 +271,6 @@ namespace Refosus.Web.Data
                     IsActive = true
                 };
                 await _userHelper.AddUserAsync(user, "123456789");
-                await _userHelper.AddUserToRoleAsync(user, "Administrador");
             }
             return user;
         }

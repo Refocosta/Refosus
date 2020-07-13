@@ -1,31 +1,40 @@
 ﻿@model Refosus.Web.Models.MessageViewModel
-    <div class="row">
-        <div class="col col-sm-4">
-            <label asp-for="Sender" class="control-label"></label>
-            <input asp-for="Sender" class="form-control" />
-            <span asp-validation-for="Sender" class="text-danger"></span>
-        </div>
-        <div class="col col-sm-4">
-            <label asp-for="Reference" class="control-label"></label>
-            <input asp-for="Reference" class="form-control" />
-            <span asp-validation-for="Reference" class="text-danger"></span>
-        </div>
-        <div class="col col-sm-4">
-            <label asp-for="TypeId" class="control-label"></label>
-            <select asp-for="TypeId" asp-items="Model.MessageType" class="form-control"></select>
-            <span asp-validation-for="TypeId" class="text-danger"></span>
-        </div>
+<div class="row col-sm-12">
+
+    <div class="col col-sm-4">
+        <label asp-for="Sender" class="control-label"></label>
+        <input asp-for="Sender" class="form-control" />
+        <span asp-validation-for="Sender" class="text-danger"></span>
+    </div>
+    <div class="col col-sm-4">
+        <label asp-for="Reference" class="control-label"></label>
+        <input asp-for="Reference" class="form-control" />
+        <span asp-validation-for="Reference" class="text-danger"></span>
+    </div>
+    <div class="col col-sm-4">
+        <label asp-for="TypeId" class="control-label"></label>
+        <select asp-for="TypeId" asp-items="Model.MessageType" class="form-control" disabled></select>
+        <span asp-validation-for="TypeId" class="text-danger"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col-sm-6">
+        <label asp-for="CreateUser" class="control-label"></label>
+        <select asp-for="CreateUser" asp-items="Model.Users" class="form-control"></select>
+        <span asp-validation-for="CreateUser" class="text-danger"></span>
     </div>
 
-
-<div class="form-group col-sm-12">
-    <label asp-for="CreateUser" class="control-label"></label>
-    <select asp-for="CreateUser" asp-items="Model.Users" class="form-control"></select>
-    <span asp-validation-for="CreateUser" class="text-danger"></span>
+    @if (Model.Type != null)
+    {
+        <div class="form-group col-sm-6">
+            <label asp-for="File" class="control-label"></label>
+            <input asp-for="File" type="file" multiple="multiple" class="form-control" />
+            <span asp-validation-for="File" class="text-danger"></span>
+        </div>
+    }
 </div>
-
-<div class="form-group col-sm-12">
-    <label asp-for="Transaction.Observation" class="control-label"></label>
-    <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
-    <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
-</div>
+    <div class="form-group col-sm-12">
+        <label asp-for="Transaction.Observation" class="control-label"></label>
+        <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
+        <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
+    </div>

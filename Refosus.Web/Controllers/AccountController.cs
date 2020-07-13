@@ -152,7 +152,6 @@ namespace Refosus.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 UserEntity user = await _userHelper.GetUserByEmailAsync(model.Email);
                 if (user == null)
                 {
@@ -162,7 +161,6 @@ namespace Refosus.Web.Controllers
                 }
                 return RedirectToAction("IndexUsers", new RouteValueDictionary(
                 new { controller = "Account", action = "IndexUsers" }));
-
             }
             return View(model);
         }

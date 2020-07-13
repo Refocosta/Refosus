@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningLevel>2</WarningLevel>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Migrations\20200427200650_dbsetcompany1.cs" />
     <Compile Remove="Migrations\20200427200650_dbsetcompany1.Designer.cs" />
@@ -48,11 +52,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Refosus.Common\Refosus.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="wwwroot\Images\News\" />
+    <Folder Include="wwwroot\Message\Carta\" />
+    <Folder Include="wwwroot\Message\Factura\" />
+    <Folder Include="wwwroot\Message\Paquete\" />
   </ItemGroup>
 
 </Project>
