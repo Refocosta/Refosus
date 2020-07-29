@@ -280,20 +280,41 @@ namespace Refosus.Web.Helpers
         #region Message
         public async Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew)
         {
-            return new MessageEntity
+            if (model.Ceco != null && model.Type.Name == "Factura")
             {
-                Id = isNew ? 0 : model.Id,
-
-                Type = await _context.MessagesTypes.FindAsync(model.TypeId),
-                Sender = model.Sender,
-                Reference = model.Reference,
-                CreateDate = model.CreateDateLocal.ToUniversalTime(),
-                UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
-                State = await _context.MessagesStates.FindAsync(model.StateId),
-                User = await _context.Users.FindAsync(model.CreateUser),
-                StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
-                UserSender = await _context.Users.FindAsync(model.SenderUser)
-            };
+                return new MessageEntity
+                {
+                    Id = isNew ? 0 : model.Id,
+                    Type = await _context.MessagesTypes.FindAsync(model.TypeId),
+                    Sender = model.Sender,
+                    Reference = model.Reference,
+                    CreateDate = model.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
+                    State = await _context.MessagesStates.FindAsync(model.StateId),
+                    User = await _context.Users.FindAsync(model.CreateUser),
+                    StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+                    UserSender = await _context.Users.FindAsync(model.SenderUser),
+                    NumberBill = model.NumberBill
+                };
+            }
+            else
+            {
+                return new MessageEntity
+                {
+                    Id = isNew ? 0 : model.Id,
+                    Type = await _context.MessagesTypes.FindAsync(model.TypeId),
+                    Sender = model.Sender,
+                    Reference = model.Reference,
+                    CreateDate = model.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
+                    State = await _context.MessagesStates.FindAsync(model.StateId),
+                    User = await _context.Users.FindAsync(model.CreateUser),
+                    StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+                    UserSender = await _context.Users.FindAsync(model.SenderUser),
+                    Ceco = await _context.CeCos.FindAsync(model.CecoId),
+                    NumberBill = model.NumberBill
+                };
+            }
         }
         public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
         {
@@ -312,90 +333,198 @@ namespace Refosus.Web.Helpers
 
         public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
         {
-            return new MessageViewModel
+            if (messagentity.Ceco == null)
             {
-                MessageType = _combosHelper.GetComboMessageType(),
-                MessageState = _combosHelper.GetComboMessageState(),
-                Users = _combosHelper.GetComboActiveUser(),
-                MessageBillState = _combosHelper.GetComboMessageBillState(),
-
-                Id = messagentity.Id,
-                Type = messagentity.Type,
-                TypeId = messagentity.Type.Id,
-                Sender = messagentity.Sender,
-                Reference = messagentity.Reference,
-                CreateDate = messagentity.CreateDateLocal,
-                UpdateDate = messagentity.UpdateDateLocal,
-                State = messagentity.State,
-                StateId = messagentity.State.Id,
-                StateBill = messagentity.StateBill,
-                StateBillId = messagentity.StateBill.Id,
-                User = messagentity.User,
-                CreateUser = messagentity.User.Id,
-                AutUser = messagentity.UserAut.Id,
-                DateAut = messagentity.DateAutLocal,
-                ProUser = messagentity.UserPros.Id,
-                DateProcess = messagentity.DateProcessLocal,
-                UserSender = messagentity.UserSender,
-                SenderUser = messagentity.UserSender.Id
-            };
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,    
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    AutUser = messagentity.UserAut.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    ProUser = messagentity.UserPros.Id,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
+            else
+            {
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,
+                    Ceco = messagentity.Ceco,
+                    CecoId = messagentity.Ceco.Id,
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    AutUser = messagentity.UserAut.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    ProUser = messagentity.UserPros.Id,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
         }
         public MessageViewModel ToMessageViewModelNone(MessageEntity messagentity)
         {
-            return new MessageViewModel
+            if (messagentity.Ceco == null)
             {
-                MessageType = _combosHelper.GetComboMessageType(),
-                MessageState = _combosHelper.GetComboMessageState(),
-                Users = _combosHelper.GetComboActiveUser(),
-                MessageBillState = _combosHelper.GetComboMessageBillState(),
-
-                Id = messagentity.Id,
-                Type = messagentity.Type,
-                TypeId = messagentity.Type.Id,
-                Sender = messagentity.Sender,
-                Reference = messagentity.Reference,
-                CreateDate = messagentity.CreateDateLocal,
-                UpdateDate = messagentity.UpdateDateLocal,
-                State = messagentity.State,
-                StateId = messagentity.State.Id,
-                StateBill = messagentity.StateBill,
-                StateBillId = messagentity.StateBill.Id,
-                User = messagentity.User,
-                CreateUser = messagentity.User.Id,
-                DateAut = messagentity.DateAutLocal,
-                DateProcess = messagentity.DateProcessLocal,
-                UserSender= messagentity.UserSender,
-                SenderUser =messagentity.UserSender.Id
-            };
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
+            else
+            {
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,
+                    Ceco = messagentity.Ceco,
+                    CecoId = messagentity.Ceco.Id,
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
         }
         public MessageViewModel ToMessageViewModelAut(MessageEntity messagentity)
         {
-            return new MessageViewModel
+            if (messagentity.Ceco == null)
             {
-                MessageType = _combosHelper.GetComboMessageType(),
-                MessageState = _combosHelper.GetComboMessageState(),
-                Users = _combosHelper.GetComboActiveUser(),
-                MessageBillState = _combosHelper.GetComboMessageBillState(),
-
-                Id = messagentity.Id,
-                Type = messagentity.Type,
-                TypeId = messagentity.Type.Id,
-                Sender = messagentity.Sender,
-                Reference = messagentity.Reference,
-                CreateDate = messagentity.CreateDateLocal,
-                UpdateDate = messagentity.UpdateDateLocal,
-                State = messagentity.State,
-                StateId = messagentity.State.Id,
-                StateBill = messagentity.StateBill,
-                StateBillId = messagentity.StateBill.Id,
-                User = messagentity.User,
-                CreateUser = messagentity.User.Id,
-                AutUser = messagentity.UserAut.Id,
-                DateAut = messagentity.DateAutLocal,
-                DateProcess = messagentity.DateProcessLocal,
-                UserSender = messagentity.UserSender,
-                SenderUser = messagentity.UserSender.Id
-            };
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    AutUser = messagentity.UserAut.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
+            else
+            {
+                return new MessageViewModel
+                {
+                    MessageType = _combosHelper.GetComboMessageType(),
+                    MessageState = _combosHelper.GetComboMessageState(),
+                    Users = _combosHelper.GetComboActiveUser(),
+                    MessageBillState = _combosHelper.GetComboMessageBillState(),
+                    Cecos = _combosHelper.GetComboCeCo(),
+                    Id = messagentity.Id,
+                    Type = messagentity.Type,
+                    TypeId = messagentity.Type.Id,
+                    Ceco = messagentity.Ceco,
+                    CecoId = messagentity.Ceco.Id,
+                    Sender = messagentity.Sender,
+                    Reference = messagentity.Reference,
+                    CreateDate = messagentity.CreateDateLocal,
+                    UpdateDate = messagentity.UpdateDateLocal,
+                    State = messagentity.State,
+                    StateId = messagentity.State.Id,
+                    StateBill = messagentity.StateBill,
+                    StateBillId = messagentity.StateBill.Id,
+                    User = messagentity.User,
+                    CreateUser = messagentity.User.Id,
+                    AutUser = messagentity.UserAut.Id,
+                    DateAut = messagentity.DateAutLocal,
+                    DateProcess = messagentity.DateProcessLocal,
+                    UserSender = messagentity.UserSender,
+                    SenderUser = messagentity.UserSender.Id,
+                    NumberBill = messagentity.NumberBill
+                };
+            }
         }
         #endregion
         #region Users
@@ -428,6 +557,8 @@ namespace Refosus.Web.Helpers
 
             };
         }
+
+
         #endregion
     }
 }

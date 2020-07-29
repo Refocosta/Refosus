@@ -4,7 +4,7 @@ using Refosus.Web.Data.Entities;
 
 namespace Refosus.Web.Data
 {
-    public class DataContext : IdentityDbContext<UserEntity,RoleEntity, string>
+    public class DataContext : IdentityDbContext<UserEntity, RoleEntity, string>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
@@ -25,7 +25,9 @@ namespace Refosus.Web.Data
         public DbSet<MessageFileEntity> MessagesFile { get; set; }
         public DbSet<RoleMenuEntity> RoleMenus { get; set; }
         public DbSet<NewEntity> News { get; set; }
-        
+        public DbSet<CeCoEntity> CeCos { get; set; }
+        public DbSet<MessageCheckEntity> MessagesCheckes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

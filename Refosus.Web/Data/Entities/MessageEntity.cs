@@ -8,6 +8,7 @@ namespace Refosus.Web.Data.Entities
 {
     public class MessageEntity
     {
+        [Display(Name = "Radicado")]
         public int Id { get; set; }
 
         [Display(Name = "Tipo")]
@@ -64,6 +65,9 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Usuario que Procesa")]
         public UserEntity UserPros { get; set; }
 
+        [Display(Name = "Consecutivo de Factura")]
+        public string NumberBill { get; set; }
+
         [DataType(DataType.DateTime)]
         [Display(Name = "Fecha de Autorizacion")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
@@ -85,6 +89,10 @@ namespace Refosus.Web.Data.Entities
         public DateTime DateProcessLocal => DateProcess.ToLocalTime();
 
         public ICollection<MessagetransactionEntity> Transaction { get; set; }
+        public ICollection<MessageCheckEntity> Checks { get; set; }
         public ICollection<MessageFileEntity> MessageFiles { get; set; }
+
+        [Display(Name = "Centro de Costos")]
+        public CeCoEntity Ceco { get; set; }
     }
 }

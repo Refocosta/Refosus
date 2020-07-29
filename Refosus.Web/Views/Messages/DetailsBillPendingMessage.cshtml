@@ -1,6 +1,6 @@
 ﻿@model Refosus.Web.Data.Entities.MessageEntity
 @{
-    ViewData["Title"] = "DetailsMessage";
+    ViewData["Title"] = "DetailsBillPendingMessage";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <section class="content-header">
@@ -160,8 +160,7 @@
                         </div>
                         <div class="card-footer ">
                             <div class="col col-12">
-                                <a asp-action="EditMessage" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Editar</a>
-                                <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                                <a asp-action="IndexBillPending" class="btn btn-danger col-sm-2 ">Cancelar</a>
                             </div>
                         </div>
                     </div>
@@ -318,7 +317,7 @@
                                                     @Html.DisplayFor(modelItem => item.Observation)
                                                 </td>
                                                 <td>
-                                                    <a asp-action="Detailstransaction" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                    <a asp-action="DetailsBillPendingTransaction" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
                                                 </td>
                                             </tr>
                                         }
@@ -332,7 +331,6 @@
         </div>
     </div>
 </section>
-<partial name="_DeleteDialog" />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
@@ -380,3 +378,4 @@
         });
     </script>
 }
+

@@ -8,7 +8,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-12">
-                <h1>Mensajeria</h1>
+                <h1>Mi Mensajeria</h1>
             </div>
         </div>
     </div>
@@ -20,10 +20,13 @@
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
                     <div class="card-header">
-                        <a asp-action="CreateMeMessage" class="btn btn-primary ">
-                            <i class="oi oi-plus" style="color:white"></i>
-                            Crear Nuevo
-                        </a>
+                        @if (User.IsInRole("MessageCreator")|| User.IsInRole("Administrator"))
+                        {
+                            <a asp-action="CreateMeMessage" class="btn btn-primary ">
+                                <i class="oi oi-plus" style="color:white"></i>
+                                Crear Nuevo
+                            </a>
+                        }
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
@@ -118,9 +121,6 @@
         </div>
     </div>
 </section>
-
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 

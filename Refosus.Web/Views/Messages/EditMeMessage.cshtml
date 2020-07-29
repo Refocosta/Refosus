@@ -50,7 +50,7 @@
                                         <input type="hidden" asp-for="CreateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
                                         <input type="hidden" asp-for="SenderUser" />
-                                        
+
                                         <div class="form-group col col-sm-4">
                                             <label asp-for="Id" class="control-label">Consecutivo</label>
                                             <input asp-for="Id" class="form-control" disabled />
@@ -61,6 +61,7 @@
                                             <select asp-for="StateId" asp-items="Model.MessageState" class="form-control" disabled></select>
                                             <span asp-validation-for="StateId" class="text-danger"></span>
                                         </div>
+
                                     </div>
                                     <partial name="_Message" />
 
@@ -79,6 +80,10 @@
                                             @if (Model.State.Name != "Tramitado")
                                             {
                                                 <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                @if (User.IsInRole("MessageBillChecker") || User.IsInRole("Administrator"))
+                                                {
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-success col-sm-2 checkItem" data-toggle="modal" data-target="#CheckDialog">Visto Bueno</button>
+                                                }
                                             }
                                         }
                                         else
@@ -120,6 +125,7 @@
                     <partial name="_CloseMessageDialog" />
                     <partial name="_CloseMessagePackage" />
                     <partial name="_Bill" />
+                    <partial name="_CheckMessageDialog" />
                 </form>
             </section>
         </div>
@@ -140,7 +146,7 @@
 
             var item_to_ReceiveMessage;
             var note;
-
+            var temp;
 
 
             //Recibir Paquete
@@ -151,16 +157,34 @@
             });
             //Operacion
             $("#btnYesPackage").click(function () {
-                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                }
             });
             //Operacion Recibir Factura
             $("#btnReceiveBill").click(function () {
-                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                }
             });
 
             //Operacion Factura
             $("#btnReceive").click(function () {
-                window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                }
             });
 
 
@@ -185,18 +209,62 @@
             });
             //Autorizar Factura
             $("#btnAuthorize").click(function () {
-                window.location.href = '/Messages/AuthorizeMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    if (temp == 1) {
+                        alert('Antes de autorizar debe guardar los cambios generados.');
+                        return false;
+                    }
+                    else {
+                        window.location.href = '/Messages/AuthorizeMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                    }
+                }
             });
 
             //Autorizar Rechazar
             $("#btnRefuse").click(function () {
-                window.location.href = '/Messages/RefuseMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    window.location.href = '/Messages/RefuseMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                }
+                
+
             });
             //Capturar Datos
             $('.RefuseItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
                 note = document.getElementById("Transaction_Observation").value;
             });
+
+
+            //Visto Bueno
+            //Capturar Datos
+            $('.checkItem').click((e) => {
+                    item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                    note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesCheck").click(function () {
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    window.location.href = '/Messages/CheckMeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                }
+            });
+
+
+
+
+
+
 
 
 
@@ -207,7 +275,31 @@
             });
             //Autorizar Cerrar
             $("#btnFinished").click(function () {
-                window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if ($('#Transaction_Observation').val().length == 0) {
+                    alert('El campo de observaciones es obligatorio');
+                    return false;
+                }
+                else {
+                    if ($('#NumberBill').val().length == 0) {
+                        alert('El campo de Consecutivo de Factura es obligatorio');
+                        return false;
+                    }
+                    else {
+                        if (document.getElementById("CecoId").value == 0) {
+                            alert('Debe Seleccionar un Centro de Costos');
+                            return false;
+                        }
+                        else {
+                            if (temp == 1) {
+                                alert('Antes de cerrar debe guardar los cambios generados.');
+                                return false;
+                            }
+                            else {
+                                window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                            }
+                        }
+                    }
+                }
             });
 
 
@@ -218,6 +310,29 @@
             $("#btnRefresh").click(function () {
                 document.getElementById("StateId").disabled = false
             });
-        });
+
+            
+            
+            
+            
+            $("#Sender").change(function () {
+                temp = 1;
+            });
+            $("#Reference").change(function () {
+                temp = 1;
+            });
+            $("#CreateUser").change(function () {
+                temp = 1;
+            });
+            $("#File").change(function () {
+                temp = 1;
+            });
+            $("#NumberBill").change(function () {
+                temp = 1;
+            });
+            $("#CecoId").change(function () {
+                temp = 1;
+            });
+                });
     </script>
 }

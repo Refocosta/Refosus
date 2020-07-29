@@ -76,17 +76,15 @@
                             }
                             else
                             {
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <div class="row">
-                                        <div class="form-group col col-sd-4">
+                                        <div class="form-group col col-sd-6">
                                             <label class="control-label">Consecutivo</label>
                                             <input class="form-control" value="  @Html.DisplayFor(model => model.Id)" disabled>
                                         </div>
-                                        <div class="form-group col col-sd-4">
+                                        <div class="form-group col col-sd-6">
                                             <label class="control-label">@Html.DisplayNameFor(model => model.Sender)</label>
                                             <input class="form-control" value="  @Html.DisplayFor(model => model.Sender)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
                                         </div>
                                     </div>
                                     <div class="row">
@@ -121,18 +119,21 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-5">
+
+                                <div class="col-md-6">
                                     <div class="form-group col col-sd-6">
                                         <label class="control-label">@Html.DisplayNameFor(model => model.StateBill)</label>
                                         <input class="form-control" value="  @Html.DisplayFor(model => model.StateBill.Name)" disabled>
                                     </div>
-                                    <div class="form-group col col-sd-6">
-                                        <label class="control-label">@Html.DisplayNameFor(model => model.UserAut)</label>
-                                        <input class="form-control" value="  @Html.DisplayFor(model => model.UserAut.FullName)" disabled>
-                                    </div>
-                                    <div class="form-group col col-sd-6">
-                                        <label class="control-label">@Html.DisplayNameFor(model => model.UserPros)</label>
-                                        <input class="form-control" value="  @Html.DisplayFor(model => model.UserPros.FullName)" disabled>
+                                    <div class="row">
+                                        <div class="form-group col col-sd-6">
+                                            <label class="control-label">@Html.DisplayNameFor(model => model.UserAut)</label>
+                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UserAut.FullName)" disabled>
+                                        </div>
+                                        <div class="form-group col col-sd-6">
+                                            <label class="control-label">@Html.DisplayNameFor(model => model.UserPros)</label>
+                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UserPros.FullName)" disabled>
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="form-group col col-sd-6">
@@ -144,9 +145,18 @@
                                             <input class="form-control" value="  @Html.DisplayFor(model => model.DateProcessLocal)" disabled>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="form-group col col-sd-6">
+                                            <label class="control-label">@Html.DisplayNameFor(model => model.Ceco)</label>
+                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Ceco.Name)" disabled>
+                                        </div>
+                                        <div class="form-group col col-sd-6">
+                                            <label class="control-label">@Html.DisplayNameFor(model => model.NumberBill)</label>
+                                            <input class="form-control" value="  @Html.DisplayFor(model => model.NumberBill)" disabled>
+                                        </div>
+                                    </div>
                                 </div>
                             }
-
                         </div>
                         <div class="card-footer ">
                             <div class="col col-12">
@@ -208,6 +218,53 @@
                 </div>
             </section>
         </div>
+        @if (Model.Type.Name == "Factura")
+        {
+            <div class="row">
+                <section class="col-lg-12 connectedSortable">
+                    <div class="card card-warning">
+                        <div class="card-header">
+                            <a class="card-title">Vistos Buenos</a>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 table-responsive">
+                                    <table class="table table-hover table-striped display" id="tblDatos">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Checks.FirstOrDefault().User)
+                                                </th>
+                                                <th>
+                                                    @Html.DisplayNameFor(model => model.Checks.FirstOrDefault().DateAutLocal)
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Checks.OrderBy(d => d.DateAut))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.User.FullName)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.DateAutLocal)
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        }
         <div class="row">
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
@@ -282,7 +339,6 @@
         </div>
     </div>
 </section>
-<partial name="_DeleteDialog" />
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Refosus.Common.Enum;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 

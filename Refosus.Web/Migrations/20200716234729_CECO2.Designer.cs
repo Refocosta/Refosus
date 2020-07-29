@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200716234729_CECO2")]
+    partial class CECO2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,31 +358,6 @@ namespace Refosus.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MessagesBillState");
-                });
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.MessageCheckEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("DateAut")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("messageId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("messageId");
-
-                    b.ToTable("MessagesCheckes");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageEntity", b =>
@@ -873,17 +850,6 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.MenuEntity", "Menu")
                         .WithMany()
                         .HasForeignKey("MenuId");
-                });
-
-            modelBuilder.Entity("Refosus.Web.Data.Entities.MessageCheckEntity", b =>
-                {
-                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Refosus.Web.Data.Entities.MessageEntity", "message")
-                        .WithMany()
-                        .HasForeignKey("messageId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MessageEntity", b =>

@@ -1,5 +1,4 @@
-﻿using Refosus.Common.Enum;
-using Refosus.Web.Data.Entities;
+﻿using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace Refosus.Web.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await CheckUserAsync("1010", "Administrador", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
+            await CheckUserAsync("1010", "Administrator", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
             await CheckRoles();
             await CheckRolesUser();
 
@@ -63,7 +62,9 @@ namespace Refosus.Web.Data
 
                 await AddMenuAsync("Mensajes", "Messages", "Index", 4);
                 await AddMenuAsync("Mis Mensajes", "Messages", "IndexMe", 4);
+                await AddMenuAsync("Mi Historial", "Messages", "IndexMeHistory", 4);
                 await AddMenuAsync("Facturacion Pendiente", "Messages", "IndexBillPending", 4);
+                await AddMenuAsync("Historial de Facturación", "Messages", "IndexBillHistory", 4);
             }
         }
 
@@ -86,15 +87,13 @@ namespace Refosus.Web.Data
         private async Task AddMenusRole()
         {
             List<MenuEntity> menus = _context.Menus.ToList();
-            RoleEntity role = _context.Roles.FirstOrDefault(o => o.Name == "Administrador");
+            RoleEntity role = _context.Roles.FirstOrDefault(o => o.Name == "Administrator");
             foreach (MenuEntity item in menus)
             {
                 _context.RoleMenus.Add(new RoleMenuEntity { Menu = item, Role = role });
             }
+
         }
-
-
-
         #region Message
         private async Task CheckMessageTypesAsync()
         {
@@ -145,16 +144,6 @@ namespace Refosus.Web.Data
             _context.MessagesBillState.Add(new MessageBillStateEntity { Name = name, Active = active });
         }
         #endregion
-
-
-
-
-
-
-
-
-
-
         private async Task CheckCountriesAsync()
         {
             if (!_context.Countries.Any())
@@ -229,7 +218,16 @@ namespace Refosus.Web.Data
         {
             if (!_context.Roles.Any())
             {
-                await _userHelper.CheckRoleAsync("Administrador");
+                await _userHelper.CheckRoleAsync("Administrator");
+                await _userHelper.CheckRoleAsync("MessageAdministrator");
+                await _userHelper.CheckRoleAsync("MessageMeMessage");
+                await _userHelper.CheckRoleAsync("MessageMeHistory");
+                await _userHelper.CheckRoleAsync("MessageBillPending");
+                await _userHelper.CheckRoleAsync("MessageBillHistory");
+                await _userHelper.CheckRoleAsync("MessageCreator");
+                await _userHelper.CheckRoleAsync("MessageBillProcesator");
+                await _userHelper.CheckRoleAsync("MessageBillAutorizador");
+                await _userHelper.CheckRoleAsync("MessageBillChecker");
             }
         }
         private async Task CheckRolesUser()
@@ -238,7 +236,7 @@ namespace Refosus.Web.Data
             int count = _userHelper.GetUserRolesAsync(user).Result.Count;
             if (count == 0)
             {
-                await _userHelper.AddUserToRoleAsync(user, "Administrador");
+                await _userHelper.AddUserToRoleAsync(user, "Administrator");
             }
         }
 

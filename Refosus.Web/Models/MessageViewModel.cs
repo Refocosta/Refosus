@@ -20,6 +20,8 @@ namespace Refosus.Web.Models
 
         [Display(Name = "Estado de Factura")]
         public int StateBillId { get; set; }
+        [Display(Name = "Centro de Costos")]
+        public int CecoId { get; set; }
 
         [Display(Name = "Usuario que Autoriza")]
         public string AutUser { get; set; }
@@ -34,8 +36,11 @@ namespace Refosus.Web.Models
         public IEnumerable<SelectListItem> MessageState { get; set; }
 
         public IEnumerable<SelectListItem> MessageBillState { get; set; }
+        public IEnumerable<SelectListItem> Cecos { get; set; }
         public IEnumerable<SelectListItem> Users { get; set; }
+
         public new MessagetransactionEntity Transaction { get; set; }
+        public new MessageCheckEntity Checks { get; set; }
 
         [Display(Name = "Adunto")]
         public IEnumerable<IFormFile> File { get; set; }
