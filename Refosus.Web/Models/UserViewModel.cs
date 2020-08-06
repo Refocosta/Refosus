@@ -16,9 +16,15 @@ namespace Refosus.Web.Models
         [Display(Name = "Confirmar Contraseña")]
         public string PasswordConfirm { get; set; }
 
+
         [Display(Name = "Compañia")]
         public int CompanyId { get; set; }
 
+        [Display(Name = "Tipo de Documento")]
+        public int DocumentTypeId { get; set; }
+        
+
         public IEnumerable<SelectListItem> Companies { get; set; }
+        public IEnumerable<SelectListItem> DocumentTypes { get; set; }
     }
 }

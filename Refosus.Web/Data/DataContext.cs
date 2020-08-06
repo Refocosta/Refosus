@@ -27,6 +27,7 @@ namespace Refosus.Web.Data
         public DbSet<NewEntity> News { get; set; }
         public DbSet<CeCoEntity> CeCos { get; set; }
         public DbSet<MessageCheckEntity> MessagesCheckes { get; set; }
+        public DbSet<DocumentTypeEntity> DocumentTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

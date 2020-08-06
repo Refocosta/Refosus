@@ -532,6 +532,7 @@ namespace Refosus.Web.Helpers
         {
             return new UserEntity
             {
+                TypeDocument = await _context.DocumentTypes.FindAsync(model.DocumentTypeId),
                 Document = model.Document,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
@@ -539,8 +540,6 @@ namespace Refosus.Web.Helpers
                 UserName = model.UserName,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                Campus = await _context.Campus.FirstOrDefaultAsync(),
-                Company = await _context.Companies.FindAsync(model.CompanyId),
                 IsActive = true
             };
         }
@@ -549,12 +548,19 @@ namespace Refosus.Web.Helpers
         {
             return new UserViewModel
             {
+                DocumentTypes = _combosHelper.GetDocumentType(),
                 Id = model.Id,
+                UserName = model.UserName,
+
+                TypeDocument =model.TypeDocument,
+                DocumentTypeId=model.TypeDocument.Id,
                 Document = model.Document,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Address = model.Address,
+                IsActive=model.IsActive,
                 Email = model.Email
-
             };
         }
 

@@ -131,19 +131,13 @@ namespace Refosus.Web.Controllers
         #region Users
         public async Task<IActionResult> IndexUsers()
         {
-            return View(await _context.
-                Users
-                .Include(t => t.Company)
-                .OrderBy(t => t.FirstName)
-                .ToListAsync());
+            return View(await _userHelper.GetUsersAsync());
         }
 
         public IActionResult AddUser()
         {
             UserViewModel model = new UserViewModel
-            {
-                Companies = _combosHelper.GetComboCompany()
-            };
+            { };
             return View(model);
         }
 
@@ -156,7 +150,6 @@ namespace Refosus.Web.Controllers
                 if (user == null)
                 {
                     user = await _converterHelper.ToUserEntityAsync(model, true);
-                    user.Company = await _context.Companies.FirstOrDefaultAsync(t => t.Id == model.CompanyId);
                     await _userHelper.AddUserAsync(user, model.Password);
                 }
                 return RedirectToAction("IndexUsers", new RouteValueDictionary(
@@ -165,17 +158,17 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> DetailsUser(string email)
+        public async Task<IActionResult> DetailsUser(string? id)
         {
-            if (email == null)
+            if (id == null)
             {
                 return NotFound();
             }
             UserRolesViewModel modelView = new UserRolesViewModel
             {
                 user = await _context.Users
-                .Include(g => g.Company)
-                .FirstOrDefaultAsync(g => g.Email == email)
+                .Include(t => t.TypeDocument)
+                .FirstOrDefaultAsync(g => g.Id == id)
             };
 
             modelView.roles = await _securityHelper.GetRoleByUserAsync(modelView.user);
@@ -186,6 +179,25 @@ namespace Refosus.Web.Controllers
             }
             return View(modelView);
         }
+
+        public async Task<IActionResult> EditUser(string? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            UserEntity userEntity =
+                userEntity = await _context.Users
+                .Include(t => t.TypeDocument)
+                .FirstOrDefaultAsync(g => g.Id == id);
+            if (userEntity == null)
+            {
+                return NotFound();
+            }
+            UserViewModel userViewModel = _converterHelper.ToUserViewModel(userEntity);
+            return View(userViewModel);
+        }
+
         public async Task<IActionResult> DeleteUserRole(string email, string name)
         {
             {
@@ -208,8 +220,6 @@ namespace Refosus.Web.Controllers
         }
 
         #endregion
-
-
 
         #region RoleMenu
         public async Task<IActionResult> AddRoleMenus(string id)
@@ -248,6 +258,7 @@ namespace Refosus.Web.Controllers
             model.Menus = _combosHelper.GetComboMenus();
             return View(model);
         }
+
         public async Task<IActionResult> DeleteRoleMenu(int? id)
         {
             {

@@ -9,8 +9,12 @@ namespace Refosus.Web.Helpers
     public interface IUserHelper
     {
         #region Usuarios
+        Task<List<UserEntity>> GetUsersAsync();
+
+
         Task<IdentityResult> AddUserAsync(UserEntity user, string password);
         Task<UserEntity> GetUserByEmailAsync(string email);
+        Task<UserEntity> GetUserByIdAsync(string id);
         #endregion
 
         #region Cuenta

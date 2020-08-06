@@ -23,13 +23,16 @@ namespace Refosus.Web.Data
         public async Task SeedAsync()
         {
             await _context.Database.EnsureCreatedAsync();
-            await CheckUserAsync("1010", "Administrator", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
-            await CheckRoles();
-            await CheckRolesUser();
-
-
             await CheckCompaniesAsync();
             await CheckCountriesAsync();
+
+
+            await CheckRoles();
+
+            await CheckDocumentTypeAsync();
+            await CheckUserAsync("1010", "Administrator", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
+            await CheckRolesUser();
+            
 
             #region Message
             await CheckMessageTypesAsync();
@@ -43,6 +46,19 @@ namespace Refosus.Web.Data
             await CheckMenusAsync();
             await CheckMenusRoleAsync();
         }
+        private async Task CheckDocumentTypeAsync()
+        {
+            if (!_context.DocumentTypes.Any())
+            {
+                await AddDocumentTypes( "Cédula de Ciudadanía", "CC");
+            }
+        }
+        private async Task AddDocumentTypes(string name, string nom)
+        {
+            _context.DocumentTypes.Add(new DocumentTypeEntity { Name = name,Nom = nom});
+            await _context.SaveChangesAsync();
+        }
+
         private async Task CheckMenusAsync()
         {
             if (!_context.Menus.Any())
@@ -257,6 +273,7 @@ namespace Refosus.Web.Data
             {
                 user = new UserEntity
                 {
+                    TypeDocument = _context.DocumentTypes.FirstOrDefault(),
                     Document = document,
                     FirstName = firstName,
                     LastName = lastName,
@@ -264,9 +281,11 @@ namespace Refosus.Web.Data
                     UserName = email,
                     PhoneNumber = phone,
                     Address = address,
-                    Campus = _context.Campus.FirstOrDefault(),
-                    Company = _context.Companies.FirstOrDefault(),
-                    IsActive = true
+                    IsActive = true,
+                    CreateDate = System.DateTime.Now.ToUniversalTime(),
+                    ActiveDate = System.DateTime.Now.ToUniversalTime(),
+                    PhotoPath= $"~/Images/Users/{email}.jpg",
+                    Company= _context.Companies.FirstOrDefault()
                 };
                 await _userHelper.AddUserAsync(user, "123456789");
             }

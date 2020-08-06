@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200729171634_PublishMessage")]
+    partial class PublishMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -321,7 +323,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DocumentTypes");
+                    b.ToTable("DocumentTypeEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>
@@ -712,9 +714,6 @@ namespace Refosus.Web.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ActiveDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
@@ -722,15 +721,12 @@ namespace Refosus.Web.Migrations
                     b.Property<int?>("CampusEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyEntityId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("Document")
                         .IsRequired()
@@ -780,7 +776,7 @@ namespace Refosus.Web.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("PhotoPath")
+                    b.Property<string>("PicturePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -800,7 +796,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("CampusEntityId");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyEntityId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -1018,11 +1014,9 @@ namespace Refosus.Web.Migrations
                         .WithMany("Users")
                         .HasForeignKey("CampusEntityId");
 
-                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "Company")
+                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", null)
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CompanyEntityId");
 
                     b.HasOne("Refosus.Web.Data.Entities.DocumentTypeEntity", "TypeDocument")
                         .WithMany()

@@ -3,8 +3,6 @@
     ViewData["Title"] = "IndexUsers";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
-
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -33,6 +31,12 @@
                             <thead>
                                 <tr>
                                     <th>
+                                        Usuario
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.TypeDocument)
+                                    </th>
+                                    <th>
                                         @Html.DisplayNameFor(model => model.Document)
                                     </th>
                                     <th>
@@ -42,13 +46,10 @@
                                         @Html.DisplayNameFor(model => model.LastName)
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.Email)
+                                        Correo
                                     </th>
                                     <th>
-                                        @Html.DisplayNameFor(model => model.PhoneNumber)
-                                    </th>
-                                    <th>
-                                        @Html.DisplayNameFor(model => model.Company)
+                                        Ceulular
                                     </th>
                                     <th></th>
                                 </tr>
@@ -57,6 +58,12 @@
                                 @foreach (var item in Model)
                                 {
                                 <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UserName)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TypeDocument.Name)
+                                    </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Document)
                                     </td>
@@ -73,12 +80,8 @@
                                         @Html.DisplayFor(modelItem => item.PhoneNumber)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Company.Name)
-                                    </td>
-                                    <td>
-                                        <a asp-action="EditUser" asp-route-email="@item.Id" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
-                                        <a asp-action="DetailsUser" asp-route-email="@item.Email" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                        <button data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                        <a asp-action="EditUser" asp-route-id="@item.Id" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
+                                        <a asp-action="DetailsUser" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
                                     </td>
                                 </tr>
                                 }
@@ -92,47 +95,3 @@
     </div>
 </section>
 <partial name="_DeleteDialog" />
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script type="text/javascript">
-
-        $('#myModal').on('shown.bs.modal', function () {
-            $('#myInput').trigger('focus')
-        })
-
-
-        $(document).ready(function () {
-
-            // Delete item
-            var item_to_delete;
-            $('.deleteItem').click((e) => {
-                item_to_delete = e.currentTarget.dataset.id;
-            });
-
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Account/DeleteRole/' + item_to_delete;
-            });
-        });
-        $(document).ready(function () {
-            $('#tblDatos').DataTable({
-                "language": {
-                    "lengthMenu": "Mostrar _MENU_ registros",
-                    "zeroRecords": "No se encontraron resultados",
-                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
-                    "sSearch": "Buscar:",
-                    "oPaginate": {
-                        "sFirst": "Primero",
-                        "sLast": "Último",
-                        "sNext": "Siguiente",
-                        "sPrevious": "Anterior"
-                    },
-                    "sProcessing": "Procesando...",
-                }
-            });
-        });
-    </script>
-}

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
+using System;
 
 namespace Refosus.Web
 {
@@ -29,22 +31,26 @@ namespace Refosus.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
-                
-                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusBoyacaPruebas"));
-                
+                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusLocal"));
             });
 
             services.AddIdentity<UserEntity, RoleEntity>(options =>
              {
-                //options.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
-                //options.SignIn.RequireConfirmedEmail = true;
-                options.User.RequireUniqueEmail = true;
+                 // Lockout settings.
+                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                 options.Lockout.MaxFailedAccessAttempts = 5;
+                 options.Lockout.AllowedForNewUsers = true;
+                 // Password settings.
+                 options.SignIn.RequireConfirmedEmail = false;
                  options.Password.RequireDigit = false;
                  options.Password.RequiredUniqueChars = 0;
                  options.Password.RequireLowercase = false;
                  options.Password.RequireNonAlphanumeric = false;
                  options.Password.RequireUppercase = false;
                  options.Password.RequiredLength = 6;
+                 // User settings.
+                 options.User.RequireUniqueEmail = true;
+
              }).AddEntityFrameworkStores<DataContext>();
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();

@@ -50,9 +50,19 @@
                                     <select asp-for="MenuId" asp-items="Model.Menus" class="form-control" disabled></select>
                                 </div>
 
-                                <div class="form-group col-sd-9">
-                                    <label class="control-label">@Html.DisplayNameFor(model => model.IsActive)</label>
-                                    @Html.DisplayFor(model => model.IsActive, new { @class = "custom-control-input" })
+                                <div class="form-group col-sd-1">
+                                    <label class="control-label">
+                                        @Html.DisplayNameFor(model => model.IsActive)
+                                                                        @if (Html.DisplayTextFor(model => model.IsActive) == "True")
+                                                                        {
+                                                                            <input checked="checked" class=" control-label form-control text-center" disabled="enable" type="checkbox">
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input checked="checked" class=" control-label form-control text-center" disabled="disabled" type="checkbox">
+                                                                        }
+                                                                    </label>
+
                                 </div>
                             </div>
                             <div class="col-sm-4">

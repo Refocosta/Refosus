@@ -171,5 +171,23 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+        public IEnumerable<SelectListItem> GetDocumentType()
+        {
+            List<SelectListItem> list = _context.DocumentTypes
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Nom+"-" + t.Name,
+                  Value = $"{t.Id}"
+              })
+
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Tipo de Documento]",
+                Value = "0"
+            });
+            return list;
+        }
     }
 }

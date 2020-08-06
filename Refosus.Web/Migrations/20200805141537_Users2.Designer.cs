@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200805141537_Users2")]
+    partial class Users2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -722,7 +724,7 @@ namespace Refosus.Web.Migrations
                     b.Property<int?>("CampusEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int>("CompanyDocumentId")
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -800,7 +802,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasIndex("CampusEntityId");
 
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyDocumentId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
@@ -1018,9 +1020,9 @@ namespace Refosus.Web.Migrations
                         .WithMany("Users")
                         .HasForeignKey("CampusEntityId");
 
-                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "Company")
+                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "CompanyDocument")
                         .WithMany("Users")
-                        .HasForeignKey("CompanyId")
+                        .HasForeignKey("CompanyDocumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

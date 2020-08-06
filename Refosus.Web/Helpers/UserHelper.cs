@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Refosus.Web.Helpers
@@ -30,6 +32,10 @@ namespace Refosus.Web.Helpers
         public async Task<UserEntity> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
+        }
+        public async Task<UserEntity> GetUserByIdAsync(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
         }
 
         #endregion
@@ -66,13 +72,12 @@ namespace Refosus.Web.Helpers
         #region Cuenta
         public async Task<SignInResult> LoginAsync(LoginViewModel model)
         {
-
             //Bloqueo en true
             return await _signInManager.PasswordSignInAsync(
                 model.UserName,
                 model.Password,
                 model.RememberMe,
-                false);
+                true);
         }
 
         public async Task LogoutAsync()
@@ -99,6 +104,11 @@ namespace Refosus.Web.Helpers
         public async Task<IList<string>> GetUserRolesAsync(UserEntity user)
         {
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<List<UserEntity>> GetUsersAsync()
+        {
+            return await _userManager.Users.ToListAsync();
         }
 
         public Task<List<RoleEntity>> GetRoles()
