@@ -72,7 +72,7 @@ namespace Refosus.Web.Controllers
                 );
         }
         [Authorize(Roles = "Administrator,MessageMeHistory")]
-        public async Task<IActionResult> IndexMeHistoryAsync()
+        public async Task<IActionResult> IndexMeHistory()
         {
             UserEntity Userme = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             return View(await _context
