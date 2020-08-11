@@ -134,16 +134,27 @@ namespace Refosus.Web.Controllers
             return View(await _userHelper.GetUsersAsync());
         }
 
-        public IActionResult AddUser()
+        public  IActionResult AddUserAsync()
         {
             UserViewModel model = new UserViewModel
-            { };
+            {
+                DocumentTypes =  _combosHelper.GetDocumentType(),
+                Companies = _combosHelper.GetComboCompany()
+            };
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
+            model.DocumentTypes = _combosHelper.GetDocumentType();
+            model.Companies = _combosHelper.GetComboCompany();
+            model.CreateDate = System.DateTime.Now.ToUniversalTime();
+            model.ActiveDate = System.DateTime.Now.ToUniversalTime();
+            model.PhotoPath = $"~/Images/Users/{model.Email}.jpg";
+            model.Company = _context.Companies.FirstOrDefault();
+            model.CompanyId = model.Company.Id;
+            model.TypeDocument = _context.DocumentTypes.FirstOrDefault(t => t.Id == model.DocumentTypeId);
             if (ModelState.IsValid)
             {
                 UserEntity user = await _userHelper.GetUserByEmailAsync(model.Email);
@@ -155,6 +166,7 @@ namespace Refosus.Web.Controllers
                 return RedirectToAction("IndexUsers", new RouteValueDictionary(
                 new { controller = "Account", action = "IndexUsers" }));
             }
+            model.DocumentTypes = _combosHelper.GetDocumentType();
             return View(model);
         }
 
