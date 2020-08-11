@@ -178,6 +178,19 @@ namespace Refosus.Web.Controllers
             }
             return NotFound();
         }
+        public async Task<IActionResult> _UserPhotoInfoAsync()
+        {
+            string url = Request.HttpContext.Request.GetDisplayUrl();
+            if (User.Identity.IsAuthenticated == true)
+            {
+                UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                UserPhotoInfoModel info=new UserPhotoInfoModel();
+                info.PhotoPath = user.PhotoPath;
+                info.Name = user.FullName;
+                return PartialView("_UserPhotoInfo", info);
+            }
+            return NotFound();
+        }
 
         public IActionResult Menu()
         {

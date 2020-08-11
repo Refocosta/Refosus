@@ -31,7 +31,7 @@ namespace Refosus.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusDesarrolloLocal"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusPruebas"));
             });
 
             services.AddIdentity<UserEntity, RoleEntity>(options =>

@@ -1,9 +1,7 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 <!DOCTYPE html>
-
 <html lang="es-co">
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -12,27 +10,27 @@
     <link href="~/Icon/css/open-iconic-bootstrap.css" rel="stylesheet" />
     <link href="~/DataTables/datatables.min.css" rel="stylesheet" />
     <link href="~/DataTables/DataTables-1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-
-
     <link rel="stylesheet" href="~/Content/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <link rel="stylesheet" href="~/Content/plugins/fontawesome-free/css/all.min.css">
-
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" />
     <link href="~/Content/dist/css/adminlte.min.css" rel="stylesheet" />
-
 </head>
-<body class="sidebar-mini layout-fixed sidebar-collapse">
+@*<body class="sidebar-mini layout-fixed sidebar-collapse">*@
+<body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <nav class="main-header navbar navbar-expand  navbar-dark">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
-                </li>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
+                    </li>
+                }
                 @if (User.Identity.IsAuthenticated)
                 {
                     <li class="nav-item">
@@ -63,9 +61,7 @@
                     </li>
                 }
             </ul>
-
         </nav>
-
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <a class="brand-link" asp-area="" asp-controller="Home" asp-action="Index">
                 <img src="~/Images/Parameters/LogoRefosus.jpg" alt="Refosus Logo" class="brand-image img-circle elevation-3"
@@ -73,9 +69,12 @@
                 <span class="brand-text font-weight-light">Refosus</span>
             </a>
             <div class="sidebar">
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex" id="ImageUser">
+                </div>
                 <nav class="mt-2">
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                        <div id="Menu"></div>
+                        <div id="Menu">
+                        </div>
                     </ul>
                 </nav>
             </div>
@@ -124,10 +123,6 @@
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <!-- AdminLTE for demo purposes -->
     <script src="~/Content/dist/js/demo.js"></script>
-
-
-
-
     <script nomodule="" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     <script src="~/js/jquery-3.5.0.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -137,6 +132,7 @@
     @RenderSection("Scripts", required: false)
     <script>
         $("#Menu").load("/Home/_Menu");
+        $("#ImageUser").load("/Home/_UserPhotoInfo");
     </script>
 </body>
 </html>

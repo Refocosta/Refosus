@@ -108,7 +108,7 @@ namespace Refosus.Web.Helpers
 
         public async Task<List<UserEntity>> GetUsersAsync()
         {
-            return await _userManager.Users.ToListAsync();
+            return await _userManager.Users.Include(t=>t.TypeDocument).ToListAsync();
         }
 
         public Task<List<RoleEntity>> GetRoles()

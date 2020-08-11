@@ -1,0 +1,7 @@
+﻿@model Refosus.Web.Models.UserPhotoInfoModel
+    <div class="image">
+        <img src="@Url.Content(Model.PhotoPath)" class="img-circle elevation-2" alt="User Image" />
+    </div>
+<div class="info">
+    <a href="#" class="d-block">@Html.DisplayFor(Model => Model.Name)</a>
+</div>
