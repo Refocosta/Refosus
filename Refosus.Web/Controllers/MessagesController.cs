@@ -60,7 +60,7 @@ namespace Refosus.Web.Controllers
             UserEntity Userme = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => (t.User.Id == Userme.Id && t.State.Name != "Tramitado") || ((t.UserSender.Id == Userme.Id && t.Type.Name == "Paquete" && t.State.Name != "Tramitado")))
+                .Where(t => (t.User.Id == Userme.Id && t.State.Name != "Tramitado") || ((t.UserSender.Id == Userme.Id && t.State.Name != "Tramitado")))
                 .Include(t => t.Type)
                 .Include(t => t.State)
                 .Include(t => t.User)
@@ -77,7 +77,7 @@ namespace Refosus.Web.Controllers
             UserEntity Userme = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => (t.User.Id == Userme.Id && t.State.Name == "Tramitado") || ((t.UserSender.Id == Userme.Id && t.Type.Name == "Paquete" && t.State.Name == "Tramitado")))
+                .Where(t => (t.User.Id == Userme.Id && t.State.Name == "Tramitado") || ((t.UserSender.Id == Userme.Id && t.State.Name == "Tramitado")))
                 .Include(t => t.Type)
                 .Include(t => t.State)
                 .Include(t => t.User)
@@ -131,7 +131,7 @@ namespace Refosus.Web.Controllers
                 MessageType = _combosHelper.GetComboMessageType(),
                 MessageState = _combosHelper.GetComboMessageState(),
                 MessageBillState = _combosHelper.GetComboMessageBillState(),
-                Users = _combosHelper.GetComboActiveUser()
+                Users = _combosHelper.GetComboUser()
 
             };
             return View(model);
@@ -229,7 +229,7 @@ namespace Refosus.Web.Controllers
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
             model.MessageBillState = _combosHelper.GetComboMessageBillState();
-            model.Users = _combosHelper.GetComboActiveUser();
+            model.Users = _combosHelper.GetComboUser();
             return View(model);
         }
 
@@ -241,7 +241,7 @@ namespace Refosus.Web.Controllers
                 MessageType = _combosHelper.GetComboMessageType(),
                 MessageState = _combosHelper.GetComboMessageState(),
                 MessageBillState = _combosHelper.GetComboMessageBillState(),
-                Users = _combosHelper.GetComboActiveUser()
+                Users = _combosHelper.GetComboUser()
             };
             return View(model);
         }
@@ -288,13 +288,11 @@ namespace Refosus.Web.Controllers
                     messageEntity.UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                     messageEntity.UserSender = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                     _context.Add(messageEntity);
-
                     string Files = "";
                     if (model.File != null)
                     {
                         string ext;
                         string Nombre;
-
                         foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                         {
                             Nombre = item.FileName;
@@ -338,7 +336,7 @@ namespace Refosus.Web.Controllers
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
             model.MessageBillState = _combosHelper.GetComboMessageBillState();
-            model.Users = _combosHelper.GetComboActiveUser();
+            model.Users = _combosHelper.GetComboUser();
             return View(model);
         }
         #endregion
@@ -362,7 +360,7 @@ namespace Refosus.Web.Controllers
                 .Include(t => t.Transaction)
                 .ThenInclude(t => t.StateCreate)
                 .Include(t => t.Ceco)
-                .Include(t=>t.Checks)
+                .Include(t => t.Checks)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (messageEntity == null)
             {
@@ -645,12 +643,12 @@ namespace Refosus.Web.Controllers
                 {
                     if (messageEntity.User == messageEntity.UserSender)
                     {
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 5);
+                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
                         messageEntity.UserSender = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                     }
                     else
                     {
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 2);
+                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                         messageEntity.UserSender = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                     }
                 }
@@ -708,9 +706,12 @@ namespace Refosus.Web.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
             }
+            model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
+            model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);
+            model.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(t => t.Id == model.StateBillId);
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
-            model.Users = _combosHelper.GetComboActiveUser();
+            model.Users = _combosHelper.GetComboUser();
             model.MessageBillState = _combosHelper.GetComboMessageBillState();
             return View(model);
         }
@@ -780,12 +781,12 @@ namespace Refosus.Web.Controllers
                     {
                         if (messageEntity.User == messageEntity.UserSender)
                         {
-                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 5);
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
                             messageEntity.UserSender = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                         }
                         else
                         {
-                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 2);
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                             messageEntity.UserSender = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                         }
                     }
@@ -848,7 +849,7 @@ namespace Refosus.Web.Controllers
             model.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(t => t.Id == model.StateBillId);
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
-            model.Users = _combosHelper.GetComboActiveUser();
+            model.Users = _combosHelper.GetComboUser();
             model.MessageBillState = _combosHelper.GetComboMessageBillState();
             return View(model);
         }
@@ -856,290 +857,6 @@ namespace Refosus.Web.Controllers
         #endregion
 
         #region Message
-        /*
-        public async Task<IActionResult> ReceiveMessageAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            modelEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-            MessageStateEntity stateOld = modelEntity.State;
-            if (modelEntity.Type.Id == 3)
-            {
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 6);
-            }
-            else
-            {
-                if (modelEntity.Type.Id == 1)
-                {
-                    modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 4);
-                }
-                else
-                {
-                    if (modelEntity.Type.Id == 2)
-                    {
-                        modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 7);
-                        Factura += " se cambia el estado de la factura de " + modelEntity.StateBill.Name;
-                        modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Id == 1);
-                        Factura += " por el estado " + modelEntity.StateBill.Name;
-                    }
-                }
-            }
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.UpdateDate = update;
-            _context.Update(modelEntity);
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("EditMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "EditMessage", Id = modelEntity.Id }));
-        }
-        public async Task<IActionResult> FinishedMessageAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            if (modelEntity.Type.Id != 2)
-            {
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 4);
-                modelEntity.UpdateDate = update;
-            }
-            else
-            {
-                UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-                MessageBillStateEntity billstateold = modelEntity.StateBill;
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 4);
-                modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Id == 4);
-                modelEntity.UserPros = user;
-                modelEntity.DateProcess = update;
-                modelEntity.UpdateDate = update;
-
-                Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autorizo la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-            }
-            _context.Update(modelEntity);
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", new RouteValueDictionary(
-                    new { controller = "Messages", action = "Index", Id = modelEntity.Id }));
-        }
-        public async Task<IActionResult> AuthorizeMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            modelEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-            MessageStateEntity stateOld = modelEntity.State;
-
-            UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Id == 2);
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UpdateDate = update;
-
-            _context.Update(modelEntity);
-
-
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autoriza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                ;
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("EditMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "EditMessage", Id = modelEntity.Id }));
-        }
-        public async Task<IActionResult> RefuseMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-
-            UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == 4);
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Id == 3);
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UserPros = user;
-            modelEntity.DateProcess = update;
-            modelEntity.UpdateDate = update;
-
-            _context.Update(modelEntity);
-
-
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se rechaza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction("EditMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "EditMessage", Id = modelEntity.Id }));
-        }
-
-        */
-
         [Authorize]
         public async Task<IActionResult> ReceiveMessageAsync(int? id, string note)
         {
@@ -1213,6 +930,7 @@ namespace Refosus.Web.Controllers
                 .Include(o => o.StateBill)
                 .Include(o => o.User)
                 .Include(o => o.Type)
+                .Include(o => o.UserAut)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (modelEntity == null)
             {
@@ -1415,10 +1133,12 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             DateTime update = System.DateTime.Now.ToUniversalTime();
 
-            MessageCheckEntity check = new MessageCheckEntity();
-            check.message = modelEntity;
-            check.User = user;
-            check.DateAut = update;
+            MessageCheckEntity check = new MessageCheckEntity
+            {
+                message = modelEntity,
+                User = user,
+                DateAut = update
+            };
             _context.Add(check);
 
             MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
@@ -1516,6 +1236,7 @@ namespace Refosus.Web.Controllers
                 .Include(o => o.StateBill)
                 .Include(o => o.User)
                 .Include(o => o.Type)
+                .Include(o => o.UserAut)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (modelEntity == null)
             {
@@ -1718,10 +1439,12 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
             DateTime update = System.DateTime.Now.ToUniversalTime();
 
-            MessageCheckEntity check = new MessageCheckEntity();
-            check.message = modelEntity;
-            check.User = user;
-            check.DateAut = update;
+            MessageCheckEntity check = new MessageCheckEntity
+            {
+                message = modelEntity,
+                User = user,
+                DateAut = update
+            };
             _context.Add(check);
 
             MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
@@ -1736,7 +1459,7 @@ namespace Refosus.Web.Controllers
             };
             string Description = "";
             Description += "Se da el visto bueno por el usuario " + user.FullName
-                + " en la fecha " + check.DateAutLocal                ;
+                + " en la fecha " + check.DateAutLocal;
             messagetransactionEntity.Description = Description;
             _context.Add(messagetransactionEntity);
             await _context.SaveChangesAsync();

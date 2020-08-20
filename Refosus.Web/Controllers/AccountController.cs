@@ -138,6 +138,7 @@ namespace Refosus.Web.Controllers
         {
             UserViewModel model = new UserViewModel
             {
+                
                 DocumentTypes =  _combosHelper.GetDocumentType(),
                 Companies = _combosHelper.GetComboCompany()
             };
@@ -147,14 +148,6 @@ namespace Refosus.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
-            model.DocumentTypes = _combosHelper.GetDocumentType();
-            model.Companies = _combosHelper.GetComboCompany();
-            model.CreateDate = System.DateTime.Now.ToUniversalTime();
-            model.ActiveDate = System.DateTime.Now.ToUniversalTime();
-            model.PhotoPath = $"~/Images/Users/{model.Email}.jpg";
-            model.Company = _context.Companies.FirstOrDefault();
-            model.CompanyId = model.Company.Id;
-            model.TypeDocument = _context.DocumentTypes.FirstOrDefault(t => t.Id == model.DocumentTypeId);
             if (ModelState.IsValid)
             {
                 UserEntity user = await _userHelper.GetUserByEmailAsync(model.Email);

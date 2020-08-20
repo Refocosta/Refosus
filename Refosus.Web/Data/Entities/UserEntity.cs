@@ -8,7 +8,6 @@ namespace Refosus.Web.Data.Entities
     public class UserEntity : IdentityUser
     {
         [Display(Name = "Tipo de Documento")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public DocumentTypeEntity TypeDocument { get; set; }
 
         [Display(Name = "Documento")]
@@ -56,7 +55,6 @@ namespace Refosus.Web.Data.Entities
         public string PhotoPath { get; set; }
 
         [Display(Name = "Compañia")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public CompanyEntity Company { get; set; }
 
         [Display(Name = "Activo?")]

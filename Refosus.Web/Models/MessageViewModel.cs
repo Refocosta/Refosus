@@ -20,6 +20,7 @@ namespace Refosus.Web.Models
 
         [Display(Name = "Estado de Factura")]
         public int StateBillId { get; set; }
+
         [Display(Name = "Centro de Costos")]
         public int CecoId { get; set; }
 
@@ -42,7 +43,7 @@ namespace Refosus.Web.Models
         public new MessagetransactionEntity Transaction { get; set; }
         public new MessageCheckEntity Checks { get; set; }
 
-        [Display(Name = "Adunto")]
+        [Display(Name = "Adjunto")]
         public IEnumerable<IFormFile> File { get; set; }
         public string Archivo { get; internal set; }
 

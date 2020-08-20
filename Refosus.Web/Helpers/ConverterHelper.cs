@@ -339,12 +339,12 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,    
+                    TypeId = messagentity.Type.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
                     CreateDate = messagentity.CreateDateLocal,
@@ -370,7 +370,7 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
@@ -406,7 +406,7 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
@@ -435,7 +435,7 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
@@ -469,7 +469,7 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
@@ -487,7 +487,6 @@ namespace Refosus.Web.Helpers
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
                     DateAut = messagentity.DateAutLocal,
-                    DateProcess = messagentity.DateProcessLocal,
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
                     NumberBill = messagentity.NumberBill
@@ -499,7 +498,7 @@ namespace Refosus.Web.Helpers
                 {
                     MessageType = _combosHelper.GetComboMessageType(),
                     MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboActiveUser(),
+                    Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(),
                     Id = messagentity.Id,
@@ -519,7 +518,6 @@ namespace Refosus.Web.Helpers
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
                     DateAut = messagentity.DateAutLocal,
-                    DateProcess = messagentity.DateProcessLocal,
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
                     NumberBill = messagentity.NumberBill
@@ -540,10 +538,13 @@ namespace Refosus.Web.Helpers
                 UserName = model.UserName,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                IsActive = true
+                IsActive = model.IsActive,
+                Company = await _context.Companies.FindAsync(model.CompanyId),
+                CreateDate = System.DateTime.Now.ToUniversalTime(),
+                ActiveDate = System.DateTime.Now.ToUniversalTime(),
+                PhotoPath = model.PhotoPath
             };
         }
-
         public UserViewModel ToUserViewModel(UserEntity model)
         {
             return new UserViewModel
@@ -552,14 +553,14 @@ namespace Refosus.Web.Helpers
                 Id = model.Id,
                 UserName = model.UserName,
 
-                TypeDocument =model.TypeDocument,
-                DocumentTypeId=model.TypeDocument.Id,
+                TypeDocument = model.TypeDocument,
+                DocumentTypeId = model.TypeDocument.Id,
                 Document = model.Document,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
-                IsActive=model.IsActive,
+                IsActive = model.IsActive,
                 Email = model.Email
             };
         }

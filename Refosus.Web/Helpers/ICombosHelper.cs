@@ -11,7 +11,7 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboMessageType();
         IEnumerable<SelectListItem> GetComboMessageState();
         IEnumerable<SelectListItem> GetComboMessageBillState();
-        IEnumerable<SelectListItem> GetComboActiveUser();
+        IEnumerable<SelectListItem> GetComboUser();
         IEnumerable<SelectListItem> GetComboCeCo();
         IEnumerable<SelectListItem> GetDocumentType();
     }

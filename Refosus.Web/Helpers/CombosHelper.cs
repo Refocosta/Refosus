@@ -136,7 +136,6 @@ namespace Refosus.Web.Helpers
             List<SelectListItem> list = _context.MessagesBillState
                 .Where(t => t.Active == true)
                 .Select(t =>
-
               new SelectListItem
               {
                   Text = t.Name,
@@ -151,18 +150,16 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
-        public IEnumerable<SelectListItem> GetComboActiveUser()
+        public IEnumerable<SelectListItem> GetComboUser()
         {
-            List<SelectListItem> list = _context.Users
-                .Where(t => t.IsActive == true)
+            List <SelectListItem> list = _context.Users
+                .OrderBy(t=>t.FirstName)
                 .Select(t =>
-
               new SelectListItem
               {
                   Text = t.FullName,
                   Value = $"{t.Id}"
               })
-
                 .ToList();
             list.Insert(0, new SelectListItem
             {

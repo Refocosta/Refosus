@@ -90,7 +90,7 @@
                                         {
                                             @if (Model.Type.Name == "Paquete")
                                             {
-                                                @if (Model.State.Name == "En Transito")
+                                                @if (Model.State.Name == "En Transito"|| Model.State.Name == "En Proceso")
                                                 {
                                                     <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
                                                     <button data-id="@Model.Id" type="button" class="btn btn-warning col-sm-2 receiveItem" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>

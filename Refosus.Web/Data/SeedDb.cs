@@ -66,8 +66,12 @@ namespace Refosus.Web.Data
                 await AddMenuAsync("Principal", "", "", 0);
                 await AddMenuAsync("Parametros", "", "", 1);
                 await AddMenuAsync("Seguridad", "", "", 1);
-                await AddMenuAsync("Mensajeria", "", "", 1);
+                await AddMenuAsync("Correspondencia", "", "", 1);
                 await AddMenuAsync("Noticias", "Home", "IndexNews", 1);
+                await AddMenuAsync("Compras", "", "", 1);
+                await AddMenuAsync("Reportes", "", "", 1);
+                await AddMenuAsync("Iniciativas TE", "", "", 1);
+                await AddMenuAsync("BSE", "", "", 1);
 
                 await AddMenuAsync("Compañias", "Companies", "Index", 2);
                 await AddMenuAsync("Paises", "Countries", "Index", 2);
