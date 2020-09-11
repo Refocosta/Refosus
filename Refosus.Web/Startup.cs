@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
+using Refosus.Web.Data.EntitiesTE;
 using Refosus.Web.Helpers;
 using System;
 
@@ -33,7 +34,10 @@ namespace Refosus.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusPruebas"));
             });
-
+            services.AddDbContext<RefocostaContext>(cfg =>
+            {
+                cfg.UseSqlServer(Configuration.GetConnectionString("AWS"));
+            });
             services.AddIdentity<UserEntity, RoleEntity>(options =>
              {
                  // Lockout settings.
@@ -50,7 +54,6 @@ namespace Refosus.Web
                  options.Password.RequiredLength = 6;
                  // User settings.
                  options.User.RequireUniqueEmail = true;
-
              }).AddEntityFrameworkStores<DataContext>();
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
@@ -59,6 +62,7 @@ namespace Refosus.Web
             services.AddScoped<IUserHelper, UserHelper>();
             services.AddScoped<ISecurityHelper, SecurityHelper>();
             services.AddScoped<IFileHelper, FileHelper>();
+            services.AddScoped<IMailHelper, MailHelper>();
             services.AddControllersWithViews();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

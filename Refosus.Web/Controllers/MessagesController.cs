@@ -22,19 +22,22 @@ namespace Refosus.Web.Controllers
         private readonly ICombosHelper _combosHelper;
         private readonly IUserHelper _userHelper;
         private readonly IFileHelper _fileHelper;
+        private readonly IMailHelper _mailHelper;
         private readonly IConverterHelper _converterHelper;
 
         public MessagesController(DataContext context,
             IConverterHelper converterHelper,
             ICombosHelper combosHelper,
             IUserHelper userHelper,
-            IFileHelper fileHelper
+            IFileHelper fileHelper,
+            IMailHelper mailHelper
             )
         {
             _context = context;
             _combosHelper = combosHelper;
             _userHelper = userHelper;
             _fileHelper = fileHelper;
+            _mailHelper = mailHelper;
             _converterHelper = converterHelper;
         }
         #region Index
@@ -211,6 +214,8 @@ namespace Refosus.Web.Controllers
                     messagetransactionEntity.UserCreate = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
                     messagetransactionEntity.UserUpdate = messageEntity.User;
                     messagetransactionEntity.Message = messageEntity;
+                    await _context.SaveChangesAsync();
+
                     string Description = "";
                     Description += "Se crea el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.CreateDateLocal
@@ -222,7 +227,26 @@ namespace Refosus.Web.Controllers
                     Description += Files;
                     messagetransactionEntity.Description = Description;
                     _context.Add(messagetransactionEntity);
-                    await _context.SaveChangesAsync();
+
+                    string subject = "Correspondencia No. "+messageEntity.Id+" - "+messageEntity.Reference;
+                    string body =
+                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                        " <br/> Hola. <br/> " +
+                        "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name+ "</strong>, <strong>" + messageEntity.Reference+ "</strong> con número de radicado <strong>" +
+                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName+ "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName+ ".</strong> <br/> " +
+                        "Ingrese a https://nativa.rfc.com para revisar el registro. <br/> <br/> " +
+                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                        "una respuesta. <br/> <br/> " +
+                        "Atentamente,<br/>" +
+                        "Equipo de Soporte - Refocosta.<br/>";
+                    string [] to=new string[2];
+                    to[0] = messagetransactionEntity.UserCreate.Email;
+                    to[1] = messagetransactionEntity.UserUpdate.Email;
+                    _mailHelper.sendMail(to,subject,body);
+
                     return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
                 }
             }
@@ -329,6 +353,26 @@ namespace Refosus.Web.Controllers
                     Description += Files;
                     messagetransactionEntity.Description = Description;
                     _context.Add(messagetransactionEntity);
+
+                    string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                    string body =
+                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                        " <br/> Hola. <br/> " +
+                        "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                        "Ingrese a https://nativa.rfc.com para revisar el registro. <br/> <br/> " +
+                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                        "una respuesta. <br/> <br/> " +
+                        "Atentamente,<br/>" +
+                        "Equipo de Soporte - Refocosta.<br/>";
+                    string[] to = new string[2];
+                    to[0] = messagetransactionEntity.UserCreate.Email;
+                    to[1] = messagetransactionEntity.UserUpdate.Email;
+                    _mailHelper.sendMail(to, subject, body);
+
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                 }
@@ -701,9 +745,32 @@ namespace Refosus.Web.Controllers
                 Description += Files;
                 messagetransactionEntity.Description = Description;
                 _context.Add(messagetransactionEntity);
-
-
                 await _context.SaveChangesAsync();
+
+                if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                {
+                    string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                    string body =
+                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                        " <br/> Hola. <br/> " +
+                        "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                        "Ingrese a https://nativa.rfc.com para revisar el registro. <br/> <br/> " +
+                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                        "una respuesta. <br/> <br/> " +
+                        "Atentamente,<br/>" +
+                        "Equipo de Soporte - Refocosta.<br/>";
+                    string[] to = new string[2];
+                    to[0] = messagetransactionEntity.UserCreate.Email;
+                    to[1] = messagetransactionEntity.UserUpdate.Email;
+                    _mailHelper.sendMail(to, subject, body);
+                }
+
+
+               
                 return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
             }
             model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
@@ -841,6 +908,30 @@ namespace Refosus.Web.Controllers
 
 
                     await _context.SaveChangesAsync();
+
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a https://nativa.rfc.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+
+
                     return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                 }
             }

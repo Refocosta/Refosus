@@ -147,7 +147,6 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
 
-
         public async Task<IActionResult> DeleteNew(int? id)
         {
             if (id == null)

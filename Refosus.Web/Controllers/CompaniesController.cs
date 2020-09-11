@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class CompaniesController : Controller
     {
         private readonly DataContext _context;

@@ -1,12 +1,12 @@
 ﻿@model IEnumerable<Refosus.Web.Data.Entities.NewEntity>
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb2">
             <div class="col-sm-6">
-                <h1 class="m-0 text-dark">Refosus WEB</h1>
+                <h1 class="m-0 text-dark">NATIVA</h1>
             </div>
         </div>
     </div>
@@ -29,17 +29,17 @@
                                 </div>
                             </div>
                             <div class="card-body">
-                                @if (item.Content != null)
-                                {
-                                    @item.Content
-                                }
-                                @if (item.Content != null)
-                                {
-                                    <br />
-                                }
                                 @if (!string.IsNullOrEmpty(item.LogoPath))
                                 {
                                     <img src="@Url.Content(item.LogoPath)" class="img-fluid" alt="Responsive image">
+                                }
+                                @if (!string.IsNullOrEmpty(item.LogoPath))
+                                {
+                                    <br />
+                                }
+                                @if (item.Content != null)
+                                {
+                                    @item.Content
                                 }
                             </div>
                             <div class="card-footer">

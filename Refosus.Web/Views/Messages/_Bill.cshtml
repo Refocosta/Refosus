@@ -22,19 +22,19 @@
                     <select asp-for="AutUser" asp-items="Model.Users" class="form-control" disabled></select>
                     <span asp-validation-for="AutUser" class="text-danger"></span>
                 </div>
-                <div class="form-group col-sm-12">
-                    <label asp-for="ProUser" class="control-label"></label>
-                    <select asp-for="ProUser" asp-items="Model.Users" class="form-control" disabled></select>
-                    <span asp-validation-for="ProUser" class="text-danger"></span>
+                <div class="form-group col col-sd-6">
+                    <label asp-for="DateAut" class="control-label"></label>
+                    <input asp-for="DateAut" class="form-control" disabled />
+                    <span asp-validation-for="DateAut" class="text-danger"></span>
                 </div>
+                
 
 
                 <div class="row">
-
-                    <div class="form-group col col-sd-6">
-                        <label asp-for="DateAut" class="control-label"></label>
-                        <input asp-for="DateAut" class="form-control" disabled />
-                        <span asp-validation-for="DateAut" class="text-danger"></span>
+                    <div class="form-group col-sm-12">
+                        <label asp-for="ProUser" class="control-label"></label>
+                        <select asp-for="ProUser" asp-items="Model.Users" class="form-control" disabled></select>
+                        <span asp-validation-for="ProUser" class="text-danger"></span>
                     </div>
                     <div class="form-group col col-sd-6">
                         <label asp-for="DateProcessLocal" class="control-label"></label>

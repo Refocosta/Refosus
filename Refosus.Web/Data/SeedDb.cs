@@ -64,14 +64,17 @@ namespace Refosus.Web.Data
             if (!_context.Menus.Any())
             {
                 await AddMenuAsync("Principal", "", "", 0);
+
+
                 await AddMenuAsync("Parametros", "", "", 1);
                 await AddMenuAsync("Seguridad", "", "", 1);
                 await AddMenuAsync("Correspondencia", "", "", 1);
                 await AddMenuAsync("Noticias", "Home", "IndexNews", 1);
-                await AddMenuAsync("Compras", "", "", 1);
+                await AddMenuAsync("Compras", "Shopping", "Index", 1);
                 await AddMenuAsync("Reportes", "", "", 1);
-                await AddMenuAsync("Iniciativas TE", "", "", 1);
-                await AddMenuAsync("BSE", "", "", 1);
+                await AddMenuAsync("Iniciativas TE", "TE", "Index", 1);
+                await AddMenuAsync("BSC", "", "", 1);
+                
 
                 await AddMenuAsync("Compañias", "Companies", "Index", 2);
                 await AddMenuAsync("Paises", "Countries", "Index", 2);
@@ -248,6 +251,7 @@ namespace Refosus.Web.Data
                 await _userHelper.CheckRoleAsync("MessageBillProcesator");
                 await _userHelper.CheckRoleAsync("MessageBillAutorizador");
                 await _userHelper.CheckRoleAsync("MessageBillChecker");
+                await _userHelper.CheckRoleAsync("MessageBillChecker");
             }
         }
         private async Task CheckRolesUser()
@@ -259,11 +263,6 @@ namespace Refosus.Web.Data
                 await _userHelper.AddUserToRoleAsync(user, "Administrator");
             }
         }
-
-
-
-
-
         private async Task<UserEntity> CheckUserAsync(
             string document,
             string firstName,

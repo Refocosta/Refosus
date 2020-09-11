@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewData["Title"] = "DetailsShopping";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Detalles</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col col-lg-12 connectedSortable">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <a class="card-title">Detalles de la compra</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col col-md-12">
+                            <div class="row">
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Consecutivo</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Solicitado Por</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Estado</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Encargado</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Fecha de Solicitud</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                                <div class="form-group col col-sd-4">
+                                    <label class="control-label">Fecha de Estimada</label>
+                                    <input class="form-control" value="" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-12 table-responsive">
+                                    <label class="control-label">Articulos</label>
+                                    <table class="table table-hover table-striped display" id="tblDatos1">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Nombre
+                                                </th>
+                                                <th>
+                                                    Medida
+                                                </th>
+                                                <th>
+                                                    Unidades
+                                                </th>
+                                                <th>
+                                                    Cantidad
+                                                </th>
+                                                <th>
+                                                    Responsable
+                                                </th>
+                                                <th>
+                                                    Estado
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Nombre
+                                                </td>
+                                                <td>
+                                                    Medida
+                                                </td>
+                                                <td>
+                                                    Unidades
+                                                </td>
+                                                <td>
+                                                    Cantidad
+                                                </td>
+                                                <td>
+                                                    Responsable
+                                                </td>
+                                                <td>
+                                                    Estado
+                                                </td>
+                                                <td>
+                                                    <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
+                                                    <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                    <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                </td>
+                                            </tr>
+                                            @*@foreach (var item in Model.MessageFiles)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @Html.DisplayFor(modelItem => item.Name)
+                                                        </td>
+                                                        <td>
+                                                            <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
+                                                                <i class="oi oi-cloud-download style="color:white"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                }*@
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-footer ">
+                        <div class="col col-12">
+                            <a asp-action="EditShopping" asp-route-id="1" class="btn btn-warning col-sm-2">Editar</a>
+                            <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+            $('#tblDatos1').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}
+

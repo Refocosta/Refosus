@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Refosus.Web.Data.EntitiesTE.WorkStreamEntity>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Transformacion Empresarial</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-lg-4 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-@Html.DisplayFor(modelItem => item.Colour)">
+                        <div class="inner">
+                            <h4>@Html.DisplayFor(modelItem => item.WorkStream1)</h4>
+                            Responsable: @Html.DisplayFor(modelItem => item.IdResponsableNavigation.Nombre)
+                            <br />
+                            Iniciativas: @Html.DisplayFor(modelItem => item.Iniciativas.Count)
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-folder"></i>
+                        </div>
+                        <a asp-action="DetailsWorkStream" asp-route-id="@item.IdWorkStream" class="small-box-footer"> Detalles<i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

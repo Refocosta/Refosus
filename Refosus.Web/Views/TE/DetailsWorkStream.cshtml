@@ -1,0 +1,200 @@
+﻿@model Refosus.Web.Data.EntitiesTE.WorkStreamEntity
+@{
+    ViewData["Title"] = "DetailsWorkStream";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Detalles Work Stream @Html.DisplayFor(model => model.WorkStream1)</h1>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            @{
+                int t0 = 0;
+                int t1 = 0;
+                int t2 = 0;
+                int t3 = 0;
+                int t4 = 0;
+                int t5 = 0;
+                foreach (var item in Model.Iniciativas.OrderBy(d => d.NombreIniciativa))
+                {
+                    if (item.Etapa == "L0        ")
+                    {
+                        t0++;
+                    }
+                    if (item.Etapa == "L1        ")
+                    {
+                        t1++;
+                    }
+                    if (item.Etapa == "L2        ")
+                    {
+                        t2++;
+                    }
+                    if (item.Etapa == "L3        ")
+                    {
+                        t3++;
+                    }
+                    if (item.Etapa == "L4        ")
+                    {
+                        t4++;
+                    }
+                    if (item.Etapa == "L5        ")
+                    {
+                        t5++;
+                    }
+                }
+
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-blue">
+                        <div class="inner">
+                            <h3>L0:@t0</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                            <h3>L1:@t1</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-yellow">
+                        <div class="inner">
+                            <h3>L2:@t2</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-red">
+                        <div class="inner">
+                            <h3>L3:@t3</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-orange">
+                        <div class="inner">
+                            <h3>L4:@t4</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-6">
+                    <div class="small-box bg-lime">
+                        <div class="inner">
+                            <h3>L5:@t5</h3>
+                        </div>
+                        <div class="icon">
+                            <i class="oi oi-info"></i>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+            <div class="row">
+                <section class="col-lg-12 connectedSortable">
+                    <div class="card card-green">
+                        <div class="card-header">
+                            <a class="card-title">Iniciativas</a>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 table-responsive">
+                                    <table class="table table-hover table-striped display" id="tblDatos">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Nombre
+                                                </th>
+                                                <th>
+                                                    Etapa
+                                                </th>
+                                                <th>
+                                                    Responsable
+                                                </th>
+                                                <th>
+                                                    Tipo
+                                                </th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Iniciativas.OrderBy(d => d.NombreIniciativa))
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.NombreIniciativa)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Etapa)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.IdResponsableNavigation.Nombre)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.TipoIniciativa)
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });</script>
+}

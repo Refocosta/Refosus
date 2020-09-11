@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
+using Refosus.Web.Data.EntitiesTE;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
 
@@ -525,6 +526,7 @@ namespace Refosus.Web.Helpers
             }
         }
         #endregion
+
         #region Users
         public async Task<UserEntity> ToUserEntityAsync(UserViewModel model, bool isNew)
         {
@@ -566,6 +568,30 @@ namespace Refosus.Web.Helpers
         }
 
 
+
+
         #endregion
+
+        //#region Iniciativas
+        ////public IniciativasEntity ToIniciativasEntity(WorkStreamViewModel model, bool isNew)
+        ////{
+        ////    throw new System.NotImplementedException();
+        ////}
+
+        ////public IniciativasViewModel ToIniciativasViewModel(IniciativasEntity modelEntity)
+        ////{
+        ////    return new MenuEntity
+        ////    {
+        ////        Id = isNew ? 0 : model.Id,
+        ////        Name = model.Name,
+        ////        Controller = model.Controller,
+        ////        Action = model.Action,
+        ////        LogoPath = path,
+        ////        IsActive = model.IsActive,
+        ////        Menu = await _context.Menus.FindAsync(model.MenuId)
+        ////    };
+        ////    return model;
+        ////}
+        //#endregion
     }
 }

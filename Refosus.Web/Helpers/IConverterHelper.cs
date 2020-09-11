@@ -1,4 +1,5 @@
 ﻿using Refosus.Web.Data.Entities;
+using Refosus.Web.Data.EntitiesTE;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
 
@@ -59,5 +60,10 @@ namespace Refosus.Web.Helpers
         Task<UserEntity> ToUserEntityAsync(UserViewModel model, bool isNew);
         UserViewModel ToUserViewModel(UserEntity model);
         #endregion
+        //#region Iniciativas
+        //IniciativasEntity ToIniciativasEntity(WorkStreamViewModel model, bool isNew);
+        //IniciativasViewModel ToIniciativasViewModel(IniciativasEntity modelEntity);
+
+        //#endregion
     }
 }

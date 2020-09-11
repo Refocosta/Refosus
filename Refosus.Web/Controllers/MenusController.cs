@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class MenusController : Controller
     {
         private readonly DataContext _context;
