@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -43,16 +44,19 @@ namespace Refosus.Web.Controllers
             return View(await _context.News.ToListAsync());
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> IndexNews()
         {
             return View(await _context.News.ToListAsync());
         }
 
+        [Authorize(Roles = "Administrator")]
         public IActionResult CreateNew()
         {
             return View();
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateNew(NewViewModel newViewModel)
@@ -80,6 +84,7 @@ namespace Refosus.Web.Controllers
             return View(newViewModel);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DetailsNew(int? id)
         {
             if (id == null)
@@ -97,6 +102,7 @@ namespace Refosus.Web.Controllers
             return View(newEntity);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> EditNew(int? id)
         {
             if (id == null)
@@ -114,6 +120,7 @@ namespace Refosus.Web.Controllers
             return View(newViewModel);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditNew(int id, NewViewModel model)
@@ -147,6 +154,7 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteNew(int? id)
         {
             if (id == null)
@@ -171,7 +179,7 @@ namespace Refosus.Web.Controllers
             string url = Request.HttpContext.Request.GetDisplayUrl();
             if (User.Identity.IsAuthenticated == true)
             {
-                UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
                 List<RoleMenuEntity> menus = await _securityHelper.GetMenusRoleAsync(user);
                 return PartialView("_menu", menus);
             }
@@ -182,7 +190,7 @@ namespace Refosus.Web.Controllers
             string url = Request.HttpContext.Request.GetDisplayUrl();
             if (User.Identity.IsAuthenticated == true)
             {
-                UserEntity user = await _userHelper.GetUserByEmailAsync(User.Identity.Name);
+                UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
                 UserPhotoInfoModel info=new UserPhotoInfoModel();
                 info.PhotoPath = user.PhotoPath;
                 info.Name = user.FullName;

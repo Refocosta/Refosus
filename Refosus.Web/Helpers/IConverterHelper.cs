@@ -65,5 +65,9 @@ namespace Refosus.Web.Helpers
         //IniciativasViewModel ToIniciativasViewModel(IniciativasEntity modelEntity);
 
         //#endregion
+        #region Shopping
+        ShoppingEntity ToShoppingEntity(ShoppingViewModel model, bool isNew);
+        ShoppingViewModel ToShoppingViewModel(ShoppingEntity model);
+        #endregion
     }
 }

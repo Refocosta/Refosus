@@ -5,6 +5,9 @@ namespace Refosus.Web.Helpers
 {
     public interface ICombosHelper
     {
+        #region Parameters
+        IEnumerable<SelectListItem> GetComboProject();
+        #endregion
         IEnumerable<SelectListItem> GetComboCampus();
         IEnumerable<SelectListItem> GetComboCompany();
         IEnumerable<SelectListItem> GetComboMenus();
@@ -12,7 +15,18 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboMessageState();
         IEnumerable<SelectListItem> GetComboMessageBillState();
         IEnumerable<SelectListItem> GetComboUser();
-        IEnumerable<SelectListItem> GetComboCeCo();
-        IEnumerable<SelectListItem> GetDocumentType();
+        IEnumerable<SelectListItem> GetComboCeCo(int comp);
+        IEnumerable<SelectListItem> GetComboDocumentType();
+        #region Shopping
+        IEnumerable<SelectListItem> GetComboShoppingCategory();
+        IEnumerable<SelectListItem> GetComboShoppingCategory(int sub);
+        IEnumerable<SelectListItem> GetComboShoppingUnit();
+        IEnumerable<SelectListItem> GetComboShoppingMeasure(int uni);
+        
+        IEnumerable<SelectListItem> GetComboShoppingState();
+
+
+
+        #endregion
     }
 }

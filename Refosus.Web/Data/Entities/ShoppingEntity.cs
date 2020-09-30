@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Data.Entities
 {
-    public class ShopingEntity
+    public class ShoppingEntity
     {
         [Display(Name = "Consecutivo")]
         public int Id { get; set; }
 
         [Display(Name = "Creado Por")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public UserEntity UserCreate { get; set; }
 
         [DataType(DataType.DateTime)]
@@ -25,25 +24,35 @@ namespace Refosus.Web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime CreateDateLocal => CreateDate.ToLocalTime();
 
-        [Display(Name = "Asignado A")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public UserEntity UserAssigned { get; set; }
-
-        [Display(Name = "Articulos")]
-        public IEnumerable<ShoppingItemsEntity> Items { get; set; }
-
         [DataType(DataType.DateTime)]
-        [Display(Name = "Fecha de creación")]
+        [Display(Name = "Fecha de actualización")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime UpdateDate { get; set; }
 
         [DataType(DataType.DateTime)]
-        [Display(Name = "Fecha de creación")]
+        [Display(Name = "Fecha de actualización")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime UpdateDateLocal => UpdateDate.ToLocalTime();
 
+        [Display(Name = "Asignado A")]
+        public UserEntity UserAssigned { get; set; }
+
         [Display(Name = "Estado")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public ShoppingStateEntity State { get; set; }
+
+        [Display(Name = "proyecto")]
+        public ProjectEntity Project { get; set; }
+
+        [Display(Name = "Jefe de Proyecto")]
+        public UserEntity UserProjectBoss { get; set; }
+
+        [Display(Name = "Articulos")]
+        public IEnumerable<ShoppingItemsEntity> Items { get; set; }
+        [Display(Name = "Articulos")]
+        public IEnumerable<ShoppingTempItems> ItemsTemp { get; set; }
+
+        
+
+        
     }
 }

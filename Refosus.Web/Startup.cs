@@ -38,6 +38,7 @@ namespace Refosus.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("AWS"));
             });
+
             services.AddIdentity<UserEntity, RoleEntity>(options =>
              {
                  // Lockout settings.
@@ -55,6 +56,7 @@ namespace Refosus.Web
                  // User settings.
                  options.User.RequireUniqueEmail = true;
              }).AddEntityFrameworkStores<DataContext>();
+
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
@@ -64,6 +66,7 @@ namespace Refosus.Web
             services.AddScoped<IFileHelper, FileHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
             services.AddControllersWithViews();
+            services.AddControllers();
         }
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

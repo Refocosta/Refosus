@@ -11,6 +11,9 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Radicado")]
         public int Id { get; set; }
 
+        [Display(Name = "Compañia")]
+        public CompanyEntity Company { get; set; }
+
         [Display(Name = "Tipo")]
         public MessageTypeEntity Type { get; set; }
 

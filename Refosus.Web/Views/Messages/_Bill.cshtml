@@ -45,25 +45,7 @@
             </div>
             <div class="modal-footer">
 
-                @if (Model.StateBill != null)
-                {
-                    @if (Model.StateBill.Name == "Nuevo")
-                    {
-                        @if (User.IsInRole("MessageBillAutorizador") || User.IsInRole("Administrator"))
-                        {
-                            <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- AuthorizeItem" id="btnAuthorize">Aprobar Factura</button>
-                            <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- RefuseItem" id="btnRefuse">Rechazar Factura</button>
-                        }
-
-                    }
-                    @if (Model.StateBill.Name == "Aprobado")
-                    {
-                        @if (User.IsInRole("MessageBillProcesator") || User.IsInRole("Administrator"))
-                        {
-                            <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm- FinishedItem" id="btnFinished">Procesar Factura</button>
-                        }
-                    }
-                }
+                
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>

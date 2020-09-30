@@ -281,8 +281,8 @@ namespace Refosus.Web.Helpers
         #region Message
         public async Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew)
         {
-            if (model.Ceco != null && model.Type.Name == "Factura")
-            {
+            //if (model.CecoId != null && model.Type.Name == "Factura")
+            //{
                 return new MessageEntity
                 {
                     Id = isNew ? 0 : model.Id,
@@ -295,27 +295,35 @@ namespace Refosus.Web.Helpers
                     User = await _context.Users.FindAsync(model.CreateUser),
                     StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
                     UserSender = await _context.Users.FindAsync(model.SenderUser),
-                    NumberBill = model.NumberBill
-                };
-            }
-            else
-            {
-                return new MessageEntity
-                {
-                    Id = isNew ? 0 : model.Id,
-                    Type = await _context.MessagesTypes.FindAsync(model.TypeId),
-                    Sender = model.Sender,
-                    Reference = model.Reference,
-                    CreateDate = model.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
-                    State = await _context.MessagesStates.FindAsync(model.StateId),
-                    User = await _context.Users.FindAsync(model.CreateUser),
-                    StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
-                    UserSender = await _context.Users.FindAsync(model.SenderUser),
+                    UserAut = await _context.Users.FindAsync(model.AutUser),
+                    UserPros = await _context.Users.FindAsync(model.ProUser),
+                    UserCreate = await _context.Users.FindAsync(model.CreateUser),
+                    DateAut = model.DateAutLocal.ToUniversalTime(),
+                    DateProcess = model.DateProcessLocal.ToUniversalTime(),
                     Ceco = await _context.CeCos.FindAsync(model.CecoId),
-                    NumberBill = model.NumberBill
+                    NumberBill = model.NumberBill,
+                    Company = await _context.Companies.FindAsync(model.CompanyId),
                 };
-            }
+            //}
+            //else
+            //{
+            //    return new MessageEntity
+            //    {
+            //        Id = isNew ? 0 : model.Id,
+            //        Type = await _context.MessagesTypes.FindAsync(model.TypeId),
+            //        Sender = model.Sender,
+            //        Reference = model.Reference,
+            //        CreateDate = model.CreateDate.ToUniversalTime(),
+            //        UpdateDate = model.UpdateDate.ToUniversalTime(),
+            //        State = await _context.MessagesStates.FindAsync(model.StateId),
+            //        User = await _context.Users.FindAsync(model.CreateUser),
+            //        StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+            //        UserSender = await _context.Users.FindAsync(model.SenderUser),
+
+            //        Ceco = await _context.CeCos.FindAsync(model.CecoId),
+            //        NumberBill = model.NumberBill
+            //    };
+            //}
         }
         public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
         {
@@ -342,14 +350,15 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies=_combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
@@ -357,12 +366,13 @@ namespace Refosus.Web.Helpers
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
                     ProUser = messagentity.UserPros.Id,
-                    DateProcess = messagentity.DateProcessLocal,
+                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId=messagentity.Company.Id
                 };
             }
             else
@@ -373,7 +383,8 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
@@ -381,8 +392,8 @@ namespace Refosus.Web.Helpers
                     CecoId = messagentity.Ceco.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
@@ -390,12 +401,13 @@ namespace Refosus.Web.Helpers
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
                     ProUser = messagentity.UserPros.Id,
-                    DateProcess = messagentity.DateProcessLocal,
+                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId = messagentity.Company.Id
                 };
             }
         }
@@ -409,25 +421,27 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
                     StateBillId = messagentity.StateBill.Id,
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
-                    DateAut = messagentity.DateAutLocal,
-                    DateProcess = messagentity.DateProcessLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
+                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId = messagentity.Company.Id
                 };
             }
             else
@@ -438,7 +452,8 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
@@ -446,19 +461,20 @@ namespace Refosus.Web.Helpers
                     CecoId = messagentity.Ceco.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
                     StateBillId = messagentity.StateBill.Id,
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
-                    DateAut = messagentity.DateAutLocal,
-                    DateProcess = messagentity.DateProcessLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
+                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId = messagentity.Company.Id
                 };
             }
         }
@@ -472,14 +488,15 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
@@ -487,10 +504,11 @@ namespace Refosus.Web.Helpers
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId = messagentity.Company.Id
                 };
             }
             else
@@ -501,7 +519,8 @@ namespace Refosus.Web.Helpers
                     MessageState = _combosHelper.GetComboMessageState(),
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(),
+                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
@@ -509,8 +528,8 @@ namespace Refosus.Web.Helpers
                     CecoId = messagentity.Ceco.Id,
                     Sender = messagentity.Sender,
                     Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal,
-                    UpdateDate = messagentity.UpdateDateLocal,
+                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
                     State = messagentity.State,
                     StateId = messagentity.State.Id,
                     StateBill = messagentity.StateBill,
@@ -518,10 +537,11 @@ namespace Refosus.Web.Helpers
                     User = messagentity.User,
                     CreateUser = messagentity.User.Id,
                     AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal,
+                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill
+                    NumberBill = messagentity.NumberBill,
+                    CompanyId = messagentity.Company.Id
                 };
             }
         }
@@ -551,7 +571,7 @@ namespace Refosus.Web.Helpers
         {
             return new UserViewModel
             {
-                DocumentTypes = _combosHelper.GetDocumentType(),
+                DocumentTypes = _combosHelper.GetComboDocumentType(),
                 Id = model.Id,
                 UserName = model.UserName,
 
@@ -570,6 +590,35 @@ namespace Refosus.Web.Helpers
 
 
 
+
+
+        #endregion
+
+        #region Shopping
+        public ShoppingEntity ToShoppingEntity(ShoppingViewModel model, bool isNew)
+        {
+            return new ShoppingEntity
+            {
+                Id = isNew ? 0 : model.Id
+            };
+        }
+
+        public ShoppingViewModel ToShoppingViewModel(ShoppingEntity model)
+        {
+            return new ShoppingViewModel
+            {
+                Id = model.Id,
+
+
+                ShoppingUnits = _combosHelper.GetComboShoppingUnit(),
+                ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0),
+                Categories = _combosHelper.GetComboShoppingCategory(),
+                SubCategories = _combosHelper.GetComboShoppingCategory(0),
+                Users = _combosHelper.GetComboUser(),
+                ShoppingStates = _combosHelper.GetComboShoppingState(),
+                Projects = _combosHelper.GetComboProject()
+            };
+        }
         #endregion
 
         //#region Iniciativas

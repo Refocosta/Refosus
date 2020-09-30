@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
@@ -30,6 +32,8 @@ namespace Refosus.Web.Controllers
             _converterHelper = converterHelper;
             _securityHelper = securityHelper;
         }
+
+        #region System
         public IActionResult Login()
         {
             if (User.Identity.IsAuthenticated)
@@ -66,8 +70,12 @@ namespace Refosus.Web.Controllers
         {
             return View();
         }
+        #endregion
+
+
 
         #region Roles
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> IndexRoles()
         {
             return View(await _context.
@@ -76,6 +84,7 @@ namespace Refosus.Web.Controllers
                 .OrderBy(t => t.Name)
                 .ToListAsync());
         }
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DetailsRole(string id)
         {
             if (id == null)
@@ -92,10 +101,12 @@ namespace Refosus.Web.Controllers
             }
             return View(roleEntity);
         }
+        [Authorize(Roles = "Administrator")]
         public IActionResult AddRole()
         {
             return View();
         }
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> AddRole(RoleEntity role)
         {
@@ -109,7 +120,7 @@ namespace Refosus.Web.Controllers
             return View(role);
         }
 
-
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             if (id == null)
@@ -129,28 +140,31 @@ namespace Refosus.Web.Controllers
         #endregion
 
         #region Users
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> IndexUsers()
         {
             return View(await _userHelper.GetUsersAsync());
         }
 
-        public  IActionResult AddUserAsync()
+        [Authorize(Roles = "Administrator")]
+        public IActionResult AddUserAsync()
         {
             UserViewModel model = new UserViewModel
             {
-                
-                DocumentTypes =  _combosHelper.GetDocumentType(),
+
+                DocumentTypes = _combosHelper.GetComboDocumentType(),
                 Companies = _combosHelper.GetComboCompany()
             };
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> AddUser(UserViewModel model)
         {
             if (ModelState.IsValid)
             {
-                UserEntity user = await _userHelper.GetUserByEmailAsync(model.Email);
+                UserEntity user = await _userHelper.GetUserAsync(model.Email);
                 if (user == null)
                 {
                     user = await _converterHelper.ToUserEntityAsync(model, true);
@@ -159,10 +173,11 @@ namespace Refosus.Web.Controllers
                 return RedirectToAction("IndexUsers", new RouteValueDictionary(
                 new { controller = "Account", action = "IndexUsers" }));
             }
-            model.DocumentTypes = _combosHelper.GetDocumentType();
+            model.DocumentTypes = _combosHelper.GetComboDocumentType();
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DetailsUser(string? id)
         {
             if (id == null)
@@ -185,6 +200,7 @@ namespace Refosus.Web.Controllers
             return View(modelView);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> EditUser(string? id)
         {
             if (id == null)
@@ -203,6 +219,7 @@ namespace Refosus.Web.Controllers
             return View(userViewModel);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteUserRole(string email, string name)
         {
             {
@@ -224,9 +241,56 @@ namespace Refosus.Web.Controllers
             }
         }
 
+
+
+        [Authorize(Roles = "Administrator")]
+
+        public async Task<IActionResult> ChangeUser()
+        {
+            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+            EditUserViewModel model = new EditUserViewModel
+            {
+                Address = user.Address,
+                Document = user.Document,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                PhoneNumber = user.PhoneNumber,
+                PicturePath = user.PhotoPath
+            };
+            return View(model);
+        }
+
+
+
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> ChangePassword()
+        {
+            return View();
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userHelper.GetUserAsync(User.Identity.Name);
+                var result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ChangeUser");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                }
+            }
+            return View(model);
+        }
+
         #endregion
 
         #region RoleMenu
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> AddRoleMenus(string id)
         {
             if (id == null)
@@ -247,6 +311,7 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddRoleMenus(RoleMenusViewModel model)
@@ -264,6 +329,7 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
 
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteRoleMenu(int? id)
         {
             {

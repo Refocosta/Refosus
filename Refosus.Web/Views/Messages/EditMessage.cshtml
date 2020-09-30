@@ -48,11 +48,17 @@
                                         <input type="hidden" asp-for="CreateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
                                         <input type="hidden" asp-for="SenderUser" />
+                                        <input asp-for="Operation" class="form-control" hidden />
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                         <div class="form-group col col-sm-4">
                                             <label asp-for="Id" class="control-label">Consecutivo</label>
                                             <input asp-for="Id" class="form-control" disabled />
                                             <span asp-validation-for="Id" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group col col-sm-4">
+                                            <label asp-for="CompanyId" class="control-label"></label>
+                                            <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control" disabled></select>
+                                            <span asp-validation-for="CompanyId" class="text-danger"></span>
                                         </div>
                                         <div class="form-group col col-sm-4">
                                             <label asp-for="StateId" class="control-label"></label>
@@ -74,44 +80,59 @@
                                     {
                                         @if (Model.Type.Name == "Factura")
                                         {
-                                            @if (Model.StateId != 4)
+                                            @if (Model.State.Name != "Tramitado")
                                             {
-                                                <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                                @if (User.IsInRole("MessageBillChecker") || User.IsInRole("Administrator"))
+                                                {
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-success checkItem col-sm-2" data-toggle="modal" data-target="#CheckDialog">Visto Bueno</button>
+                                                }
+                                            }
+                                            @if (Model.StateBill != null)
+                                            {
+                                                @if (Model.StateBill.Name == "Nuevo")
+                                                {
+                                                    @if (User.IsInRole("MessageBillAutorizador") || User.IsInRole("Administrator"))
+                                                    {
+                                                        <button type="submit" class="btn btn-success AuthorizeItem" id="btnAuthorize"> Aprobar Factura</button>
+                                                        <button type="submit" class="btn btn-danger RefuseItem" id="btnRefuse"> Rechazar Factura</button>
+                                                    }
+
+                                                }
+                                                @if (Model.StateBill.Name == "Aprobado")
+                                                {
+                                                    @if (User.IsInRole("MessageBillProcesator") || User.IsInRole("Administrator"))
+                                                    {
+                                                        <button type="submit" class="btn btn-danger FinishedItem" id="btnFinished"> Procesar Factura</button>
+                                                    }
+                                                }
                                             }
                                         }
                                         else
                                         {
+                                            <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
                                             @if (Model.Type.Name == "Paquete")
                                             {
-                                                @if (Model.StateId == 3)
+                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso")
                                                 {
-                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
-                                                    <button data-id="@Model.Id" type="button" class="btn btn-warning col-sm-2 receiveItem" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
-                                                }
-                                                @if (Model.StateId == 6)
-                                                {
-                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
-                                                    <button type="button" data-id="@Model.Id" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
-
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-warning  receiveItem col-sm-2" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
                                                 }
                                             }
                                             else
                                             {
-                                                @if (Model.StateId == 1 || Model.StateId == 5 || Model.StateId == 2)
+                                                @if (Model.State.Name == "Ingresado")
                                                 {
-                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
                                                     <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
                                                 }
-                                                @if (Model.StateId == 6)
+                                                @if (Model.State.Name == "Recibido")
                                                 {
-                                                    <input type="submit" value="Actualizar" class="btn btn-primary col-sm-2" id="btnRefresh" />
-                                                    <button data-id="@Model.Id" type="button" class="btn btn-danger col-sm-2 closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
+                                                    <button data-id="@Model.Id" type="button" class="btn btn-danger closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
                                                 }
 
                                             }
                                         }
                                     }
-                                    <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                                    <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
                                 </div>
                                 <div class="col col-4">
 
@@ -132,9 +153,10 @@
 </section>
 
 
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script>
+    <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
@@ -142,12 +164,9 @@
         $(document).ready(function () {
             document.getElementById("StateId").disabled = true;
             document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
-
             var item_to_ReceiveMessage;
             var note;
-
-
-            
+            var temp;
             //Recibir Paquete
             //Capturar Datos
             $('.receiveItem').click((e) => {
@@ -156,6 +175,7 @@
             });
             //Operacion
             $("#btnYesPackage").click(function () {
+
                 window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
             //Operacion Recibir Factura
@@ -167,9 +187,6 @@
             $("#btnReceive").click(function () {
                 window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
-
-
-
             //Cerrar Elemento
             var item_to_closeMessage;
             //Capturar Datos
@@ -181,8 +198,6 @@
             $("#btnYesDelete").click(function () {
                 window.location.href = '/Messages/FinishedMessage?id=' + item_to_closeMessage + "&" + "note=" + note;
             });
-            
-
             //Capturar Datos
             $('.AuthorizeItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
@@ -190,12 +205,24 @@
             });
             //Autorizar Factura
             $("#btnAuthorize").click(function () {
-                window.location.href = '/Messages/AuthorizeMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if (document.getElementById("CecoId").value == 0) {
+                    alert('Debe Seleccionar un Centro de Costos');
+                    return false;
+                }
+                else {
+                    document.getElementById("TypeId").disabled = false;
+                    document.getElementById("StateId").disabled = false
+                    document.getElementById("StateBillId").disabled = false
+                    document.getElementById("Operation").value = "2";
+                }
             });
 
             //Autorizar Rechazar
             $("#btnRefuse").click(function () {
-                window.location.href = '/Messages/RefuseMessageBill?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                document.getElementById("TypeId").disabled = false;
+                document.getElementById("StateId").disabled = false
+                document.getElementById("StateBillId").disabled = false
+                document.getElementById("Operation").value = "3";
             });
             //Capturar Datos
             $('.RefuseItem').click((e) => {
@@ -204,7 +231,20 @@
             });
 
 
+            //Visto Bueno
+            //Capturar Datos
+            $('.checkItem').click((e) => {
+                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+                note = document.getElementById("Transaction_Observation").value;
+            });
+            //Operacion
+            $("#btnYesCheck").click(function () {
 
+                document.getElementById("TypeId").disabled = false;
+                document.getElementById("StateId").disabled = false
+                document.getElementById("StateBillId").disabled = false
+                document.getElementById("Operation").value = "5";
+            });
             //Capturar Datos
             $('.FinishedItem').click((e) => {
                 item_to_ReceiveMessage = e.currentTarget.dataset.id;
@@ -212,17 +252,41 @@
             });
             //Autorizar Cerrar
             $("#btnFinished").click(function () {
-                window.location.href = '/Messages/FinishedMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
+                if (document.getElementById("CecoId").value == 0) {
+                    alert('Debe Seleccionar un Centro de Costos');
+                    return false;
+                }
+                else {
+                    document.getElementById("TypeId").disabled = false;
+                    document.getElementById("StateId").disabled = false
+                    document.getElementById("StateBillId").disabled = false
+                    document.getElementById("DateAut").disabled = false
+                    document.getElementById("Operation").value = "4";
+                }
             });
-
-
             $("#btnRefresh").click(function () {
                 document.getElementById("TypeId").disabled = false;
-            });
-
-            $("#btnRefresh").click(function () {
                 document.getElementById("StateId").disabled = false
+                document.getElementById("Operation").value = "1";
+            });
+            $("#Sender").change(function () {
+                temp = 1;
+            });
+            $("#Reference").change(function () {
+                temp = 1;
+            });
+            $("#CreateUser").change(function () {
+                temp = 1;
+            });
+            $("#File").change(function () {
+                temp = 1;
+            });
+            $("#NumberBill").change(function () {
+                temp = 1;
+            });
+            $("#CecoId").change(function () {
+                temp = 1;
             });
         });
-</script>
+    </script>
 }

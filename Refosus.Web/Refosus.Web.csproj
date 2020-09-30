@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200427200650_dbsetcompany1.cs" />
     <Compile Remove="Migrations\20200427200650_dbsetcompany1.Designer.cs" />
+    <Compile Remove="Migrations\20200915110608_Shopping1.cs" />
+    <Compile Remove="Migrations\20200915110608_Shopping1.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,7 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Images\News\" />
     <Folder Include="wwwroot\Message\Carta\" />
     <Folder Include="wwwroot\Message\Factura\" />

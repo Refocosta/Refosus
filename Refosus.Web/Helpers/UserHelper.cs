@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
+using Refosus.Web.Migrations;
 using Refosus.Web.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,26 +16,51 @@ namespace Refosus.Web.Helpers
         private readonly UserManager<UserEntity> _userManager;
         private readonly RoleManager<RoleEntity> _roleManager;
         private readonly SignInManager<UserEntity> _signInManager;
+        private readonly DataContext _context;
 
         public UserHelper(
             UserManager<UserEntity> userManager,
             RoleManager<RoleEntity> roleManager,
-            SignInManager<UserEntity> signInManager)
+            SignInManager<UserEntity> signInManager,
+            DataContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
+            _context = context;
         }
 
         #region Usuarios
+
+        public async Task<IdentityResult> ChangePasswordAsync(UserEntity user, string oldPassword, string newPassword)
+        {
+            return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+
+        public async Task<IdentityResult> UpdateUserAsync(UserEntity user)
+        {
+            return await _userManager.UpdateAsync(user);
+        }
+
+
+        public async Task<UserEntity> GetUserAsync(string email)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == email);
+        }
+        public async Task<UserEntity> GetUserAsync(Guid userId)
+        {
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+        }
+
+
+
         public async Task<IdentityResult> AddUserAsync(UserEntity user, string password)
         {
             return await _userManager.CreateAsync(user, password);
         }
-        public async Task<UserEntity> GetUserByEmailAsync(string email)
-        {
-            return await _userManager.FindByEmailAsync(email);
-        }
+        
         public async Task<UserEntity> GetUserByIdAsync(string id)
         {
             return await _userManager.FindByIdAsync(id);
@@ -115,5 +143,7 @@ namespace Refosus.Web.Helpers
         {
             throw new System.NotImplementedException();
         }
+
+        
     }
 }

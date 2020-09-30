@@ -32,8 +32,6 @@ namespace Refosus.Web.Data.Entities
         public DateTime UpdateDateLocal => UpdateDate.ToLocalTime();
 
         [Display(Name = "Observaciones")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [MinLength(1, ErrorMessage = "El campo {0} no puede estar vacio.")]
         public string Observation { get; set; }
 
         [Display(Name = "Estado Anterior de Factura")]
@@ -49,7 +47,6 @@ namespace Refosus.Web.Data.Entities
         public UserEntity UserBillFinished { get; set; }
 
         [Display(Name = "Descripcion")]
-        [MinLength(1, ErrorMessage = "El campo {0} no puede estar vacio.")]
         public string Description { get; set; }
     }
 }

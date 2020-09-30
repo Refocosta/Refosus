@@ -1,14 +1,14 @@
 ﻿@model Refosus.Web.Models.MessageViewModel
-<div class="row col-sm-12">
+<div class="row">
 
     <div class="col col-sm-4">
         <label asp-for="Sender" class="control-label"></label>
-        <input asp-for="Sender" class="form-control" />
+        <input asp-for="Sender" class="form-control" disabled />
         <span asp-validation-for="Sender" class="text-danger"></span>
     </div>
     <div class="col col-sm-4">
         <label asp-for="Reference" class="control-label"></label>
-        <input asp-for="Reference" class="form-control" />
+        <input asp-for="Reference" class="form-control" disabled />
         <span asp-validation-for="Reference" class="text-danger"></span>
     </div>
     <div class="col col-sm-4">
@@ -35,11 +35,22 @@
 </div>@if (Model.Type.Name == "Factura")
 {
     <div class="row">
-        <div class="form-group col col-sm-4">
-            <label asp-for="CecoId" class="control-label"></label>
-            <select asp-for="CecoId" asp-items="Model.Cecos" class="form-control"></select>
-            <span asp-validation-for="StateId" class="text-danger"></span>
-        </div>
+        @if (Model.StateBill.Name == "Aprobado")
+        {
+            <div class="form-group col col-sm-4">
+                <label asp-for="CecoId" class="control-label"></label>
+                <select asp-for="CecoId" asp-items="Model.Cecos" class="form-control" disabled></select>
+                <span asp-validation-for="StateId" class="text-danger"></span>
+            </div>
+        }
+        else
+        {
+            <div class="form-group col col-sm-4">
+                <label asp-for="CecoId" class="control-label"></label>
+                <select asp-for="CecoId" asp-items="Model.Cecos" class="form-control"></select>
+                <span asp-validation-for="StateId" class="text-danger"></span>
+            </div>
+        }
         <div class="col col-sm-4">
             <label asp-for="NumberBill" class="control-label"></label>
             <input asp-for="NumberBill" class="form-control" />
@@ -47,8 +58,8 @@
         </div>
     </div>
 }
-    <div class="form-group col-sm-12">
-        <label asp-for="Transaction.Observation" class="control-label"></label>
-        <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
-        <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
-    </div>
+<div class="form-group col-sm-12">
+    <label asp-for="Transaction.Observation" class="control-label"></label>
+    <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
+    <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
+</div>

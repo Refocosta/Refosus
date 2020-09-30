@@ -1,79 +1,95 @@
-﻿<div class="modal fade" id="addArticle" tabindex="-1" role="dialog" aria-labelledby="addArticleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar articulo</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+﻿@model Refosus.Web.Models.ShoppingViewModel
+    <form asp-action="CreateShopping" enctype="multipart/form-data">
+        <div class="modal fade" id="addArticle" tabindex="-1" role="dialog" aria-labelledby="addArticleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Agregar articulo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="CodSap" class="control-label"></label>
+                                <input asp-for="CodSap" class="form-control"  />
+                                <span asp-validation-for="CodSap" class="text-danger"></span>
+                            </div>
 
-                <div class="row">
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Codigo SAP</label>
-                        <input class="form-control" value="">
+                            <div class="col col-sm-4">
+                                <label asp-for="IdCategory" class="control-label"></label>
+                                <select asp-for="IdCategory" asp-items="Model.Categories" class="form-control"></select>
+                                <span asp-validation-for="IdCategory" class="text-danger"></span>
+                            </div>
+                            <div class="col col-sm-4">
+                                <label asp-for="IdSubCategory" class="control-label"></label>
+                                <select asp-for="IdSubCategory" asp-items="Model.SubCategories" class="form-control"></select>
+                                <span asp-validation-for="IdSubCategory" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col col-sm-4">
+                                <label asp-for="IdUnit" class="control-label"></label>
+                                <select asp-for="IdUnit" asp-items="Model.ShoppingUnits" class="form-control"></select>
+                                <span asp-validation-for="IdUnit" class="text-danger"></span>
+                            </div>
+                            <div class="col col-sm-4">
+                                <label asp-for="IdMeasure" class="control-label"></label>
+                                <select asp-for="IdMeasure" asp-items="Model.ShoppingMeasures" class="form-control"></select>
+                                <span asp-validation-for="IdMeasure" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="Quantity" class="control-label"></label>
+                                <input asp-for="Quantity" class="form-control"  />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="Description" class="control-label"></label>
+                                <input asp-for="Description" class="form-control"  />
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="Reference" class="control-label"></label>
+                                <input asp-for="Reference" class="form-control"  />
+                                <span asp-validation-for="Reference" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="Mark" class="control-label"></label>
+                                <input asp-for="Mark" class="form-control"  />
+                                <span asp-validation-for="Mark" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="InternalOrder" class="control-label"></label>
+                                <input asp-for="InternalOrder" class="form-control"  />
+                                <span asp-validation-for="InternalOrder" class="text-danger"></span>
+                            </div>
+
+
+                            <div class="form-group col col-sd-4">
+                                <label asp-for="NumInternalOrder" class="control-label"></label>
+                                <input asp-for="NumInternalOrder" class="form-control"  />
+                                <span asp-validation-for="NumInternalOrder" class="text-danger"></span>
+                            </div>
+                        </div>
+
+
+
                     </div>
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Categoria</label>
-                        <input class="form-control" value="">
-                    </div>
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Subcategoria</label>
-                        <input class="form-control" value="">
+                    <div class="modal-footer">
+                        <button type="submit"class="btn btn-success" id="btnAddArticle"> Agregar Articulo</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Medida</label>
-                        <input class="form-control" value="">
-                    </div>
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Unidad</label>
-                        <input class="form-control" value="">
-                    </div>
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Cantidad</label>
-                        <input class="form-control" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Descripcion</label>
-                        <input class="form-control" value="">
-                    </div>
-
-
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Referencia</label>
-                        <input class="form-control" value="">
-                    </div>
-
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Marca</label>
-                        <input class="form-control" value="">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Orden Interna</label>
-                        <input class="form-control" value="">
-                    </div>
-
-
-                    <div class="form-group col col-sd-4">
-                        <label class="control-label">Numero de Orden Interna</label>
-                        <input class="form-control" value="">
-                    </div>
-                </div>
-
-
-
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-success" id="btnYesDelete">Agregar Articulo</button>
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            </div>
-            </div>
-    </div>
-</div>
+        </div>
+        </form>

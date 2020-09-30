@@ -15,10 +15,9 @@ namespace Refosus.Web.Helpers
             _context = context;
         }
 
-        public IEnumerable<SelectListItem> GetComboCeCo()
+        public IEnumerable<SelectListItem> GetComboCeCo(int comp)
         {
-            List<SelectListItem> list = _context.CeCos.Select(t =>
-
+            List<SelectListItem> list = _context.CeCos.Where(c=>c.Company.Id == comp).Select(t =>
               new SelectListItem
               {
                   Text = t.Code + "-" + t.Name,
@@ -168,7 +167,7 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
-        public IEnumerable<SelectListItem> GetDocumentType()
+        public IEnumerable<SelectListItem> GetComboDocumentType()
         {
             List<SelectListItem> list = _context.DocumentTypes
                 .Select(t =>
@@ -186,5 +185,126 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+        #region Parameters
+        public IEnumerable<SelectListItem> GetComboProject()
+        {
+            List<SelectListItem> list = _context.Projects
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Proyectos]",
+                Value = "0"
+            });
+            return list;
+        }
+        #endregion
+        #region Shopping
+        public IEnumerable<SelectListItem> GetComboShoppingState()
+        {
+            List<SelectListItem> list = _context.ShoppingStates
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Estados]",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboShoppingCategory()
+        {
+            List<SelectListItem> list = _context.ShoppingCategories
+                .Where(c=>c.SubCategory==null)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Categoria]",
+                Value = "0"
+            });
+            return list;
+        }
+
+        public IEnumerable<SelectListItem> GetComboShoppingCategory(int sub)
+        {
+            List<SelectListItem> list = _context.ShoppingCategories
+                .Where(c => c.SubCategory.Id == sub)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Sub Categoria]",
+                Value = "0"
+            });
+            return list;
+        }
+
+
+
+
+
+        public IEnumerable<SelectListItem> GetComboShoppingUnit()
+        {
+            List<SelectListItem> list = _context.ShoppingUnits
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Unidades]",
+                Value = "0"
+            });
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetComboShoppingMeasure(int uni)
+        {
+            List<SelectListItem> list = _context.ShoppingMeasures
+                .Where(m=>m.Unit.Id== uni)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .OrderBy(t => t.Text)
+                .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Medidas]",
+                Value = "0"
+            });
+            return list;
+        }
+        #endregion
     }
 }

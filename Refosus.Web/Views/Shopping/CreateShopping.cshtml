@@ -1,4 +1,4 @@
-﻿
+﻿@model Refosus.Web.Models.ShoppingViewModel
 @{
     ViewData["Title"] = "CreateShopping";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
@@ -26,44 +26,59 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <input asp-for="Operation" class="form-control" hidden />
                             <div class="row">
                                 <div class="col col-sm-12">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+
                                     <div class="row">
+
+                                        <div class="col col-sm-3">
+                                            <label asp-for="IdUserCreate" class="control-label"></label>
+                                            <select asp-for="IdUserCreate" asp-items="Model.Users" class="form-control" disabled></select>
+                                            <span asp-validation-for="IdUserCreate" class="text-danger"></span>
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <label asp-for="CreateDate" class="control-label"></label>
+                                            <input asp-for="CreateDate" class="form-control" disabled />
+                                            <span asp-validation-for="CreateDate" class="text-danger"></span>
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <label asp-for="UpdateDate" class="control-label"></label>
+                                            <input asp-for="UpdateDate" class="form-control" disabled />
+                                            <span asp-validation-for="UpdateDate" class="text-danger"></span>
+                                        </div>
+                                        <div class="col col-sm-3">
+                                            <label asp-for="IdUserAssign" class="control-label"></label>
+                                            <select asp-for="IdUserAssign" asp-items="Model.Users" class="form-control" disabled></select>
+                                            <span asp-validation-for="IdUserAssign" class="text-danger"></span>
+                                        </div>
+
                                         <div class="col col-sm-4">
-                                            <label class="control-label">Usuario Solicitante</label>
-                                            <input class="form-control" />
-                                            <span class="text-danger"></span>
+                                            <label asp-for="IdState" class="control-label"></label>
+                                            <select asp-for="IdState" asp-items="Model.ShoppingStates" class="form-control" disabled></select>
+                                            <span asp-validation-for="IdState" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col col-sm-4">
+                                            <label asp-for="IdProject" class="control-label"></label>
+                                            <select asp-for="IdProject" asp-items="Model.Projects" class="form-control"></select>
+                                            <span asp-validation-for="IdProject" class="text-danger"></span>
                                         </div>
                                         <div class="col col-sm-4">
-                                            <label class="control-label">Fecha de Actualización</label>
-                                            <input class="form-control" />
-                                            <span class="text-danger"></span>
-                                        </div>
-                                        <div class="col col-sm-4">
-                                            <label class="control-label">Usuario Asignado</label>
-                                            <input class="form-control" />
-                                            <span class="text-danger"></span>
-                                        </div>
-                                        <div class="col col-sm-4">
-                                            <label class="control-label">Estado</label>
-                                            <input class="form-control" />
-                                            <span class="text-danger"></span>
-                                        </div>
-                                        <div class="col col-sm-4">
-                                            <label class="control-label">Proyecto</label>
-                                            <input class="form-control" />
-                                            <span class="text-danger"></span>
+                                            <label asp-for="IdUserProjectBoss" class="control-label"></label>
+                                            <div><select asp-for="IdUserProjectBoss" asp-items="Model.Users" class="form-control" disabled></select></div>
+                                            <span asp-validation-for="IdUserProjectBoss" class="text-danger"></span>
                                         </div>
                                     </div>
-
+                                    <br />
                                     <div class="row">
                                         <div class="col col-sm-12">
                                             <div class="card card-success">
                                                 <div class="card-header">
                                                     <a class="card-title">
-                                                        <button data-id="" type="button"  class="btn btn-primary addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
+                                                        <button data-id="" type="button" class="btn btn-primary addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
 
 
                                                         Articulos
@@ -78,45 +93,61 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>
-                                                                        Nombre
+                                                                        @Html.DisplayNameFor(model => model.CodSap)
                                                                     </th>
                                                                     <th>
-                                                                        Medida
+                                                                        @Html.DisplayNameFor(model => model.Description)
                                                                     </th>
                                                                     <th>
-                                                                        Unidades
+                                                                        @Html.DisplayNameFor(model => model.Reference)
                                                                     </th>
                                                                     <th>
-                                                                        Cantidad
+                                                                        @Html.DisplayNameFor(model => model.Categories)
                                                                     </th>
                                                                     <th>
-                                                                        Responsable
+                                                                        @Html.DisplayNameFor(model => model.SubCategories)
+                                                                    </th>
+
+                                                                    <th>
+                                                                        @Html.DisplayNameFor(model => model.ShoppingUnits)
                                                                     </th>
                                                                     <th>
-                                                                        Estado
+                                                                        @Html.DisplayNameFor(model => model.ShoppingMeasures)
+                                                                    </th>
+                                                                    <th>
+                                                                        @Html.DisplayNameFor(model => model.Quantity)
                                                                     </th>
                                                                     <th></th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
+                                                                @foreach (var item in Model.ItemsTemp)
+                                                                {
                                                                 <tr>
                                                                     <td>
-                                                                        Nombre
+                                                                        @Html.DisplayFor(modelItem => item.CodSAP)
                                                                     </td>
                                                                     <td>
-                                                                        Medida
+                                                                        @Html.DisplayFor(modelItem => item.Description)
                                                                     </td>
                                                                     <td>
-                                                                        Unidades
+                                                                        @Html.DisplayFor(modelItem => item.Refence)
                                                                     </td>
                                                                     <td>
-                                                                        Cantidad
+                                                                        @Html.DisplayFor(modelItem => item.Category.Name)
                                                                     </td>
                                                                     <td>
-                                                                        Responsable
+                                                                        @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                                                                    </td>
+
+                                                                    <td>
+                                                                        @Html.DisplayFor(modelItem => item.Unit.Name)
                                                                     </td>
                                                                     <td>
-                                                                        Estado
+                                                                        @Html.DisplayFor(modelItem => item.Measure.Name)
+                                                                    </td>
+                                                                    <td>
+                                                                        @Html.DisplayFor(modelItem => item.Quantity)
                                                                     </td>
                                                                     <td>
                                                                         <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
@@ -124,19 +155,43 @@
                                                                         <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
                                                                     </td>
                                                                 </tr>
+                                                                }
+                                                                @*@foreach (var item in Model.Items)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Description)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Unit.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Measure.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Quantity)
+                                                                        </td>
+                                                                        <td>
+                                                                            <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
+                                                                            <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                                            <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                        </td>
+                                                                    </tr>
+                                                                }*@
+
                                                                 @*@foreach (var item in Model.MessageFiles)
-                                                                    {
-                                                                        <tr>
-                                                                            <td>
-                                                                                @Html.DisplayFor(modelItem => item.Name)
-                                                                            </td>
-                                                                            <td>
-                                                                                <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
-                                                                                    <i class="oi oi-cloud-download style="color:white"></i>
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                                                    }*@
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
+                        <i class="oi oi-cloud-download style="color:white"></i>
+                    </a>
+                </td>
+            </tr>
+        }*@
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -144,6 +199,10 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+
+
                                     @*<div class="row col-sm-12">
 
 
@@ -180,25 +239,122 @@
                             </div>
                         </div>
                         <div class="card-footer ">
-                            <input type="submit" value="Crear" class="btn btn-primary col-sm-2" />
+                            <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnSaveShopping" />
+                            <input type="submit" value="Crear" class="btn btn-primary col-sm-2" id="btnCreateShopping" />
                             <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
 
                     </div>
+                    <partial name="_AddArticleDialog" />
                 </form>
             </section>
         </div>
     </div>
 </section>
 
-<partial name="_AddArticleDialog" />
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script>
+    <script>
+        document.getElementById("test").addEventListener("load", clean);
+        function clean() {
+            alert("Page is loaded");
+        }
+        
+
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
-</script>
+
+
+        $(document).ready(function () {
+            $("#btnAddArticle").click(function () {
+                document.getElementById("Operation").value = "1";
+                document.getElementById("IdUserCreate").disabled = false;
+                document.getElementById("CreateDate").disabled = false;
+                document.getElementById("UpdateDate").disabled = false;
+                document.getElementById("IdUserAssign").disabled = false;
+                document.getElementById("IdState").disabled = false;
+                document.getElementById("IdUserProjectBoss").disabled = false;
+                clean();
+            });
+
+            $("#btnCreateShopping").click(function () {
+                document.getElementById("Operation").value = "2";
+            });
+            $("#btnSaveShopping").click(function () {
+                document.getElementById("Operation").value = "3";
+            });
+        });
+
+
+
+
+        //Var Category Combo
+        var cboCat = document.getElementById("IdCategory");
+        cboCat.addEventListener("change", CombosSubCategory);
+        //Var Unit-Measure Combo
+        var cboUni = document.getElementById("IdUnit");
+        cboUni.addEventListener("change", CombosMedida);
+        //Var BossProject
+        var cboProject = document.getElementById("IdProject");
+        cboProject.addEventListener("change", UserProjectBoss);
+
+        function CombosSubCategory() {
+        fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + cboCat.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("IdSubCategory");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("IdSubCategory");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+            })
+        };
+        function CombosMedida() {
+        fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("IdMeasure");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("IdMeasure");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+            })
+        };
+        function UserProjectBoss() {
+            if (cboProject.value!=0)
+            fetch("@Url.Content("~/Shopping/UserProjectBoss")" + "?UBP=" + cboProject.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.text();
+
+                }
+            })
+                .then(function (data) {
+                    document.getElementById("IdUserProjectBoss").value = data;
+                })
+    };
+
+    </script>
 }
 

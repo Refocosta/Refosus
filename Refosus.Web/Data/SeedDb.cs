@@ -30,7 +30,7 @@ namespace Refosus.Web.Data
             await CheckRoles();
 
             await CheckDocumentTypeAsync();
-            await CheckUserAsync("1010", "Administrator", "Refosus", "didneyn@refocosta.com", "3133366284", "Refocosta Principal");
+            await CheckUserAsync("1010", "Administrator", "Nativa", "nativa@refocosta.com", "", "Refocosta Principal");
             await CheckRolesUser();
             
 
@@ -242,6 +242,7 @@ namespace Refosus.Web.Data
             if (!_context.Roles.Any())
             {
                 await _userHelper.CheckRoleAsync("Administrator");
+                #region Messages
                 await _userHelper.CheckRoleAsync("MessageAdministrator");
                 await _userHelper.CheckRoleAsync("MessageMeMessage");
                 await _userHelper.CheckRoleAsync("MessageMeHistory");
@@ -252,11 +253,21 @@ namespace Refosus.Web.Data
                 await _userHelper.CheckRoleAsync("MessageBillAutorizador");
                 await _userHelper.CheckRoleAsync("MessageBillChecker");
                 await _userHelper.CheckRoleAsync("MessageBillChecker");
+                #endregion
+                #region Shopping
+
+                #endregion
+
+                #region TE
+                await _userHelper.CheckRoleAsync("TEAdmininistrator");
+                #endregion
+
+
             }
         }
         private async Task CheckRolesUser()
         {
-            UserEntity user = await _userHelper.GetUserByEmailAsync("didneyn@refocosta.com");
+            UserEntity user = await _userHelper.GetUserAsync("nativa@refocosta.com");
             int count = _userHelper.GetUserRolesAsync(user).Result.Count;
             if (count == 0)
             {
@@ -271,7 +282,7 @@ namespace Refosus.Web.Data
             string phone,
             string address)
         {
-            UserEntity user = await _userHelper.GetUserByEmailAsync(email);
+            UserEntity user = await _userHelper.GetUserAsync(email);
             if (user == null)
             {
                 user = new UserEntity
