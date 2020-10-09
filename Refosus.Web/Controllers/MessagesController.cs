@@ -54,7 +54,7 @@ namespace Refosus.Web.Controllers
                 .Include(t => t.UserSender)
                 .Include(t => t.MessageFiles)
                 .Include(t => t.Ceco)
-                .Include(t=>t.Company)
+                .Include(t => t.Company)
                 .OrderBy(t => t.UpdateDate)
                 .ToListAsync()
                 );
@@ -154,102 +154,99 @@ namespace Refosus.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                    MessageEntity messageEntity = new MessageEntity();
-                    messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
-                    messageEntity.CreateDate = System.DateTime.Now.ToUniversalTime();
-                    messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                MessageEntity messageEntity = new MessageEntity();
+                messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
+                messageEntity.CreateDate = System.DateTime.Now.ToUniversalTime();
+                messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
 
-                    if (messageEntity.User == null)
-                    {
-                        messageEntity.User = await _userHelper.GetUserAsync(User.Identity.Name);
-                    }
+                if (messageEntity.User == null)
+                {
+                    messageEntity.User = await _userHelper.GetUserAsync(User.Identity.Name);
+                }
 
-                    if (messageEntity.Type.Name == "Paquete")
-                    {
-                        messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "En Transito");
-                    }
-                    else
-                    {
-                        messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
-                    }
-                    if (messageEntity.Type.Name == "Factura")
-                    {
-                        messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
-                    }
-                    else
-                    {
-                        messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
-                    }
-                    messageEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                    messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                    _context.Add(messageEntity);
+                if (messageEntity.Type.Name == "Paquete")
+                {
+                    messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "En Transito");
+                }
+                else
+                {
+                    messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
+                }
+                if (messageEntity.Type.Name == "Factura")
+                {
+                    messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
+                }
+                else
+                {
+                    messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
+                }
+                messageEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
+                _context.Add(messageEntity);
 
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
+                string Files = "";
+                if (model.File != null)
+                {
+                    string ext;
+                    string Nombre;
 
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                    foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                    {
+                        Nombre = item.FileName;
+                        ext = Path.GetExtension(Nombre);
+                        MessageFileEntity fileEntity = new MessageFileEntity
                         {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate.FullName
-                                + " Agrega el archivo " + Nombre;
-                        }
-
+                            message = messageEntity,
+                            Name = Nombre,
+                            FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                            Ext = ext
+                        };
+                        _context.Add(fileEntity);
+                        Files += "\nEl usuario " + messageEntity.UserCreate.FullName
+                            + " Agrega el archivo " + Nombre;
                     }
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                    messagetransactionEntity.StateCreate = messageEntity.State;
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.Message = messageEntity;
-                    await _context.SaveChangesAsync();
 
-                    string Description = "";
-                    Description += "Se crea el mensaje de tipo " + messageEntity.Type.Name
-                        + " en la fecha " + messageEntity.CreateDateLocal
-                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                        ;
-                    Description += Files;
-                    messagetransactionEntity.Description = Description;
-                    _context.Add(messagetransactionEntity);
-
-                    string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                    string body =
-                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                        " <br/> Hola. <br/> " +
-                        "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                        "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                        "una respuesta. <br/> <br/> " +
-                        "Atentamente,<br/>" +
-                        "Equipo de Soporte - Refocosta.<br/>";
-                    string[] to = new string[2];
-                    to[0] = messagetransactionEntity.UserCreate.Email;
-                    to[1] = messagetransactionEntity.UserUpdate.Email;
-                    _mailHelper.sendMail(to, subject, body);
-
-                    return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
-                
+                }
+                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                messagetransactionEntity.StateCreate = messageEntity.State;
+                messagetransactionEntity.StateUpdate = messageEntity.State;
+                messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                messagetransactionEntity.UserUpdate = messageEntity.User;
+                messagetransactionEntity.Message = messageEntity;
+                string Description = "";
+                Description += "Se crea el mensaje de tipo " + messageEntity.Type.Name
+                    + " en la fecha " + messageEntity.CreateDateLocal
+                    + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                    + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                    + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                    + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                    ;
+                Description += Files;
+                messagetransactionEntity.Description = Description;
+                _context.Add(messagetransactionEntity);
+                await _context.SaveChangesAsync();
+                int id = messageEntity.Id;
+                string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                string body =
+                    "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                    " <br/> Hola. <br/> " +
+                    "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                    messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                    "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                    "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                    "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                    "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                    "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                    "una respuesta. <br/> <br/> " +
+                    "Atentamente,<br/>" +
+                    "Equipo de Soporte - Refocosta.<br/>";
+                string[] to = new string[2];
+                to[0] = messagetransactionEntity.UserCreate.Email;
+                to[1] = messagetransactionEntity.UserUpdate.Email;
+                _mailHelper.sendMail(to, subject, body);
+                return RedirectToAction(nameof(DetailsMessage), new { id });
             }
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
@@ -267,7 +264,7 @@ namespace Refosus.Web.Controllers
                 MessageState = _combosHelper.GetComboMessageState(),
                 MessageBillState = _combosHelper.GetComboMessageBillState(),
                 Users = _combosHelper.GetComboUser(),
-                Companies=_combosHelper.GetComboCompany()
+                Companies = _combosHelper.GetComboCompany()
             };
             return View(model);
         }
@@ -279,99 +276,101 @@ namespace Refosus.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                    MessageEntity messageEntity = new MessageEntity();
-                    messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
-                    messageEntity.CreateDate = System.DateTime.Now.ToUniversalTime();
-                    messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                MessageEntity messageEntity = new MessageEntity();
+                messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
+                messageEntity.CreateDate = System.DateTime.Now.ToUniversalTime();
+                messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
 
-                    if (messageEntity.User == null)
-                    {
-                        messageEntity.User = await _userHelper.GetUserAsync(User.Identity.Name);
-                    }
+                if (messageEntity.User == null)
+                {
+                    messageEntity.User = await _userHelper.GetUserAsync(User.Identity.Name);
+                }
 
-                    if (messageEntity.Type.Name == "Paquete")
+                if (messageEntity.Type.Name == "Paquete")
+                {
+                    messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "En Transito");
+                }
+                else
+                {
+                    messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
+                }
+                if (messageEntity.Type.Name == "Factura")
+                {
+                    messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
+                }
+                else
+                {
+                    messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
+                }
+                messageEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
+                _context.Add(messageEntity);
+                string Files = "";
+                if (model.File != null)
+                {
+                    string ext;
+                    string Nombre;
+                    foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                     {
-                        messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "En Transito");
-                    }
-                    else
-                    {
-                        messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
-                    }
-                    if (messageEntity.Type.Name == "Factura")
-                    {
-                        messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
-                    }
-                    else
-                    {
-                        messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
-                    }
-                    messageEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                    messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                    _context.Add(messageEntity);
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                        Nombre = item.FileName;
+                        ext = Path.GetExtension(Nombre);
+                        MessageFileEntity fileEntity = new MessageFileEntity
                         {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate.FullName
-                                + " Agrega el archivo " + Nombre;
-                        }
-
+                            message = messageEntity,
+                            Name = Nombre,
+                            FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                            Ext = ext
+                        };
+                        _context.Add(fileEntity);
+                        Files += "\nEl usuario " + messageEntity.UserCreate.FullName
+                            + " Agrega el archivo " + Nombre;
                     }
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                    messagetransactionEntity.StateCreate = messageEntity.State;
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.Message = messageEntity;
-                    string Description = "";
-                    Description += "Se crea el mensaje de tipo " + messageEntity.Type.Name
-                        + " en la fecha " + messageEntity.CreateDateLocal
-                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                        ;
-                    Description += Files;
-                    messagetransactionEntity.Description = Description;
-                    _context.Add(messagetransactionEntity);
 
-                    string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                    string body =
-                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                        " <br/> Hola. <br/> " +
-                        "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                        "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                        "una respuesta. <br/> <br/> " +
-                        "Atentamente,<br/>" +
-                        "Equipo de Soporte - Refocosta.<br/>";
-                    string[] to = new string[2];
-                    to[0] = messagetransactionEntity.UserCreate.Email;
-                    to[1] = messagetransactionEntity.UserUpdate.Email;
-                    _mailHelper.sendMail(to, subject, body);
+                }
+                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                messagetransactionEntity.StateCreate = messageEntity.State;
+                messagetransactionEntity.StateUpdate = messageEntity.State;
+                messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                messagetransactionEntity.UserUpdate = messageEntity.User;
+                messagetransactionEntity.Message = messageEntity;
+                string Description = "";
+                Description += "Se crea el mensaje de tipo " + messageEntity.Type.Name
+                    + " en la fecha " + messageEntity.CreateDateLocal
+                    + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                    + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                    + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                    + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                    ;
+                Description += Files;
+                messagetransactionEntity.Description = Description;
+                _context.Add(messagetransactionEntity);
 
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
-                
+                await _context.SaveChangesAsync();
+
+                int id = messageEntity.Id;
+                string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                string body =
+                    "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                    " <br/> Hola. <br/> " +
+                    "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                    messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                    "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                    "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                    "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                    "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                    "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                    "una respuesta. <br/> <br/> " +
+                    "Atentamente,<br/>" +
+                    "Equipo de Soporte - Refocosta.<br/>";
+                string[] to = new string[2];
+                to[0] = messagetransactionEntity.UserCreate.Email;
+                to[1] = messagetransactionEntity.UserUpdate.Email;
+                _mailHelper.sendMail(to, subject, body);
+
+                return RedirectToAction(nameof(DetailsMeMessage), new { id });
+
             }
             model.MessageType = _combosHelper.GetComboMessageType();
             model.MessageState = _combosHelper.GetComboMessageState();
@@ -681,422 +680,422 @@ namespace Refosus.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                    UserEntity user = new UserEntity();
-                    user = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
-                    MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
-                    messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-                    //Operation 1 Edit
-                    if (model.Operation == 1)
+                UserEntity user = new UserEntity();
+                user = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+                MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
+                messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                //Operation 1 Edit
+                if (model.Operation == 1)
+                {
+
+                    if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
                     {
-
-                        if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
+                        if (messageEntity.User == messageEntity.UserSender)
                         {
-                            if (messageEntity.User == messageEntity.UserSender)
-                            {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
-                            }
-                            else
-                            {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
-                            }
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
                         }
-                        messageEntity.UserSender = user;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
+                        else
                         {
-                            string ext;
-                            string Nombre;
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                         }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
                     }
-                    //Operation 2 Authorize
-                    if (model.Operation == 2)
+                    messageEntity.UserSender = user;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
                     {
-                        if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
+                        string ext;
+                        string Nombre;
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                         {
-                            if (messageEntity.User == messageEntity.UserSender)
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
                             {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
-                                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                            }
-                            else
-                            {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
-                                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                            }
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
                         }
-
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
-                        messageEntity.UserAut = user;
-                        messageEntity.DateAut = messageEntity.UpdateDate;
-                        messageEntity.UserSender = user;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
-                        {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
-                        }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
                     }
-                    //Operation 3 Refuse
-                    if (model.Operation == 3)
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
                     {
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                        messageEntity.UserAut = user;
-                        messageEntity.DateAut = messageEntity.UpdateDate;
-                        messageEntity.UserPros = user;
-                        messageEntity.DateProcess = messageEntity.UpdateDate;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
-                        {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
-                        }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
                     }
-                    //Operation 4 Proccess
-                    if (model.Operation == 4)
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
+                }
+                //Operation 2 Authorize
+                if (model.Operation == 2)
+                {
+                    if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
                     {
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-
-                        messageEntity.UserPros = user;
-                        messageEntity.DateProcess = messageEntity.UpdateDate;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se procesa la factura por el usuario " + messageEntity.UserPros.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
+                        if (messageEntity.User == messageEntity.UserSender)
                         {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
+                            messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
                         }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                        else
                         {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
+                            messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
                         }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                     }
-                    if (model.Operation == 5)
+
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
+                    messageEntity.UserAut = user;
+                    messageEntity.DateAut = messageEntity.UpdateDate;
+                    messageEntity.UserSender = user;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
                     {
-                        MessageEntity modelEntity = await _context.Messages
-                            .Include(o => o.State)
-                            .Include(o => o.StateBill)
-                            .Include(o => o.User)
-                            .Include(o => o.Type)
-                            .FirstOrDefaultAsync(m => m.Id == id);
-                        if (modelEntity == null)
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                         {
-                            return NotFound();
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
                         }
-                        modelEntity.UserSender = user;
 
-                        modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
-                        _context.Update(modelEntity);
-
-                        DateTime update = System.DateTime.Now.ToUniversalTime();
-
-                        MessageCheckEntity check = new MessageCheckEntity
-                        {
-                            message = modelEntity,
-                            User = user,
-                            DateAut = messageEntity.UpdateDate
-                        };
-                        _context.Add(check);
-
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-                        {
-                            StateCreate = modelEntity.State,
-                            StateUpdate = modelEntity.State,
-                            UpdateDate = update,
-                            UserCreate = user,
-                            UserUpdate = modelEntity.User,
-                            Message = modelEntity,
-                            Observation = model.Transaction.Observation
-                        };
-                        string Description = "";
-                        Description += "Se da el visto bueno por el usuario " + user.FullName
-                            + " en la fecha " + check.DateAutLocal;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
                     }
-                
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
+                }
+                //Operation 3 Refuse
+                if (model.Operation == 3)
+                {
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
+                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
+                    messageEntity.UserAut = user;
+                    messageEntity.DateAut = messageEntity.UpdateDate;
+                    messageEntity.UserPros = user;
+                    messageEntity.DateProcess = messageEntity.UpdateDate;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
+                    {
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                        {
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
+                        }
+
+                    }
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
+                }
+                //Operation 4 Proccess
+                if (model.Operation == 4)
+                {
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
+                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
+
+                    messageEntity.UserPros = user;
+                    messageEntity.DateProcess = messageEntity.UpdateDate;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se procesa la factura por el usuario " + messageEntity.UserPros.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
+                    {
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                        {
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
+                        }
+
+                    }
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
+                if (model.Operation == 5)
+                {
+                    MessageEntity modelEntity = await _context.Messages
+                        .Include(o => o.State)
+                        .Include(o => o.StateBill)
+                        .Include(o => o.User)
+                        .Include(o => o.Type)
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (modelEntity == null)
+                    {
+                        return NotFound();
+                    }
+                    modelEntity.UserSender = user;
+
+                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
+                    _context.Update(modelEntity);
+
+                    DateTime update = System.DateTime.Now.ToUniversalTime();
+
+                    MessageCheckEntity check = new MessageCheckEntity
+                    {
+                        message = modelEntity,
+                        User = user,
+                        DateAut = messageEntity.UpdateDate
+                    };
+                    _context.Add(check);
+
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        StateCreate = modelEntity.State,
+                        StateUpdate = modelEntity.State,
+                        UpdateDate = update,
+                        UserCreate = user,
+                        UserUpdate = modelEntity.User,
+                        Message = modelEntity,
+                        Observation = model.Transaction.Observation
+                    };
+                    string Description = "";
+                    Description += "Se da el visto bueno por el usuario " + user.FullName
+                        + " en la fecha " + check.DateAutLocal;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(DetailsMessage), new { id = messageEntity.Id });
+                }
+
             }
             model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
             model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);
@@ -1161,16 +1160,17 @@ namespace Refosus.Web.Controllers
             }
             if (ModelState.IsValid)
             {
-                    UserEntity user = new UserEntity();
-                    user = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
-                    MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
-                    messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-                    //Operation 1 Edit
-                    if (model.Operation == 1)
-                    {
+                UserEntity user = new UserEntity();
+                user = await _userHelper.GetUserAsync(User.Identity.Name.ToString());
+                MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
+                messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                //Operation 1 Edit
+                if (model.Operation == 1)
+                {
 
-                        if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
-                        {
+                    if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
+                    {
+                        if (messageEntity.Type.Name != "Paquete")
                             if (messageEntity.User == messageEntity.UserSender)
                             {
                                 messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
@@ -1179,403 +1179,403 @@ namespace Refosus.Web.Controllers
                             {
                                 messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                             }
-                        }
-                        messageEntity.UserSender = user;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
-                        {
-                            string ext;
-                            string Nombre;
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-                        }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                     }
-                    //Operation 2 Authorize
-                    if (model.Operation == 2)
+                    messageEntity.UserSender = user;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
                     {
-                        if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
+                        string ext;
+                        string Nombre;
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                         {
-                            if (messageEntity.User == messageEntity.UserSender)
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
                             {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
-                                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                            }
-                            else
-                            {
-                                messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
-                                messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
-                            }
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
                         }
-                       
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
-                        messageEntity.UserAut = user;
-                        messageEntity.DateAut = messageEntity.UpdateDate;
-                        messageEntity.UserSender = user;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
-                        {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
-                        }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                     }
-                    //Operation 3 Refuse
-                    if (model.Operation == 3)
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
                     {
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                        messageEntity.UserAut = user;
-                        messageEntity.DateAut = messageEntity.UpdateDate;
-                        messageEntity.UserPros = user;
-                        messageEntity.DateProcess = messageEntity.UpdateDate;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
-                        {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
-                        }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
-                        {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
-                        }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
                     }
-                    //Operation 4 Proccess
-                    if (model.Operation == 4)
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
+                //Operation 2 Authorize
+                if (model.Operation == 2)
+                {
+                    if (messageEntity.User != await _userHelper.GetUserAsync(User.Identity.Name))
                     {
-                        MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                        messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-
-                        messageEntity.UserPros = user;
-                        messageEntity.DateProcess = messageEntity.UpdateDate;
-                        _context.Update(messageEntity);
-                        model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
-
-                        string Factura = " se cambia el estado de la factura de " + billstateold.Name
-                            + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
-                            + " se procesa la factura por el usuario " + messageEntity.UserPros.FullName
-                            + " a las " + messageEntity.UpdateDateLocal
-                            ;
-                        _context.Update(messageEntity);
-                        #region Create Transaction
-                        string Files = "";
-                        if (model.File != null)
+                        if (messageEntity.User == messageEntity.UserSender)
                         {
-                            string ext;
-                            string Nombre;
-
-                            foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                            {
-                                Nombre = item.FileName;
-                                ext = Path.GetExtension(Nombre);
-                                MessageFileEntity fileEntity = new MessageFileEntity
-                                {
-                                    message = messageEntity,
-                                    Name = Nombre,
-                                    FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                    Ext = ext
-                                };
-                                _context.Add(fileEntity);
-                                Files += "\nEl usuario " + messageEntity.UserCreate
-                                    + " Agrega el archivo " + Nombre;
-                            }
-
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Ingresado");
+                            messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
                         }
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                        messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
-                        messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
-                        messagetransactionEntity.StateUpdate = messageEntity.State;
-                        messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
-                        messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
-                        messagetransactionEntity.UserUpdate = messageEntity.User;
-                        messagetransactionEntity.Message = messageEntity;
-                        string Description = "";
-                        Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
-                            + " en la fecha " + messageEntity.UpdateDateLocal
-                            + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                            + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                            + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                            + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                            + Factura
-                            ;
-                        Description += Files;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        #endregion
-                        await _context.SaveChangesAsync();
-                        #region Send email
-                        if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                        else
                         {
-                            string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
-                            string body =
-                                "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
-                                " <br/> Hola. <br/> " +
-                                "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                                messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
-                                "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
-                                "Usted recibió este mensaje automático por que le fue asignado un documento, " +
-                                "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
-                                "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
-                                "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
-                                "una respuesta. <br/> <br/> " +
-                                "Atentamente,<br/>" +
-                                "Equipo de Soporte - Refocosta.<br/>";
-                            string[] to = new string[2];
-                            to[0] = messagetransactionEntity.UserCreate.Email;
-                            to[1] = messagetransactionEntity.UserUpdate.Email;
-                            _mailHelper.sendMail(to, subject, body);
+                            messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
+                            messageEntity.UserSender = await _userHelper.GetUserAsync(User.Identity.Name);
                         }
-                        #endregion
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                     }
-                    if (model.Operation == 5)
+
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
+                    messageEntity.UserAut = user;
+                    messageEntity.DateAut = messageEntity.UpdateDate;
+                    messageEntity.UserSender = user;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
                     {
-                        MessageEntity modelEntity = await _context.Messages
-                            .Include(o => o.State)
-                            .Include(o => o.StateBill)
-                            .Include(o => o.User)
-                            .Include(o => o.Type)
-                            .FirstOrDefaultAsync(m => m.Id == id);
-                        if (modelEntity == null)
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
                         {
-                            return NotFound();
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
                         }
-                        modelEntity.UserSender = user;
 
-                        modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
-                        _context.Update(modelEntity);
-
-                        DateTime update = System.DateTime.Now.ToUniversalTime();
-
-                        MessageCheckEntity check = new MessageCheckEntity
-                        {
-                            message = modelEntity,
-                            User = user,
-                            DateAut = messageEntity.UpdateDate
-                        };
-                        _context.Add(check);
-
-                        MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-                        {
-                            StateCreate = modelEntity.State,
-                            StateUpdate = modelEntity.State,
-                            UpdateDate = update,
-                            UserCreate = user,
-                            UserUpdate = modelEntity.User,
-                            Message = modelEntity,
-                            Observation = model.Transaction.Observation
-                        };
-                        string Description = "";
-                        Description += "Se da el visto bueno por el usuario " + user.FullName
-                            + " en la fecha " + check.DateAutLocal;
-                        messagetransactionEntity.Description = Description;
-                        _context.Add(messagetransactionEntity);
-                        await _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
                     }
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
+                //Operation 3 Refuse
+                if (model.Operation == 3)
+                {
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
+                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
+                    messageEntity.UserAut = user;
+                    messageEntity.DateAut = messageEntity.UpdateDate;
+                    messageEntity.UserPros = user;
+                    messageEntity.DateProcess = messageEntity.UpdateDate;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se autoriza la factura por el usuario " + messageEntity.UserAut.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
+                    {
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                        {
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
+                        }
+
+                    }
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
+                //Operation 4 Proccess
+                if (model.Operation == 4)
+                {
+                    MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
+                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
+
+                    messageEntity.UserPros = user;
+                    messageEntity.DateProcess = messageEntity.UpdateDate;
+                    _context.Update(messageEntity);
+                    model.UserAut = await _userHelper.GetUserAsync(User.Identity.Name);
+
+                    string Factura = " se cambia el estado de la factura de " + billstateold.Name
+                        + " por el estado " + _context.MessagesBillState.FirstOrDefault(s => s.Id == messageEntity.StateBill.Id).Name
+                        + " se procesa la factura por el usuario " + messageEntity.UserPros.FullName
+                        + " a las " + messageEntity.UpdateDateLocal
+                        ;
+                    _context.Update(messageEntity);
+                    #region Create Transaction
+                    string Files = "";
+                    if (model.File != null)
+                    {
+                        string ext;
+                        string Nombre;
+
+                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                        {
+                            Nombre = item.FileName;
+                            ext = Path.GetExtension(Nombre);
+                            MessageFileEntity fileEntity = new MessageFileEntity
+                            {
+                                message = messageEntity,
+                                Name = Nombre,
+                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                                Ext = ext
+                            };
+                            _context.Add(fileEntity);
+                            Files += "\nEl usuario " + messageEntity.UserCreate
+                                + " Agrega el archivo " + Nombre;
+                        }
+
+                    }
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
+                    messagetransactionEntity = await _converterHelper.ToMessageTransactionEntityAsync(model);
+                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Id == model.StateIdOld);
+                    messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDate;
+                    messagetransactionEntity.UserCreate = await _userHelper.GetUserAsync(User.Identity.Name);
+                    messagetransactionEntity.UserUpdate = messageEntity.User;
+                    messagetransactionEntity.Message = messageEntity;
+                    string Description = "";
+                    Description += "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    Description += Files;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    if (messagetransactionEntity.UserCreate != messagetransactionEntity.UserUpdate)
+                    {
+                        string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                        string body =
+                            "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                            " <br/> Hola. <br/> " +
+                            "Se ha asignado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                            messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                            "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                            "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                            "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                            "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                            "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                            "una respuesta. <br/> <br/> " +
+                            "Atentamente,<br/>" +
+                            "Equipo de Soporte - Refocosta.<br/>";
+                        string[] to = new string[2];
+                        to[0] = messagetransactionEntity.UserCreate.Email;
+                        to[1] = messagetransactionEntity.UserUpdate.Email;
+                        _mailHelper.sendMail(to, subject, body);
+                    }
+                    #endregion
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
+                if (model.Operation == 5)
+                {
+                    MessageEntity modelEntity = await _context.Messages
+                        .Include(o => o.State)
+                        .Include(o => o.StateBill)
+                        .Include(o => o.User)
+                        .Include(o => o.Type)
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (modelEntity == null)
+                    {
+                        return NotFound();
+                    }
+                    modelEntity.UserSender = user;
+
+                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
+                    _context.Update(modelEntity);
+
+                    DateTime update = System.DateTime.Now.ToUniversalTime();
+
+                    MessageCheckEntity check = new MessageCheckEntity
+                    {
+                        message = modelEntity,
+                        User = user,
+                        DateAut = messageEntity.UpdateDate
+                    };
+                    _context.Add(check);
+
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        StateCreate = modelEntity.State,
+                        StateUpdate = modelEntity.State,
+                        UpdateDate = update,
+                        UserCreate = user,
+                        UserUpdate = modelEntity.User,
+                        Message = modelEntity,
+                        Observation = model.Transaction.Observation
+                    };
+                    string Description = "";
+                    Description += "Se da el visto bueno por el usuario " + user.FullName
+                        + " en la fecha " + check.DateAutLocal;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
+                }
             }
             model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
             model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);
@@ -1590,11 +1590,16 @@ namespace Refosus.Web.Controllers
         }
 
         #endregion
-        /*
+
+
+
+
         #region Message
-        [Authorize]
+        [Authorize(Roles = "Administrator,MessageAdministrator")]
         public async Task<IActionResult> ReceiveMessageAsync(int? id, string note)
         {
+            if (note == null)
+                note = "";
             if (id == null)
             {
                 NotFound();
@@ -1653,252 +1658,11 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("DetailsMessage", new RouteValueDictionary(
                     new { controller = "Messages", action = "DetailsMessage", Id = modelEntity.Id }));
         }
-        [Authorize(Roles = "Administrator,MessageBillProcesator")]
-        public async Task<IActionResult> FinishedMessageAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .Include(o => o.UserAut)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            if (modelEntity.Type.Name != "Factura")
-            {
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                modelEntity.UpdateDate = update;
-            }
-            else
-            {
-                UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-                MessageBillStateEntity billstateold = modelEntity.StateBill;
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                modelEntity.UserPros = user;
-                modelEntity.DateProcess = update;
-                modelEntity.UpdateDate = update;
-                Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autorizo la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-            }
-            _context.Update(modelEntity);
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillAutorizador")]
-        public async Task<IActionResult> AuthorizeMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            modelEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-            MessageStateEntity stateOld = modelEntity.State;
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UpdateDate = update;
-            _context.Update(modelEntity);
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autoriza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                ;
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillAutorizador")]
-        public async Task<IActionResult> RefuseMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
 
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UserPros = user;
-            modelEntity.DateProcess = update;
-            modelEntity.UpdateDate = update;
-
-            _context.Update(modelEntity);
-
-
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se rechaza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillChecker")]
-        public async Task<IActionResult> CheckMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-
-            MessageCheckEntity check = new MessageCheckEntity
-            {
-                message = modelEntity,
-                User = user,
-                DateAut = update
-            };
-            _context.Add(check);
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = modelEntity.State,
-                StateUpdate = modelEntity.State,
-                UpdateDate = update,
-                UserCreate = user,
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se da el visto bueno por el usuario " + user.FullName
-                + " en la fecha " + check.DateAutLocal;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMessage", Id = modelEntity.Id }));
-        }
         #endregion
-        */
+
         #region MeMessage
-        [Authorize]
+        [Authorize(Roles = "Administrator,MessageMeMessage")]
         public async Task<IActionResult> ReceiveMeMessageAsync(int? id, string note)
         {
             if (note == null)
@@ -1961,251 +1725,7 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("DetailsMeMessage", new RouteValueDictionary(
                     new { controller = "Messages", action = "DetailsMeMessage", Id = modelEntity.Id }));
         }
-        /*
-        [Authorize(Roles = "Administrator,MessageBillProcesator")]
-        public async Task<IActionResult> FinishedMeMessageAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .Include(o => o.UserAut)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            if (modelEntity.Type.Name != "Factura")
-            {
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                modelEntity.UpdateDate = update;
-            }
-            else
-            {
-                UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-                MessageBillStateEntity billstateold = modelEntity.StateBill;
-                modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-                modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-                modelEntity.UserPros = user;
-                modelEntity.DateProcess = update;
-                modelEntity.UpdateDate = update;
-                Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autorizo la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-            }
-            _context.Update(modelEntity);
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMeMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMeMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillAutorizador")]
-        public async Task<IActionResult> AuthorizeMeMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            string Factura = "";
-            modelEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
-            MessageStateEntity stateOld = modelEntity.State;
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UpdateDate = update;
-            _context.Update(modelEntity);
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se autoriza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                ;
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMeMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMeMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillAutorizador")]
-        public async Task<IActionResult> RefuseMeMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-
-            string Factura = "";
-            MessageStateEntity stateOld = modelEntity.State;
-
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            MessageBillStateEntity billstateold = modelEntity.StateBill;
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-            modelEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Tramitado");
-            modelEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Procesado");
-            modelEntity.UserAut = user;
-            modelEntity.DateAut = update;
-            modelEntity.UserPros = user;
-            modelEntity.DateProcess = update;
-            modelEntity.UpdateDate = update;
-
-            _context.Update(modelEntity);
-
-
-            Factura += " se cambia el estado de la factura de " + billstateold.Name
-                + " por el estado " + modelEntity.StateBill.Name
-                + " se rechaza la factura por el usuario " + modelEntity.UserAut.FullName
-                + " a las " + modelEntity.DateAutLocal
-                + " se finaliza su proceso por el usuario " + modelEntity.UserPros.FullName
-                + " a las " + modelEntity.DateProcessLocal
-                ;
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = stateOld,
-                StateUpdate = modelEntity.State,
-                UpdateDate = modelEntity.UpdateDate,
-                UserCreate = await _userHelper.GetUserAsync(User.Identity.Name),
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se actualiza el mensaje de tipo " + modelEntity.Type.Name
-                + " en la fecha " + messagetransactionEntity.UpdateDateLocal
-                + " por el usuario " + messagetransactionEntity.UserCreate.FullName
-                + " dirigido al usuario  " + messagetransactionEntity.UserUpdate.FullName
-                + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
-                + " y un estado final " + messagetransactionEntity.StateUpdate.Name
-                + Factura
-                ;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMeMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMeMessage", Id = modelEntity.Id }));
-        }
-        [Authorize(Roles = "Administrator,MessageBillChecker")]
-        public async Task<IActionResult> CheckMeMessageBillAsync(int? id, string note)
-        {
-            if (id == null)
-            {
-                NotFound();
-            }
-            MessageEntity modelEntity = await _context.Messages
-                .Include(o => o.State)
-                .Include(o => o.StateBill)
-                .Include(o => o.User)
-                .Include(o => o.Type)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (modelEntity == null)
-            {
-                return NotFound();
-            }
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            DateTime update = System.DateTime.Now.ToUniversalTime();
-
-            MessageCheckEntity check = new MessageCheckEntity
-            {
-                message = modelEntity,
-                User = user,
-                DateAut = update
-            };
-            _context.Add(check);
-
-            MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
-            {
-                StateCreate = modelEntity.State,
-                StateUpdate = modelEntity.State,
-                UpdateDate = update,
-                UserCreate = user,
-                UserUpdate = modelEntity.User,
-                Message = modelEntity,
-                Observation = note
-            };
-            string Description = "";
-            Description += "Se da el visto bueno por el usuario " + user.FullName
-                + " en la fecha " + check.DateAutLocal;
-            messagetransactionEntity.Description = Description;
-            _context.Add(messagetransactionEntity);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("DetailsMeMessage", new RouteValueDictionary(
-                    new { controller = "Messages", action = "DetailsMeMessage", Id = modelEntity.Id }));
-        }
-        */
         #endregion
-        
+
     }
 }

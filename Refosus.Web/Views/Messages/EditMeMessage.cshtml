@@ -71,7 +71,6 @@
                                         </div>
                                     </div>
                                     <partial name="_Message" />
-
                                 </div>
                                 <div class="col-sm-5">
                                 </div>
@@ -120,14 +119,14 @@
                                             }
                                             @if (Model.Type.Name == "Paquete")
                                             {
-                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso")
+                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso" || Model.State.Name == "Ingresado")
                                                 {
                                                     <button data-id="@Model.Id" type="button" class="btn btn-warning  receiveItem col-sm-2" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
                                                 }
                                             }
                                             else
                                             {
-                                                @if (Model.State.Name == "Ingresado")
+                                                @if (Model.State.Name == "Ingresado" || Model.State.Name == "En Proceso")
                                                 {
                                                     <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
                                                 }
@@ -142,7 +141,6 @@
                                     <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
                                 </div>
                                 <div class="col col-4">
-
                                 </div>
                             </div>
                         </div>
@@ -171,86 +169,18 @@
             document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
             var item_to_ReceiveMessage;
             var note;
-
-
-
             //Operacion Factura
             $("#btnReceive").click(function () {
                 item_to_ReceiveMessage = document.getElementById("Id").value;
                 note = document.getElementById("Transaction_Observation").value;
                 window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
-
-
-
             //Operacion
             $("#btnYesPackage").click(function () {
                 item_to_ReceiveMessage = document.getElementById("Id").value;
                 note = document.getElementById("Transaction_Observation").value;
                 window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
-
-
-
-            /*
-            //DATA
-            //Operacion Recibir Factura
-            $("#btnReceiveBill").click(function () {
-                if (note != null)
-                    window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-                else
-                    window.location.href = '/Messages/ReceiveMeMessage?id=' + item_to_ReceiveMessage + "&" + "note=";
-            });
-
-
-            //Operacion
-            $("#btnYesDelete").click(function () {
-                if (note != null)
-                    window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_closeMessage + "&" + "note=" + note;
-                else
-                    window.location.href = '/Messages/FinishedMeMessage?id=' + item_to_closeMessage + "&" + "note=";
-            });
-
-
-
-
-            //Recibir Paquete
-            //Capturar Datos
-            $('.receiveItem').click((e) => {
-                item_to_ReceiveMessage = document.getElementById("Id").value;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-
-            //Cerrar Elemento
-            var item_to_closeMessage;
-            //Capturar Datos
-            $('.closeItem').click((e) => {
-                item_to_closeMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-
-            //Capturar Datos
-            $('.AuthorizeItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-            //Capturar Datos
-            $('.checkItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-            //Capturar Datos
-            $('.RefuseItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-
-            //Capturar Datos
-            $('.FinishedItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-            */
 
             //Guardar
             $("#btnRefresh").click(function () {

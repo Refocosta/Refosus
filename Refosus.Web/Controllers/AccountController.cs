@@ -248,7 +248,7 @@ namespace Refosus.Web.Controllers
         public async Task<IActionResult> ChangeUser()
         {
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            EditUserViewModel model = new EditUserViewModel
+            UserChangeViewModel model = new UserChangeViewModel
             {
                 Address = user.Address,
                 Document = user.Document,
@@ -262,7 +262,7 @@ namespace Refosus.Web.Controllers
 
 
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(User.Identity.IsAuthenticated)]
         public async Task<IActionResult> ChangePassword()
         {
             return View();

@@ -67,7 +67,6 @@
                                         </div>
                                     </div>
                                     <partial name="_Message" />
-
                                 </div>
                                 <div class="col-sm-5">
                                 </div>
@@ -110,17 +109,20 @@
                                         }
                                         else
                                         {
-                                            <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                            if (Model.State.Name != "Tramitado")
+                                            {
+                                                <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
+                                            }
                                             @if (Model.Type.Name == "Paquete")
                                             {
-                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso")
+                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso" || Model.State.Name == "Ingresado")
                                                 {
                                                     <button data-id="@Model.Id" type="button" class="btn btn-warning  receiveItem col-sm-2" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
                                                 }
                                             }
                                             else
                                             {
-                                                @if (Model.State.Name == "Ingresado")
+                                                @if (Model.State.Name == "Ingresado" || Model.State.Name == "En Proceso")
                                                 {
                                                     <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
                                                 }
@@ -135,7 +137,6 @@
                                     <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
                                 </div>
                                 <div class="col col-4">
-
                                 </div>
                             </div>
                         </div>
@@ -154,6 +155,7 @@
 
 
 
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
@@ -166,42 +168,28 @@
             document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
             var item_to_ReceiveMessage;
             var note;
-            var temp;
-            //Recibir Paquete
-            //Capturar Datos
-            $('.receiveItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
+            //Operacion Factura
+            $("#btnReceive").click(function () {
+                item_to_ReceiveMessage = document.getElementById("Id").value;
                 note = document.getElementById("Transaction_Observation").value;
+                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
             //Operacion
             $("#btnYesPackage").click(function () {
-
-                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-            //Operacion Recibir Factura
-            $("#btnReceiveBill").click(function () {
+                item_to_ReceiveMessage = document.getElementById("Id").value;
+                note = document.getElementById("Transaction_Observation").value;
                 window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
             });
 
-            //Operacion Factura
-            $("#btnReceive").click(function () {
-                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-            //Cerrar Elemento
-            var item_to_closeMessage;
-            //Capturar Datos
-            $('.closeItem').click((e) => {
-                item_to_closeMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-            //Operacion
-            $("#btnYesDelete").click(function () {
-                window.location.href = '/Messages/FinishedMessage?id=' + item_to_closeMessage + "&" + "note=" + note;
-            });
-            //Capturar Datos
-            $('.AuthorizeItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
+            //Guardar
+            $("#btnRefresh").click(function () {
+                document.getElementById("TypeId").disabled = false;
+                document.getElementById("CompanyId").disabled = false
+                document.getElementById("StateId").disabled = false
+                document.getElementById("Reference").disabled = false
+                document.getElementById("Sender").disabled = false
+                document.getElementById("StateBillId").disabled = false
+                document.getElementById("Operation").value = "1";
             });
             //Autorizar Factura
             $("#btnAuthorize").click(function () {
@@ -211,81 +199,54 @@
                 }
                 else {
                     document.getElementById("TypeId").disabled = false;
+                    document.getElementById("CompanyId").disabled = false
                     document.getElementById("StateId").disabled = false
+                    document.getElementById("Reference").disabled = false
+                    document.getElementById("Sender").disabled = false
                     document.getElementById("StateBillId").disabled = false
                     document.getElementById("Operation").value = "2";
                 }
             });
-
             //Autorizar Rechazar
             $("#btnRefuse").click(function () {
                 document.getElementById("TypeId").disabled = false;
+                document.getElementById("CompanyId").disabled = false
                 document.getElementById("StateId").disabled = false
+                document.getElementById("Reference").disabled = false
+                document.getElementById("Sender").disabled = false
                 document.getElementById("StateBillId").disabled = false
                 document.getElementById("Operation").value = "3";
             });
-            //Capturar Datos
-            $('.RefuseItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-
-
-            //Visto Bueno
-            //Capturar Datos
-            $('.checkItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
-            //Operacion
-            $("#btnYesCheck").click(function () {
-
-                document.getElementById("TypeId").disabled = false;
-                document.getElementById("StateId").disabled = false
-                document.getElementById("StateBillId").disabled = false
-                document.getElementById("Operation").value = "5";
-            });
-            //Capturar Datos
-            $('.FinishedItem').click((e) => {
-                item_to_ReceiveMessage = e.currentTarget.dataset.id;
-                note = document.getElementById("Transaction_Observation").value;
-            });
             //Autorizar Cerrar
             $("#btnFinished").click(function () {
-                if (document.getElementById("CecoId").value == 0) {
-                    alert('Debe Seleccionar un Centro de Costos');
+                if (document.getElementById("NumberBill").value == "") {
+                    alert('Debe ingresar un Consecutivo de Factura');
                     return false;
                 }
-                else {
-                    document.getElementById("TypeId").disabled = false;
-                    document.getElementById("StateId").disabled = false
-                    document.getElementById("StateBillId").disabled = false
-                    document.getElementById("DateAut").disabled = false
-                    document.getElementById("Operation").value = "4";
-                }
+                else
+                    if (document.getElementById("CecoId").value == 0) {
+                        alert('Debe Seleccionar un Centro de Costos');
+                        return false;
+                    }
+                    else {
+                        document.getElementById("TypeId").disabled = false;
+                        document.getElementById("CompanyId").disabled = false
+                        document.getElementById("StateId").disabled = false
+                        document.getElementById("Reference").disabled = false
+                        document.getElementById("Sender").disabled = false
+                        document.getElementById("StateBillId").disabled = false
+                        document.getElementById("Operation").value = "4";
+                    }
             });
-            $("#btnRefresh").click(function () {
+            //Visto Bueno
+            $("#btnYesCheck").click(function () {
                 document.getElementById("TypeId").disabled = false;
+                document.getElementById("CompanyId").disabled = false
                 document.getElementById("StateId").disabled = false
-                document.getElementById("Operation").value = "1";
-            });
-            $("#Sender").change(function () {
-                temp = 1;
-            });
-            $("#Reference").change(function () {
-                temp = 1;
-            });
-            $("#CreateUser").change(function () {
-                temp = 1;
-            });
-            $("#File").change(function () {
-                temp = 1;
-            });
-            $("#NumberBill").change(function () {
-                temp = 1;
-            });
-            $("#CecoId").change(function () {
-                temp = 1;
+                document.getElementById("Reference").disabled = false
+                document.getElementById("Sender").disabled = false
+                document.getElementById("StateBillId").disabled = false
+                document.getElementById("Operation").value = "5";
             });
         });
     </script>
