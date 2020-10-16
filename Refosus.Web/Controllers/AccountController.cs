@@ -244,30 +244,22 @@ namespace Refosus.Web.Controllers
 
 
         [Authorize(Roles = "Administrator")]
-
         public async Task<IActionResult> ChangeUser()
         {
-            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-            UserChangeViewModel model = new UserChangeViewModel
-            {
-                Address = user.Address,
-                Document = user.Document,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PhoneNumber = user.PhoneNumber,
-                PicturePath = user.PhotoPath
-            };
+            UserChangeViewModel model = new UserChangeViewModel();
+            //model = _converterHelper.ToUserChangeViewModelAsync(_userHelper.GetUserAsync(User.Identity.Name));
             return View(model);
         }
 
 
 
-        [Authorize(User.Identity.IsAuthenticated)]
+        [Authorize]
         public async Task<IActionResult> ChangePassword()
         {
             return View();
         }
-        [Authorize(Roles = "Administrator")]
+
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {

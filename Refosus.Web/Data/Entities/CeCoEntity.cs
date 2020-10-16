@@ -25,5 +25,11 @@ namespace Refosus.Web.Data.Entities
         [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string Code { get; set; }
+
+        [Display(Name = "Activa?")]
+        public bool IsActive { get; set; }
+
+        [Display(Name = "Responsable")]
+        public UserEntity UserResponsible { get; set; }
     }
 }

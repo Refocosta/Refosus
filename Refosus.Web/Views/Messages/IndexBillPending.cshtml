@@ -3,21 +3,15 @@
     ViewData["Title"] = "IndexBillPending";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-    <section class="content-header">
-        <div class="container-fluid">
-            <div class="row mb-2">
-                <div class="col-sm-12">
-                    <h1>Facturación Pendiente</h1>
-                </div>
-            </div>
-        </div>
-    </section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
                     <div class="card-header">
+                        <div class="card-title">
+                            Facturación Pendiente
+                        </div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
@@ -41,13 +35,10 @@
                                                 @Html.DisplayNameFor(model => model.Reference)
                                             </th>
                                             <th>
-                                                @Html.DisplayNameFor(model => model.Type.Name)
-                                            </th>
-                                            <th>
                                                 @Html.DisplayNameFor(model => model.CreateDateLocal)
                                             </th>
                                             <th>
-                                                Estado Factura
+                                                @Html.DisplayNameFor(model => model.StateBill.Name)
                                             </th>
                                             <th>
                                                 @Html.DisplayNameFor(model => model.UserSender)
@@ -83,9 +74,6 @@
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.Reference)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Type.Name)
                                             </td>
                                             <td>
                                                 @Html.DisplayFor(modelItem => item.CreateDateLocal)

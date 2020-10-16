@@ -9,35 +9,14 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Models
 {
-    public class UserChangeViewModel
+    public class UserChangeViewModel :UserEntity
     {
-        public string Id { get; set; }
+        [Display(Name = "Compañia")]
+        public int CompanyId { get; set; }
 
         [Display(Name = "Tipo de Documento")]
-        public DocumentTypeEntity TypeDocument { get; set; }
+        public int DocumentTypeId { get; set; }
 
-        [Display(Name = "Documento")]
-        [MaxLength(10, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public string Document { get; set; }
-
-        [Display(Name = "Nombres")]
-        [MaxLength(30, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public string FirstName { get; set; }
-
-        [Display(Name = "Apellidos")]
-        [MaxLength(30, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        public string LastName { get; set; }
-
-        [Display(Name = "Direccion")]
-        [MaxLength(100, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
-        public string Address { get; set; }
-
-        [Display(Name = "Telefono")]
-        [MaxLength(50, ErrorMessage = "El campo {0} no puede tener mas de {1} caracteres.")]
-        public string PhoneNumber { get; set; }
 
         [Display(Name = "Foto")]
         public IFormFile PictureFile { get; set; }

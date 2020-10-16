@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Data.EntitiesTE;
+using Refosus.Web.Migrations;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
 
@@ -11,11 +13,13 @@ namespace Refosus.Web.Helpers
     {
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
+        private readonly IUserHelper _userHelper;
 
-        public ConverterHelper(DataContext context, ICombosHelper combosHelper)
+        public ConverterHelper(DataContext context, ICombosHelper combosHelper, IUserHelper userHelper)
         {
             _context = context;
             _combosHelper = combosHelper;
+            _userHelper = userHelper;
         }
 
         #region Companies
@@ -281,59 +285,36 @@ namespace Refosus.Web.Helpers
         #region Message
         public async Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew)
         {
-            //if (model.CecoId != null && model.Type.Name == "Factura")
-            //{
-                return new MessageEntity
-                {
-                    Id = isNew ? 0 : model.Id,
-                    Type = await _context.MessagesTypes.FindAsync(model.TypeId),
-                    Sender = model.Sender,
-                    Reference = model.Reference,
-                    CreateDate = model.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
-                    State = await _context.MessagesStates.FindAsync(model.StateId),
-                    User = await _context.Users.FindAsync(model.CreateUser),
-                    StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
-                    UserSender = await _context.Users.FindAsync(model.SenderUser),
-                    UserAut = await _context.Users.FindAsync(model.AutUser),
-                    UserPros = await _context.Users.FindAsync(model.ProUser),
-                    UserCreate = await _context.Users.FindAsync(model.CreateUser),
-                    DateAut = model.DateAutLocal.ToUniversalTime(),
-                    DateProcess = model.DateProcessLocal.ToUniversalTime(),
-                    Ceco = await _context.CeCos.FindAsync(model.CecoId),
-                    NumberBill = model.NumberBill,
-                    Company = await _context.Companies.FindAsync(model.CompanyId),
-                };
-            //}
-            //else
-            //{
-            //    return new MessageEntity
-            //    {
-            //        Id = isNew ? 0 : model.Id,
-            //        Type = await _context.MessagesTypes.FindAsync(model.TypeId),
-            //        Sender = model.Sender,
-            //        Reference = model.Reference,
-            //        CreateDate = model.CreateDate.ToUniversalTime(),
-            //        UpdateDate = model.UpdateDate.ToUniversalTime(),
-            //        State = await _context.MessagesStates.FindAsync(model.StateId),
-            //        User = await _context.Users.FindAsync(model.CreateUser),
-            //        StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
-            //        UserSender = await _context.Users.FindAsync(model.SenderUser),
-
-            //        Ceco = await _context.CeCos.FindAsync(model.CecoId),
-            //        NumberBill = model.NumberBill
-            //    };
-            //}
+            return new MessageEntity
+            {
+                Id = isNew ? 0 : model.Id,
+                Type = await _context.MessagesTypes.FindAsync(model.TypeId),
+                Sender = model.Sender,
+                Reference = model.Reference,
+                CreateDate = model.CreateDateLocal.ToUniversalTime(),
+                UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
+                State = await _context.MessagesStates.FindAsync(model.StateId),
+                User = await _context.Users.FindAsync(model.CreateUser),
+                StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+                UserSender = await _context.Users.FindAsync(model.SenderUser),
+                UserAut = await _context.Users.FindAsync(model.AutUser),
+                UserPros = await _context.Users.FindAsync(model.ProUser),
+                UserCreate = await _context.Users.FindAsync(model.CreateUser),
+                DateAut = model.DateAutLocal.ToUniversalTime(),
+                DateProcess = model.DateProcessLocal.ToUniversalTime(),
+                Ceco = await _context.CeCos.Include(c=>c.UserResponsible).FirstOrDefaultAsync(c=>c.Id==model.CecoId),
+                NumberBill = model.NumberBill,
+                Company = await _context.Companies.FindAsync(model.CompanyId),
+            };
         }
         public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
         {
             return new MessagetransactionEntity
             {
                 Id = 0,
-                Message = model,
-                UserCreate = model.User,
+                UserCreate = model.UserSender,
                 UserUpdate = model.User,
-                UpdateDate = model.Transaction.UpdateDateLocal.ToUniversalTime(),
+                UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
                 StateCreate = model.Transaction.StateCreate,
                 StateUpdate = model.State,
                 Observation = model.Transaction.Observation
@@ -351,7 +332,7 @@ namespace Refosus.Web.Helpers
                     Users = _combosHelper.GetComboUser(),
                     MessageBillState = _combosHelper.GetComboMessageBillState(),
                     Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies=_combosHelper.GetComboCompany(),
+                    Companies = _combosHelper.GetComboCompany(),
                     Id = messagentity.Id,
                     Type = messagentity.Type,
                     TypeId = messagentity.Type.Id,
@@ -372,7 +353,7 @@ namespace Refosus.Web.Helpers
                     UserSender = messagentity.UserSender,
                     SenderUser = messagentity.UserSender.Id,
                     NumberBill = messagentity.NumberBill,
-                    CompanyId=messagentity.Company.Id
+                    CompanyId = messagentity.Company.Id
                 };
             }
             else
@@ -588,7 +569,17 @@ namespace Refosus.Web.Helpers
         }
 
 
-
+        public UserChangeViewModel ToUserChangeViewModelAsync(UserEntity user)
+        {
+            return new UserChangeViewModel
+            {
+                Companies = _combosHelper.GetComboCompany(),
+                DocumentTypes = _combosHelper.GetComboDocumentType(),
+                Document = user.Document,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+        }
 
 
 
@@ -619,6 +610,8 @@ namespace Refosus.Web.Helpers
                 Projects = _combosHelper.GetComboProject()
             };
         }
+
+
         #endregion
 
         //#region Iniciativas

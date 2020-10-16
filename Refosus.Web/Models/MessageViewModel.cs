@@ -12,13 +12,21 @@ namespace Refosus.Web.Models
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar un tipo de mensaje.")]
         public int TypeId { get; set; }
+
         [Display(Name = "Compañia")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una Compañia.")]
         public int CompanyId { get; set; }
+
         [Display(Name = "Estado")]
         public int StateId { get; set; }
         public int StateIdOld { get; set; }
+
         [Display(Name = "Usuario")]
         public string CreateUser { get; set; }
+
+        [Display(Name = "Usuario que Envia")]
+        public string SenderUser { get; set; }
 
         [Display(Name = "Estado de Factura")]
         public int StateBillId { get; set; }
@@ -32,8 +40,7 @@ namespace Refosus.Web.Models
         [Display(Name = "Usuario que Proceso")]
         public string ProUser { get; set; }
 
-        [Display(Name = "Usuario que Envia")]
-        public string SenderUser { get; set; }
+        
 
         public IEnumerable<SelectListItem> MessageType { get; set; }
         public IEnumerable<SelectListItem> MessageState { get; set; }
@@ -49,7 +56,6 @@ namespace Refosus.Web.Models
         [Display(Name = "Adjunto")]
         public IEnumerable<IFormFile> File { get; set; }
         public string Archivo { get; internal set; }
-
         public int Operation { get; set; }
     }
 }

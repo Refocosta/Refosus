@@ -170,13 +170,9 @@
                         </div>
                         <div class="card-footer ">
                             <div class="col col-12">
-                                @if (Model.User.Email.Equals(User.Identity.Name) && Model.State.Name != "Tramitado")
+                                @if (Model.User.Email.Equals(User.Identity.Name) && Model.State.Name != "Tramitado" && Model.State.Name != "Recibido")
                                 {
                                     <a asp-action="EditMeMessage" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Gestionar</a>
-                                }
-                                else
-                                {
-                                    <button type="button" asp-action="EditMeMessage" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2" disabled>Gestionar</button>
                                 }
                                 <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
                             </div>

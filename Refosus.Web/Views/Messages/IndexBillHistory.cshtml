@@ -3,22 +3,15 @@
     ViewData["Title"] = "IndexBillHistory";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-12">
-                <h1>Historial de Facturación</h1>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
-
         <div class="row">
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
                     <div class="card-header">
+                        <div class="card-title">
+                            Historial de Facturación
+                        </div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                         </div>
@@ -42,13 +35,10 @@
                                                 @Html.DisplayNameFor(model => model.Reference)
                                             </th>
                                             <th>
-                                                @Html.DisplayNameFor(model => model.Type.Name)
-                                            </th>
-                                            <th>
                                                 @Html.DisplayNameFor(model => model.CreateDateLocal)
                                             </th>
                                             <th>
-                                                @Html.DisplayNameFor(model => model.State.Name)
+                                                @Html.DisplayNameFor(model => model.StateBill.Name)
                                             </th>
                                             <th>
                                                 @Html.DisplayNameFor(model => model.UserSender)
@@ -72,47 +62,44 @@
                                     <tbody>
                                         @foreach (var item in Model)
                                         {
-                                        <tr>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.UpdateDateLocal)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Id)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Sender)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Reference)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Type.Name)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.CreateDateLocal)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.State.Name)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.UserSender.FullName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.User.FullName)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.Ceco.Name)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.NumberBill)
-                                            </td>
-                                            <td>
-                                                @Html.DisplayFor(modelItem => item.MessageFiles.Count)
-                                            </td>
-                                            <td>
-                                                <a asp-action="DetailsBillHistoryMessage" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.UpdateDateLocal)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Id)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Sender)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Reference)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.CreateDateLocal)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.StateBill.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.UserSender.FullName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.User.FullName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Ceco.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.NumberBill)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.MessageFiles.Count)
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DetailsBillHistoryMessage" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                </td>
+                                            </tr>
                                         }
                                     </tbody>
                                 </table>

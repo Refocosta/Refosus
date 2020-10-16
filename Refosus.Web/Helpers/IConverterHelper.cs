@@ -59,6 +59,7 @@ namespace Refosus.Web.Helpers
         #region Users
         Task<UserEntity> ToUserEntityAsync(UserViewModel model, bool isNew);
         UserViewModel ToUserViewModel(UserEntity model);
+        UserChangeViewModel ToUserChangeViewModelAsync(UserEntity user);
         #endregion
         //#region Iniciativas
         //IniciativasEntity ToIniciativasEntity(WorkStreamViewModel model, bool isNew);

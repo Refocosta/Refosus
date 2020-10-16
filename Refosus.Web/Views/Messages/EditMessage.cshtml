@@ -3,11 +3,6 @@
     ViewData["Title"] = "EditMessage";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
-<section class="content-header">
-    <div class="container-fluid">
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -16,21 +11,19 @@
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col col-sm-6">
-                                    <a class="card-title">Actualizar Mensajeria</a>
+                                <div class="card-title col col-sm-6">
+                                    <a class="card-title">Actualizar Correspondencia @Model.Id</a>
                                 </div>
-                                <div class="col col-sm-2">
-
+                                <div class="col col-sm-3">
                                 </div>
-                                <div class="col col-sm-3 text-right">
+                                <div class="col col-sm-2 text-right">
                                     @if (Model.Type != null)
                                     {
                                         @if (Model.Type.Name == "Factura")
                                         {
-                                            <button type="button" data-id="@Model.Id" class="btn btn-warning  receiveItem " data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
+                                            <button type="button" data-id="@Model.Id" class="btn btn-warning  " data-toggle="modal" data-target="#InfoBillDialog">Info Factura</button>
                                         }
                                     }
-
                                 </div>
                                 <div class="col col-sm-1">
                                     <div class="card-tools text-right">
@@ -42,9 +35,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-12">
-
                                     <div class="row">
-
                                         <input type="hidden" asp-for="CreateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
                                         <input type="hidden" asp-for="SenderUser" />
@@ -74,7 +65,7 @@
                         </div>
                         <div class="card-footer ">
                             <div class="row">
-                                <div class="col col-8">
+                                <div class="col col-12">
                                     @if (Model.Type != null)
                                     {
                                         @if (Model.Type.Name == "Factura")
@@ -93,8 +84,8 @@
                                                 {
                                                     @if (User.IsInRole("MessageBillAutorizador") || User.IsInRole("Administrator"))
                                                     {
-                                                        <button type="submit" class="btn btn-success AuthorizeItem" id="btnAuthorize"> Aprobar Factura</button>
-                                                        <button type="submit" class="btn btn-danger RefuseItem" id="btnRefuse"> Rechazar Factura</button>
+                                                        <button type="button" class="btn btn-success AuthorizeItem col-sm-2" id="btnAuthorize" data-toggle="modal" data-target="#AuthorizeDialog">Autorizar</button>
+                                                        <button type="button" class="btn btn-danger RefuseItem col-sm-2" id="btnRefuse" data-toggle="modal" data-target="#RefuseDialog">Rechazar</button>
                                                     }
 
                                                 }
@@ -102,14 +93,14 @@
                                                 {
                                                     @if (User.IsInRole("MessageBillProcesator") || User.IsInRole("Administrator"))
                                                     {
-                                                        <button type="submit" class="btn btn-danger FinishedItem" id="btnFinished"> Procesar Factura</button>
+                                                        <button type="button" class="btn btn-danger FinishedItem col-sm-2" id="btnFinished" data-toggle="modal" data-target="#ProcessDialog">Procesar</button>
                                                     }
                                                 }
                                             }
                                         }
                                         else
                                         {
-                                            if (Model.State.Name != "Tramitado")
+                                            if (Model.State.Name != "Tramitado" && Model.State.Name != "Rechazado" && Model.State.Name != "Recibido")
                                             {
                                                 <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
                                             }
@@ -124,71 +115,46 @@
                                             {
                                                 @if (Model.State.Name == "Ingresado" || Model.State.Name == "En Proceso")
                                                 {
-                                                    <button type="button" data-id="@Model.Id" class="btn btn-warning col-sm-2 receiveItem" id="btnReceive">Recibir</button>
+                                                    <button type="button" data-id="@Model.Id" class="btn btn-warning receiveCtrItem col-sm-2" id="btnReceive" data-toggle="modal" data-target="#ReceiveCtrDialog">Recibir</button>
                                                 }
-                                                @if (Model.State.Name == "Recibido")
-                                                {
-                                                    <button data-id="@Model.Id" type="button" class="btn btn-danger closeItem" data-toggle="modal" data-target="#closeDialog">Cerrar</button>
-                                                }
-
                                             }
                                         }
+                                        <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                                     }
-                                    <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                                </div>
-                                <div class="col col-4">
                                 </div>
                             </div>
                         </div>
-
                     </div>
-
-                    <partial name="_CloseMessageDialog" />
-                    <partial name="_CloseMessagePackage" />
+                    <partial name="_AuthorizeMessageDialog" />
                     <partial name="_Bill" />
                     <partial name="_CheckMessageDialog" />
+                    <partial name="_CloseMessageDialog" />
+                    <partial name="_CloseMessagePackage" />
+                    <partial name="_ProcessMessageDialog" />
+                    <partial name="_ReceiveCtrMessageDialog" />
+                    <partial name="_RefuseMessageDialog" />
                 </form>
             </section>
         </div>
     </div>
 </section>
-
-
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
-
+        document.getElementById("StateId").disabled = true;
+        document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
         $(document).ready(function () {
-            document.getElementById("StateId").disabled = true;
-            document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
-            var item_to_ReceiveMessage;
-            var note;
-            //Operacion Factura
-            $("#btnReceive").click(function () {
-                item_to_ReceiveMessage = document.getElementById("Id").value;
-                note = document.getElementById("Transaction_Observation").value;
-                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-            //Operacion
-            $("#btnYesPackage").click(function () {
-                item_to_ReceiveMessage = document.getElementById("Id").value;
-                note = document.getElementById("Transaction_Observation").value;
-                window.location.href = '/Messages/ReceiveMessage?id=' + item_to_ReceiveMessage + "&" + "note=" + note;
-            });
-
             //Guardar
             $("#btnRefresh").click(function () {
-                document.getElementById("TypeId").disabled = false;
-                document.getElementById("CompanyId").disabled = false
-                document.getElementById("StateId").disabled = false
-                document.getElementById("Reference").disabled = false
-                document.getElementById("Sender").disabled = false
-                document.getElementById("StateBillId").disabled = false
+                btnActive();
+                document.getElementById("Operation").value = "1";
+            });
+            //Guardar
+            $("#btnRefresh2").click(function () {
+                btnActive2();
                 document.getElementById("Operation").value = "1";
             });
             //Autorizar Factura
@@ -197,24 +163,14 @@
                     alert('Debe Seleccionar un Centro de Costos');
                     return false;
                 }
-                else {
-                    document.getElementById("TypeId").disabled = false;
-                    document.getElementById("CompanyId").disabled = false
-                    document.getElementById("StateId").disabled = false
-                    document.getElementById("Reference").disabled = false
-                    document.getElementById("Sender").disabled = false
-                    document.getElementById("StateBillId").disabled = false
-                    document.getElementById("Operation").value = "2";
-                }
             });
-            //Autorizar Rechazar
-            $("#btnRefuse").click(function () {
-                document.getElementById("TypeId").disabled = false;
-                document.getElementById("CompanyId").disabled = false
-                document.getElementById("StateId").disabled = false
-                document.getElementById("Reference").disabled = false
-                document.getElementById("Sender").disabled = false
-                document.getElementById("StateBillId").disabled = false
+            $("#btnYesAuthorize").click(function () {
+                btnActive();
+                document.getElementById("Operation").value = "2";
+            });
+            // Rechazar
+            $("#btnYesRefuse").click(function () {
+                btnActive();
                 document.getElementById("Operation").value = "3";
             });
             //Autorizar Cerrar
@@ -228,26 +184,46 @@
                         alert('Debe Seleccionar un Centro de Costos');
                         return false;
                     }
-                    else {
-                        document.getElementById("TypeId").disabled = false;
-                        document.getElementById("CompanyId").disabled = false
-                        document.getElementById("StateId").disabled = false
-                        document.getElementById("Reference").disabled = false
-                        document.getElementById("Sender").disabled = false
-                        document.getElementById("StateBillId").disabled = false
-                        document.getElementById("Operation").value = "4";
-                    }
+            });
+            $("#btnYesProcess").click(function () {
+                btnActive();
+                document.getElementById("Operation").value = "4";
             });
             //Visto Bueno
             $("#btnYesCheck").click(function () {
-                document.getElementById("TypeId").disabled = false;
-                document.getElementById("CompanyId").disabled = false
-                document.getElementById("StateId").disabled = false
-                document.getElementById("Reference").disabled = false
-                document.getElementById("Sender").disabled = false
-                document.getElementById("StateBillId").disabled = false
+                btnActive();
                 document.getElementById("Operation").value = "5";
             });
+            //Recibir Carta
+            $("#btnYesReceiveCtr").click(function () {
+                btnActive2();
+                document.getElementById("Operation").value = "6";
+            });
+            //Recibir Paquete
+            $("#btnYesPackage").click(function () {
+                btnActive2();
+                document.getElementById("Operation").value = "7";
+            });
         });
+        function btnActive() {
+            document.getElementById("CompanyId").disabled = false
+            document.getElementById("StateId").disabled = false
+            document.getElementById("Sender").disabled = false
+            document.getElementById("Reference").disabled = false
+            document.getElementById("TypeId").disabled = false;
+            document.getElementById("CecoId").disabled = false;
+            document.getElementById("StateBillId").disabled = false
+            document.getElementById("AutUser").disabled = false
+            document.getElementById("DateAut").disabled = false
+            document.getElementById("ProUser").disabled = false
+            document.getElementById("DateProcessLocal").disabled = false
+        };
+        function btnActive2() {
+            document.getElementById("CompanyId").disabled = false
+            document.getElementById("StateId").disabled = false
+            document.getElementById("Sender").disabled = false
+            document.getElementById("Reference").disabled = false
+            document.getElementById("TypeId").disabled = false;
+        };
     </script>
 }

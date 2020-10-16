@@ -46,6 +46,8 @@ namespace Refosus.Web.Helpers
         public async Task<UserEntity> GetUserAsync(string email)
         {
             return await _context.Users
+                .Include(u=>u.TypeDocument)
+                .Include(u=>u.Company)
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
         public async Task<UserEntity> GetUserAsync(Guid userId)
@@ -136,7 +138,10 @@ namespace Refosus.Web.Helpers
 
         public async Task<List<UserEntity>> GetUsersAsync()
         {
-            return await _userManager.Users.Include(t=>t.TypeDocument).ToListAsync();
+            return await _userManager.Users
+                .Include(t=>t.TypeDocument)
+                .Include(t => t.Company)
+                .ToListAsync();
         }
 
         public Task<List<RoleEntity>> GetRoles()

@@ -4,6 +4,60 @@
     ViewData["Title"] = "ChangeUser";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
+<section class="content-header">
+    <div class="container-fluid">
+    </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="row">
+                    <div class="form-group col col-sm-4">
+                        <label asp-for="DocumentTypeId" class="control-label"></label>
+                        <select asp-for="DocumentTypeId" asp-items="Model.DocumentTypes" class="form-control"></select>
+                        <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label asp-for="Document" class="control-label">Documento</label>
+                        <input asp-for="Document" class="form-control" />
+                        <span asp-validation-for="Document" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label class="control-label">Usuario</label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label asp-for="FirstName" class="control-label"></label>
+                        <input asp-for="FirstName" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <label asp-for="LastName" class="control-label"></label>
+                        <input asp-for="LastName" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col col-sm-4">
+                        <label asp-for="CompanyId" class="control-label"></label>
+                        <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control"></select>
+                        <span asp-validation-for="CompanyId" class="text-danger"></span>
+                    </div>
+            </section>
+        </div>
+    </div>
+</section>
 
-<h1>ChangeUser</h1>
+
+
+
 
