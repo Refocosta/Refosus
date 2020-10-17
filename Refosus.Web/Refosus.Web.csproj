@@ -16,6 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="Data\DataContext.cs" />
+    <Compile Include="Data\Entities\ShoppingCategoryEntity.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.js" />
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.min.js" />
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap4.js" />
