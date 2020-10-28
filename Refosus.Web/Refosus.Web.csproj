@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -7,18 +7,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>2</WarningLevel>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="Migrations\20200427200650_dbsetcompany1.cs" />
-    <Compile Remove="Migrations\20200427200650_dbsetcompany1.Designer.cs" />
-    <Compile Remove="Migrations\20200915110608_Shopping1.cs" />
-    <Compile Remove="Migrations\20200915110608_Shopping1.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Include="Data\DataContext.cs" />
-    <Compile Include="Data\Entities\ShoppingCategoryEntity.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.js" />
@@ -49,13 +37,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.4" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.4">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -63,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Images\News\" />
     <Folder Include="wwwroot\Message\Carta\" />
     <Folder Include="wwwroot\Message\Factura\" />

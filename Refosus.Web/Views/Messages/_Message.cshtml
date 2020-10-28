@@ -1,6 +1,5 @@
 ﻿@model Refosus.Web.Models.MessageViewModel
 <div class="row">
-
     <div class="col col-sm-4">
         <label asp-for="Sender" class="control-label"></label>
         <input asp-for="Sender" class="form-control" disabled />
@@ -19,11 +18,10 @@
 </div>
 <div class="row">
     <div class="form-group col-sm-6">
-        <label asp-for="CreateUser" class="control-label"></label>
-        <select asp-for="CreateUser" asp-items="Model.Users" class="form-control"></select>
-        <span asp-validation-for="CreateUser" class="text-danger"></span>
+        <label asp-for="UserRec" class="control-label"></label>
+        <select asp-for="UserRec" asp-items="Model.Users" class="form-control"></select>
+        <span asp-validation-for="UserRec" class="text-danger"></span>
     </div>
-
     @if (Model.Type != null)
     {
         <div class="form-group col-sm-6">
@@ -32,7 +30,8 @@
             <span asp-validation-for="File" class="text-danger"></span>
         </div>
     }
-</div>@if (Model.Type.Name == "Factura")
+</div>
+@if (Model.Type.Name == "Factura")
 {
     <div class="row">
         @if (Model.StateBill.Name == "Aprobado")

@@ -43,22 +43,26 @@ namespace Refosus.Web.Controllers
             List<ShoppingTempItems> itemsTemp = new List<ShoppingTempItems>();
             ShoppingViewModel model = new ShoppingViewModel
             {
+
                 Users = _combosHelper.GetComboUser(),
-                IdUserCreate = user.Id,
-
-
                 ShoppingUnits = _combosHelper.GetComboShoppingUnit(),
                 ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0),
                 Categories = _combosHelper.GetComboShoppingCategory(),
                 SubCategories = _combosHelper.GetComboShoppingCategory(0),
 
                 ShoppingStates = _combosHelper.GetComboShoppingState(),
+
                 Projects = _combosHelper.GetComboProject(),
 
+
+
+
+
+                IdUserCreate = user.Id,
                 CreateDate = System.DateTime.Now.ToUniversalTime().ToLocalTime(),
                 UpdateDate = System.DateTime.Now.ToUniversalTime().ToLocalTime(),
                 IdUserAssign = user.Id,
-                IdState =_context.ShoppingStates.FirstOrDefault(s => s.Name == "Nuevo").Id,
+                IdState = _context.ShoppingStates.FirstOrDefault(s=>s.Name=="Nuevo").Id,
                 IdUserProjectBoss = "0",
                 Items = items,
                 ItemsTemp = itemsTemp
@@ -148,7 +152,39 @@ namespace Refosus.Web.Controllers
 
 
 
+        public async Task<IActionResult> EditShopping()
+        {
+            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+            List<ShoppingItemsEntity> items = new List<ShoppingItemsEntity>();
+            List<ShoppingTempItems> itemsTemp = new List<ShoppingTempItems>();
+            ShoppingViewModel model = new ShoppingViewModel
+            {
 
+                Users = _combosHelper.GetComboUser(),
+                ShoppingUnits = _combosHelper.GetComboShoppingUnit(),
+                ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0),
+                Categories = _combosHelper.GetComboShoppingCategory(),
+                SubCategories = _combosHelper.GetComboShoppingCategory(0),
+
+                ShoppingStates = _combosHelper.GetComboShoppingState(),
+
+                Projects = _combosHelper.GetComboProject(),
+
+
+
+
+
+                IdUserCreate = user.Id,
+                CreateDate = System.DateTime.Now.ToUniversalTime().ToLocalTime(),
+                UpdateDate = System.DateTime.Now.ToUniversalTime().ToLocalTime(),
+                IdUserAssign = user.Id,
+                IdState = _context.ShoppingStates.FirstOrDefault(s => s.Name == "Nuevo").Id,
+                IdUserProjectBoss = "0",
+                Items = items,
+                ItemsTemp = itemsTemp
+            };
+            return View(model);
+        }
 
 
 

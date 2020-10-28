@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
@@ -41,7 +42,7 @@ namespace Refosus.Web.Controllers
         // RV 2020-10-14
         #region Index
         [Authorize(Roles = "Administrator,MessageAdministrator")]
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> Index()
         {
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
             return View(await
@@ -83,11 +84,18 @@ namespace Refosus.Web.Controllers
             UserEntity Userme = await _userHelper.GetUserAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => (t.User.Id == Userme.Id && (t.State.Name == "Tramitado") || (t.State.Name == "Recibido")) || ((t.UserSender.Id == Userme.Id && (t.State.Name == "Tramitado") || (t.State.Name == "Recibido"))) || ((t.UserCreate.Id == Userme.Id && (t.State.Name == "Tramitado") || (t.State.Name == "Recibido"))))
+                .Where(t =>
+                (((t.UserSender == Userme) || (t.User == Userme))&&((t.State.Name == "Tramitado") || (t.State.Name == "Recibido")))
+                ||
+                ((t.UserSender == Userme) && (t.User != Userme))
+                ||
+                ((t.UserCreate == Userme) && (t.UserSender != Userme) && (t.User != Userme))
+                )
                 .Include(t => t.Type)
                 .Include(t => t.State)
                 .Include(t => t.User)
                 .Include(t => t.UserSender)
+                .Include(t => t.UserCreate)
                 .Include(t => t.MessageFiles)
                 .Include(t => t.Ceco)
                 .Include(t => t.Company)
@@ -159,14 +167,19 @@ namespace Refosus.Web.Controllers
             if (ModelState.IsValid)
             {
                 #region Message
-                MessageEntity messageEntity = new MessageEntity();
-                messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
                 UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
                 DateTime DateNow = System.DateTime.Now.ToUniversalTime();
+                MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
+                messageEntity.CreateDate = DateNow;
+                messageEntity.UpdateDate = DateNow;
+                messageEntity.UserCreate = user;
+                messageEntity.UserSender = user;
+                //si no se cambia el usuario se auto envia
                 if (messageEntity.User == null)
                 {
                     messageEntity.User = user;
                 }
+                //asigna el estado inicial del documento
                 if (messageEntity.Type.Name == "Factura")
                 {
                     messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
@@ -182,13 +195,8 @@ namespace Refosus.Web.Controllers
                     {
                         messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
                     }
-
                     messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
                 }
-                messageEntity.CreateDate = DateNow;
-                messageEntity.UpdateDate = DateNow;
-                messageEntity.UserCreate = user;
-                messageEntity.UserSender = user;
                 _context.Add(messageEntity);
                 #endregion
                 #region AddFile
@@ -289,14 +297,19 @@ namespace Refosus.Web.Controllers
             if (ModelState.IsValid)
             {
                 #region Message
-                MessageEntity messageEntity = new MessageEntity();
-                messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
                 UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
                 DateTime DateNow = System.DateTime.Now.ToUniversalTime();
+                MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, true);
+                messageEntity.CreateDate = DateNow;
+                messageEntity.UpdateDate = DateNow;
+                messageEntity.UserCreate = user;
+                messageEntity.UserSender = user;
+                //si no se cambia el usuario se auto envia
                 if (messageEntity.User == null)
                 {
                     messageEntity.User = user;
                 }
+                //asigna el estado inicial del documento
                 if (messageEntity.Type.Name == "Factura")
                 {
                     messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Nuevo");
@@ -312,13 +325,8 @@ namespace Refosus.Web.Controllers
                     {
                         messageEntity.State = await _context.MessagesStates.FirstOrDefaultAsync(o => o.Name == "Ingresado");
                     }
-
                     messageEntity.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(o => o.Name == "Otro");
                 }
-                messageEntity.CreateDate = DateNow;
-                messageEntity.UpdateDate = DateNow;
-                messageEntity.UserCreate = user;
-                messageEntity.UserSender = user;
                 _context.Add(messageEntity);
                 #endregion
                 #region AddFile
@@ -587,8 +595,7 @@ namespace Refosus.Web.Controllers
             {
                 return NotFound();
             }
-            UserEntity Userme = await _userHelper.GetUserAsync(User.Identity.Name);
-            if (!messageEntity.User.Email.Equals(Userme.Email) && !messageEntity.UserSender.Email.Equals(Userme.Email))
+            if (!messageEntity.User.Email.Equals(User.Identity.Name) && !messageEntity.UserSender.Email.Equals(User.Identity.Name) && !messageEntity.UserCreate.Email.Equals(User.Identity.Name))
             {
                 return View("../Account/NotAuthorized");
             }
@@ -660,11 +667,11 @@ namespace Refosus.Web.Controllers
             }
             MessageEntity messageEntity = await _context.Messages
                 .Include(t => t.Type)
+                .Include(t => t.UserCreate)
                 .Include(t => t.User)
+                .Include(t => t.UserSender)
                 .Include(t => t.State)
                 .Include(t => t.StateBill)
-                .Include(t => t.UserAut)
-                .Include(t => t.UserPros)
                 .Include(t => t.Ceco)
                 .Include(t => t.Company)
                 .FirstOrDefaultAsync(g => g.Id == id);
@@ -672,21 +679,7 @@ namespace Refosus.Web.Controllers
             {
                 return NotFound();
             }
-            MessageViewModel messageViewModel;
-            if (messageEntity.UserAut == null && messageEntity.UserPros == null)
-            {
-                messageViewModel = _converterHelper.ToMessageViewModelNone(messageEntity);
-            }
-            else
-            if (messageEntity.UserAut != null && messageEntity.UserPros == null)
-            {
-                messageViewModel = _converterHelper.ToMessageViewModelAut(messageEntity);
-            }
-            else
-            {
-                messageViewModel = _converterHelper.ToMessageViewModel(messageEntity);
-            }
-
+            MessageViewModel messageViewModel = _converterHelper.ToMessageViewModel(messageEntity);
             return View(messageViewModel);
         }
         [Authorize(Roles = "Administrator,MessageAdministrator")]
@@ -704,35 +697,36 @@ namespace Refosus.Web.Controllers
                 MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
                 MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
                 messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                messageEntity.UserSender = user;
+                #region Load Files
+                string Files = "";
+                if (model.File != null)
+                {
+                    string ext;
+                    string Nombre;
+                    foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                    {
+                        Nombre = item.FileName;
+                        ext = Path.GetExtension(Nombre);
+                        MessageFileEntity fileEntity = new MessageFileEntity
+                        {
+                            message = messageEntity,
+                            Name = Nombre,
+                            FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                            Ext = ext
+                        };
+                        _context.Add(fileEntity);
+                        Files += "\nEl usuario " + user.FullName
+                            + " Agrega el archivo " + Nombre;
+                    }
+                }
+                #endregion 
                 //Operation 1 Edit
                 if (model.Operation == 1)
                 {
                     #region Update Info
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -742,6 +736,7 @@ namespace Refosus.Web.Controllers
                     messagetransactionEntity.UserUpdate = messageEntity.User;
                     messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
                     messagetransactionEntity.StateUpdate = messageEntity.State;
+                    messagetransactionEntity.Observation = model.Transaction.Observation;
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -754,7 +749,6 @@ namespace Refosus.Web.Controllers
                         messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
                         messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
                         messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                        messagetransactionEntity.Observation = model.Transaction.Observation;
                         string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name;
                         Description += Factura;
@@ -792,38 +786,32 @@ namespace Refosus.Web.Controllers
                 if (model.Operation == 2)
                 {
                     #region Update Info
-                    if (messageEntity.UserSender == messageEntity.User)
+                    if (messageEntity.User == user)
                     {
-                        messageEntity.User = messageEntity.Ceco.UserResponsible;
+                        if (messageEntity.Ceco.UserResponsible == null)
+                        {
+                            ViewBag.Mensaje = "Este centro de costos no cuenta con responsable. Seleccione el usuario de forma manual.";
+                            model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
+                            model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);
+                            model.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(t => t.Id == model.StateBillId);
+                            model.MessageType = _combosHelper.GetComboMessageType();
+                            model.Companies = _combosHelper.GetComboCompany();
+                            model.MessageState = _combosHelper.GetComboMessageState();
+                            model.Users = _combosHelper.GetComboUser();
+                            model.MessageBillState = _combosHelper.GetComboMessageBillState();
+                            model.Cecos = _combosHelper.GetComboCeCo(model.CompanyId);
+                            return View(model);
+                        }
+                        else
+                        {
+                            messageEntity.User = messageEntity.Ceco.UserResponsible;
+                        }
                     }
                     messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                     messageEntity.UserAut = user;
                     messageEntity.DateAut = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -888,29 +876,6 @@ namespace Refosus.Web.Controllers
                     messageEntity.DateProcess = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
                     #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
-                    #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
                     messagetransactionEntity.Message = messageEntity;
@@ -973,29 +938,6 @@ namespace Refosus.Web.Controllers
                     messageEntity.UserPros = user;
                     messageEntity.DateProcess = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1062,12 +1004,9 @@ namespace Refosus.Web.Controllers
                         return NotFound();
                     }
                     modelEntity.UserSender = user;
-
-                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
+                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.UserRec);
                     _context.Update(modelEntity);
-
                     DateTime update = System.DateTime.Now.ToUniversalTime();
-
                     MessageCheckEntity check = new MessageCheckEntity
                     {
                         message = modelEntity,
@@ -1075,7 +1014,6 @@ namespace Refosus.Web.Controllers
                         DateAut = messageEntity.UpdateDate
                     };
                     _context.Add(check);
-
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
                     {
                         StateCreate = modelEntity.State,
@@ -1100,29 +1038,6 @@ namespace Refosus.Web.Controllers
                     #region Update Info
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Recibido");
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1171,29 +1086,6 @@ namespace Refosus.Web.Controllers
                     #region Update Info
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Recibido");
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1257,11 +1149,11 @@ namespace Refosus.Web.Controllers
             }
             MessageEntity messageEntity = await _context.Messages
                 .Include(t => t.Type)
+                .Include(t => t.UserCreate)
                 .Include(t => t.User)
+                .Include(t => t.UserSender)
                 .Include(t => t.State)
                 .Include(t => t.StateBill)
-                .Include(t => t.UserAut)
-                .Include(t => t.UserPros)
                 .Include(t => t.Ceco)
                 .Include(t => t.Company)
                 .FirstOrDefaultAsync(g => g.Id == id);
@@ -1274,21 +1166,7 @@ namespace Refosus.Web.Controllers
             {
                 return View("../Account/NotAuthorized");
             }
-            MessageViewModel messageViewModel;
-            if (messageEntity.UserAut == null && messageEntity.UserPros == null)
-            {
-                messageViewModel = _converterHelper.ToMessageViewModelNone(messageEntity);
-            }
-            else
-            if (messageEntity.UserAut != null && messageEntity.UserPros == null)
-            {
-                messageViewModel = _converterHelper.ToMessageViewModelAut(messageEntity);
-            }
-            else
-            {
-                messageViewModel = _converterHelper.ToMessageViewModel(messageEntity);
-            }
-
+            MessageViewModel messageViewModel = _converterHelper.ToMessageViewModel(messageEntity);
             return View(messageViewModel);
         }
         [Authorize(Roles = "Administrator,MessageMeMessage")]
@@ -1306,35 +1184,36 @@ namespace Refosus.Web.Controllers
                 MessageEntity messageEntity = await _converterHelper.ToMessageEntityAsync(model, false);
                 MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
                 messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                messageEntity.UserSender = user;
+                #region Load Files
+                string Files = "";
+                if (model.File != null)
+                {
+                    string ext;
+                    string Nombre;
+                    foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
+                    {
+                        Nombre = item.FileName;
+                        ext = Path.GetExtension(Nombre);
+                        MessageFileEntity fileEntity = new MessageFileEntity
+                        {
+                            message = messageEntity,
+                            Name = Nombre,
+                            FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
+                            Ext = ext
+                        };
+                        _context.Add(fileEntity);
+                        Files += "\nEl usuario " + user.FullName
+                            + " Agrega el archivo " + Nombre;
+                    }
+                }
+                #endregion 
                 //Operation 1 Edit
                 if (model.Operation == 1)
                 {
                     #region Update Info
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1357,7 +1236,6 @@ namespace Refosus.Web.Controllers
                         messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
                         messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
                         messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                        messagetransactionEntity.Observation = model.Transaction.Observation;
                         string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name;
                         Description += Factura;
@@ -1395,38 +1273,32 @@ namespace Refosus.Web.Controllers
                 if (model.Operation == 2)
                 {
                     #region Update Info
-                    if (messageEntity.UserSender == messageEntity.User)
+                    if (messageEntity.User == user)
                     {
-                        messageEntity.User = messageEntity.Ceco.UserResponsible;
+                        if (messageEntity.Ceco.UserResponsible == null)
+                        {
+                            ViewBag.Mensaje = "Este centro de costos no cuenta con responsable. Seleccione el usuario de forma manual.";
+                            model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
+                            model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);
+                            model.StateBill = await _context.MessagesBillState.FirstOrDefaultAsync(t => t.Id == model.StateBillId);
+                            model.MessageType = _combosHelper.GetComboMessageType();
+                            model.Companies = _combosHelper.GetComboCompany();
+                            model.MessageState = _combosHelper.GetComboMessageState();
+                            model.Users = _combosHelper.GetComboUser();
+                            model.MessageBillState = _combosHelper.GetComboMessageBillState();
+                            model.Cecos = _combosHelper.GetComboCeCo(model.CompanyId);
+                            return View(model);
+                        }
+                        else
+                        {
+                            messageEntity.User = messageEntity.Ceco.UserResponsible;
+                        }
                     }
                     messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
                     messageEntity.UserAut = user;
                     messageEntity.DateAut = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1491,29 +1363,6 @@ namespace Refosus.Web.Controllers
                     messageEntity.DateProcess = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
                     #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
-                    #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
                     messagetransactionEntity.Message = messageEntity;
@@ -1576,29 +1425,6 @@ namespace Refosus.Web.Controllers
                     messageEntity.UserPros = user;
                     messageEntity.DateProcess = messageEntity.UpdateDate;
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1665,7 +1491,7 @@ namespace Refosus.Web.Controllers
                         return NotFound();
                     }
                     modelEntity.UserSender = user;
-                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.CreateUser);
+                    modelEntity.User = await _userHelper.GetUserByIdAsync(model.UserRec);
                     _context.Update(modelEntity);
                     DateTime update = System.DateTime.Now.ToUniversalTime();
                     MessageCheckEntity check = new MessageCheckEntity
@@ -1689,7 +1515,6 @@ namespace Refosus.Web.Controllers
                     Description += "Se da el visto bueno por el usuario " + user.FullName
                         + " en la fecha " + check.DateAutLocal;
                     messagetransactionEntity.Description = Description;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
                     _context.Add(messagetransactionEntity);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(DetailsMeMessage), new { id = messageEntity.Id });
@@ -1700,29 +1525,6 @@ namespace Refosus.Web.Controllers
                     #region Update Info
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Recibido");
                     _context.Update(messageEntity);
-                    #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
                     #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
@@ -1772,29 +1574,6 @@ namespace Refosus.Web.Controllers
                     messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "Recibido");
                     _context.Update(messageEntity);
                     #endregion
-                    #region Load Files
-                    string Files = "";
-                    if (model.File != null)
-                    {
-                        string ext;
-                        string Nombre;
-                        foreach (Microsoft.AspNetCore.Http.IFormFile item in model.File)
-                        {
-                            Nombre = item.FileName;
-                            ext = Path.GetExtension(Nombre);
-                            MessageFileEntity fileEntity = new MessageFileEntity
-                            {
-                                message = messageEntity,
-                                Name = Nombre,
-                                FilePath = await _fileHelper.UploadFileAsync(item, messageEntity.Type.Name),
-                                Ext = ext
-                            };
-                            _context.Add(fileEntity);
-                            Files += "\nEl usuario " + messageEntity.UserCreate
-                                + " Agrega el archivo " + Nombre;
-                        }
-                    }
-                    #endregion
                     #region Create Transaction
                     MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
                     messagetransactionEntity.Message = messageEntity;
@@ -1836,7 +1615,6 @@ namespace Refosus.Web.Controllers
                     #endregion
                     return RedirectToAction(nameof(IndexMe));
                 }
-
             }
             model.Type = await _context.MessagesTypes.FirstOrDefaultAsync(t => t.Id == model.TypeId);
             model.State = await _context.MessagesStates.FirstOrDefaultAsync(t => t.Id == model.StateId);

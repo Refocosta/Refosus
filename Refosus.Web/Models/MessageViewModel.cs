@@ -22,11 +22,14 @@ namespace Refosus.Web.Models
         public int StateId { get; set; }
         public int StateIdOld { get; set; }
 
-        [Display(Name = "Usuario")]
+        [Display(Name = "Usuario que crea")]
         public string CreateUser { get; set; }
 
         [Display(Name = "Usuario que Envia")]
-        public string SenderUser { get; set; }
+        public string UserTrn { get; set; }
+
+        [Display(Name = "Usuario que Recibe")]
+        public string UserRec { get; set; }
 
         [Display(Name = "Estado de Factura")]
         public int StateBillId { get; set; }

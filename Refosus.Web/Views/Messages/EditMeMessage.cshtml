@@ -3,10 +3,6 @@
     ViewData["Title"] = "EditMeMessage";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-<section class="content-header">
-    <div class="container-fluid">
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -15,8 +11,8 @@
                     <div class="card card-primary">
                         <div class="card-header">
                             <div class="row">
-                                <div class="col col-sm-6">
-                                    <a class="card-title">Actualizar Mensajeria</a>
+                                <div class="card-title col col-sm-6">
+                                    <a class="card-title">Actualizar Correspondencia @Model.Id</a>
                                 </div>
                                 <div class="col col-sm-2">
                                 </div>
@@ -25,7 +21,7 @@
                                     {
                                         @if (Model.Type.Name == "Factura")
                                         {
-                                            <button type="button" data-id="@Model.Id" class="btn btn-warning  receiveItem " data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
+                                            <button type="button" data-id="@Model.Id" class="btn btn-warning" data-toggle="modal" data-target="#InfoBillDialog">Informacion de la Factura</button>
                                         }
                                     }
                                 </div>
@@ -41,14 +37,16 @@
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <div class="text-danger">
+                                            @ViewBag.Mensaje
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <input type="hidden" asp-for="CreateDate" />
-                                        <input type="hidden" asp-for="UpdateDate" />
                                         <input type="hidden" asp-for="StateIdOld" />
-                                        <input type="hidden" asp-for="SenderUser" />
-                                        <input type="hidden" asp-for="DateAut" />
-                                        <input asp-for="Operation" class="form-control" hidden />
+                                        <input type="hidden" asp-for="UserTrn" />
+                                        <input type="hidden" asp-for="CreateUser" />
+                                        <input type="hidden" asp-for="Operation" />
                                         <div class="form-group col col-sm-4">
                                             <label asp-for="Id" class="control-label">Consecutivo</label>
                                             <input asp-for="Id" class="form-control" disabled />
@@ -76,30 +74,30 @@
                                 <div class="col col-12">
                                     @if (Model.Type != null)
                                     {
-                                        @if (Model.Type.Name == "Factura")
+                                        if (Model.Type.Name == "Factura")
                                         {
-                                            @if (Model.State.Name != "Tramitado")
+                                            if (Model.State.Name != "Tramitado")
                                             {
                                                 <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
-                                                @if (User.IsInRole("MessageBillChecker") || User.IsInRole("Administrator"))
+                                                if (User.IsInRole("MessageBillChecker") || User.IsInRole("Administrator"))
                                                 {
                                                     <button type="button" data-id="@Model.Id" class="btn btn-success checkItem col-sm-2" data-toggle="modal" data-target="#CheckDialog">Visto Bueno</button>
                                                 }
                                             }
-                                            @if (Model.StateBill != null)
+                                            if (Model.StateBill != null)
                                             {
-                                                @if (Model.StateBill.Name == "Nuevo")
+                                                if (Model.StateBill.Name == "Nuevo")
                                                 {
-                                                    @if (User.IsInRole("MessageBillAutorizador") || User.IsInRole("Administrator"))
+                                                    if (User.IsInRole("MessageBillAutorizador") || User.IsInRole("Administrator"))
                                                     {
                                                         <button type="button" class="btn btn-success AuthorizeItem col-sm-2" id="btnAuthorize" data-toggle="modal" data-target="#AuthorizeDialog">Autorizar</button>
                                                         <button type="button" class="btn btn-danger RefuseItem col-sm-2" id="btnRefuse" data-toggle="modal" data-target="#RefuseDialog">Rechazar</button>
                                                     }
 
                                                 }
-                                                @if (Model.StateBill.Name == "Aprobado")
+                                                if (Model.StateBill.Name == "Aprobado")
                                                 {
-                                                    @if (User.IsInRole("MessageBillProcesator") || User.IsInRole("Administrator"))
+                                                    if (User.IsInRole("MessageBillProcesator") || User.IsInRole("Administrator"))
                                                     {
                                                         <button type="button" class="btn btn-danger FinishedItem col-sm-2" id="btnFinished" data-toggle="modal" data-target="#ProcessDialog">Procesar</button>
                                                     }
@@ -112,16 +110,16 @@
                                             {
                                                 <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh2" />
                                             }
-                                            @if (Model.Type.Name == "Paquete")
+                                            if (Model.Type.Name == "Paquete")
                                             {
-                                                @if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso" || Model.State.Name == "Ingresado")
+                                                if (Model.State.Name == "En Transito" || Model.State.Name == "En Proceso" || Model.State.Name == "Ingresado")
                                                 {
                                                     <button data-id="@Model.Id" type="button" class="btn btn-warning  receiveItem col-sm-2" data-toggle="modal" data-target="#RecPacDialog">Recibir</button>
                                                 }
                                             }
                                             else
                                             {
-                                                @if (Model.State.Name == "Ingresado" || Model.State.Name == "En Proceso")
+                                                if (Model.State.Name == "Ingresado" || Model.State.Name == "En Proceso")
                                                 {
                                                     <button type="button" data-id="@Model.Id" class="btn btn-warning receiveCtrItem col-sm-2" id="btnReceive" data-toggle="modal" data-target="#ReceiveCtrDialog">Recibir</button>
                                                 }
@@ -136,8 +134,8 @@
                     <partial name="_AuthorizeMessageDialog" />
                     <partial name="_Bill" />
                     <partial name="_CheckMessageDialog" />
-                    <partial name="_CloseMessageDialog" />
                     <partial name="_CloseMessagePackage" />
+                    <partial name="_CloseMessageDialog" />
                     <partial name="_ProcessMessageDialog" />
                     <partial name="_ReceiveCtrMessageDialog" />
                     <partial name="_RefuseMessageDialog" />
@@ -151,19 +149,19 @@
     <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
-        })
+        });
         document.getElementById("StateId").disabled = true;
         document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
         $(document).ready(function () {
             //Guardar
             $("#btnRefresh").click(function () {
-                btnActive();
                 document.getElementById("Operation").value = "1";
+                btnActive();
             });
             //Guardar
             $("#btnRefresh2").click(function () {
-                btnActive2();
                 document.getElementById("Operation").value = "1";
+                btnActive2();
             });
             //Autorizar Factura
             $("#btnAuthorize").click(function () {
@@ -173,13 +171,13 @@
                 }
             });
             $("#btnYesAuthorize").click(function () {
-                btnActive();
                 document.getElementById("Operation").value = "2";
+                btnActive();
             });
             // Rechazar
             $("#btnYesRefuse").click(function () {
-                btnActive();
                 document.getElementById("Operation").value = "3";
+                btnActive();
             });
             //Autorizar Cerrar
             $("#btnFinished").click(function () {
@@ -194,23 +192,22 @@
                     }
             });
             $("#btnYesProcess").click(function () {
-                btnActive();
                 document.getElementById("Operation").value = "4";
-            });
+                btnActive();            });
             //Visto Bueno
             $("#btnYesCheck").click(function () {
-                btnActive();
                 document.getElementById("Operation").value = "5";
+                btnActive();
             });
             //Recibir Carta
             $("#btnYesReceiveCtr").click(function () {
-                btnActive2();
                 document.getElementById("Operation").value = "6";
+                btnActive2();
             });
             //Recibir Paquete
             $("#btnYesPackage").click(function () {
-                btnActive2();
                 document.getElementById("Operation").value = "7";
+                btnActive2();
             });
         });
         function btnActive() {

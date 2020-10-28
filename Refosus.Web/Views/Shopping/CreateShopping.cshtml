@@ -3,16 +3,6 @@
     ViewData["Title"] = "CreateShopping";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Crear Compra</h1>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -20,7 +10,7 @@
                 <form asp-action="CreateShopping" enctype="multipart/form-data">
                     <div class="card card-primary">
                         <div class="card-header">
-                            <a class="card-title">Crear</a>
+                            <a class="card-title">Crear Compra</a>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                             </div>
@@ -257,10 +247,6 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-        document.getElementById("test").addEventListener("load", clean);
-        function clean() {
-            alert("Page is loaded");
-        }
         
 
         $('#myModal').on('shown.bs.modal', function () {
@@ -287,8 +273,6 @@
                 document.getElementById("Operation").value = "3";
             });
         });
-
-
 
 
         //Var Category Combo
@@ -354,7 +338,6 @@
                     document.getElementById("IdUserProjectBoss").value = data;
                 })
     };
-
     </script>
 }
 

@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Data.EntitiesTE;
-using Refosus.Web.Migrations;
 using Refosus.Web.Models;
 using System.Threading.Tasks;
 
@@ -21,7 +20,6 @@ namespace Refosus.Web.Helpers
             _combosHelper = combosHelper;
             _userHelper = userHelper;
         }
-
         #region Companies
         public CompanyEntity ToCompanyEntity(CompanyViewModel model, string path, bool isNew)
         {
@@ -288,24 +286,72 @@ namespace Refosus.Web.Helpers
             return new MessageEntity
             {
                 Id = isNew ? 0 : model.Id,
+                Company = await _context.Companies.FindAsync(model.CompanyId),
                 Type = await _context.MessagesTypes.FindAsync(model.TypeId),
                 Sender = model.Sender,
                 Reference = model.Reference,
                 CreateDate = model.CreateDateLocal.ToUniversalTime(),
                 UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
-                State = await _context.MessagesStates.FindAsync(model.StateId),
-                User = await _context.Users.FindAsync(model.CreateUser),
-                StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
-                UserSender = await _context.Users.FindAsync(model.SenderUser),
-                UserAut = await _context.Users.FindAsync(model.AutUser),
-                UserPros = await _context.Users.FindAsync(model.ProUser),
                 UserCreate = await _context.Users.FindAsync(model.CreateUser),
+                UserSender = await _context.Users.FindAsync(model.UserTrn),
+                User = await _context.Users.FindAsync(model.UserRec),
+                State = await _context.MessagesStates.FindAsync(model.StateId),
+                StateBill = await _context.MessagesBillState.FindAsync(model.StateBillId),
+                Ceco = await _context.CeCos.Include(c => c.UserResponsible).FirstOrDefaultAsync(c => c.Id == model.CecoId),
+                UserAut = await _context.Users.FindAsync(model.AutUser),
                 DateAut = model.DateAutLocal.ToUniversalTime(),
+                UserPros = await _context.Users.FindAsync(model.ProUser),
                 DateProcess = model.DateProcessLocal.ToUniversalTime(),
-                Ceco = await _context.CeCos.Include(c=>c.UserResponsible).FirstOrDefaultAsync(c=>c.Id==model.CecoId),
-                NumberBill = model.NumberBill,
-                Company = await _context.Companies.FindAsync(model.CompanyId),
+                NumberBill = model.NumberBill
             };
+        }
+        public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
+        {
+            MessageViewModel model = new MessageViewModel();
+            model.Id = messagentity.Id;
+            model.Company = messagentity.Company;
+            model.CompanyId = messagentity.Company.Id;
+            model.Type = messagentity.Type;
+            model.TypeId = messagentity.Type.Id;
+            model.Sender = messagentity.Sender;
+            model.Reference = messagentity.Reference;
+            model.CreateDate = messagentity.CreateDateLocal.ToUniversalTime();
+            model.UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime();
+            model.UserCreate = messagentity.UserCreate;
+            model.CreateUser = messagentity.UserCreate.Id;
+            model.UserSender = messagentity.UserSender;
+            model.UserTrn = messagentity.UserSender.Id;
+            model.User = messagentity.User;
+            model.UserRec = messagentity.User.Id;
+            model.State = messagentity.State;
+            model.StateId = messagentity.State.Id;
+            model.StateBill = messagentity.StateBill;
+            model.StateBillId = messagentity.StateBill.Id;
+            model.NumberBill = messagentity.NumberBill; 
+            if (messagentity.Ceco != null)
+            {
+                model.Ceco= messagentity.Ceco;
+                model.CecoId= messagentity.Ceco.Id;
+            }
+            if (messagentity.UserAut != null)
+            {
+                model.UserAut = messagentity.UserAut;
+                model.AutUser = messagentity.UserAut.Id;
+                model.DateAut = messagentity.DateAutLocal.ToUniversalTime();
+            }
+            if (messagentity.UserPros != null)
+            {
+                model.UserPros = messagentity.UserPros;
+                model.ProUser = messagentity.UserPros.Id;
+                model.DateProcess = messagentity.DateProcessLocal.ToUniversalTime();
+            }
+            model.MessageType = _combosHelper.GetComboMessageType();
+            model.MessageState = _combosHelper.GetComboMessageState();
+            model.Users = _combosHelper.GetComboUser();
+            model.MessageBillState = _combosHelper.GetComboMessageBillState();
+            model.Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id);
+            model.Companies = _combosHelper.GetComboCompany();
+            return model;
         }
         public async Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model)
         {
@@ -319,212 +365,6 @@ namespace Refosus.Web.Helpers
                 StateUpdate = model.State,
                 Observation = model.Transaction.Observation
             };
-        }
-
-        public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
-        {
-            if (messagentity.Ceco == null)
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    ProUser = messagentity.UserPros.Id,
-                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
-            else
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Ceco = messagentity.Ceco,
-                    CecoId = messagentity.Ceco.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    ProUser = messagentity.UserPros.Id,
-                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
-        }
-        public MessageViewModel ToMessageViewModelNone(MessageEntity messagentity)
-        {
-            if (messagentity.Ceco == null)
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
-            else
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Ceco = messagentity.Ceco,
-                    CecoId = messagentity.Ceco.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
-        }
-        public MessageViewModel ToMessageViewModelAut(MessageEntity messagentity)
-        {
-            if (messagentity.Ceco == null)
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
-            else
-            {
-                return new MessageViewModel
-                {
-                    MessageType = _combosHelper.GetComboMessageType(),
-                    MessageState = _combosHelper.GetComboMessageState(),
-                    Users = _combosHelper.GetComboUser(),
-                    MessageBillState = _combosHelper.GetComboMessageBillState(),
-                    Cecos = _combosHelper.GetComboCeCo(messagentity.Company.Id),
-                    Companies = _combosHelper.GetComboCompany(),
-                    Id = messagentity.Id,
-                    Type = messagentity.Type,
-                    TypeId = messagentity.Type.Id,
-                    Ceco = messagentity.Ceco,
-                    CecoId = messagentity.Ceco.Id,
-                    Sender = messagentity.Sender,
-                    Reference = messagentity.Reference,
-                    CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
-                    UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
-                    State = messagentity.State,
-                    StateId = messagentity.State.Id,
-                    StateBill = messagentity.StateBill,
-                    StateBillId = messagentity.StateBill.Id,
-                    User = messagentity.User,
-                    CreateUser = messagentity.User.Id,
-                    AutUser = messagentity.UserAut.Id,
-                    DateAut = messagentity.DateAutLocal.ToUniversalTime(),
-                    UserSender = messagentity.UserSender,
-                    SenderUser = messagentity.UserSender.Id,
-                    NumberBill = messagentity.NumberBill,
-                    CompanyId = messagentity.Company.Id
-                };
-            }
         }
         #endregion
 

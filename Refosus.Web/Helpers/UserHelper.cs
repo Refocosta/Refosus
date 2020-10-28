@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
-using Refosus.Web.Migrations;
 using Refosus.Web.Models;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,6 @@ namespace Refosus.Web.Helpers
         private readonly RoleManager<RoleEntity> _roleManager;
         private readonly SignInManager<UserEntity> _signInManager;
         private readonly DataContext _context;
-
         public UserHelper(
             UserManager<UserEntity> userManager,
             RoleManager<RoleEntity> roleManager,
