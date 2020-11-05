@@ -78,7 +78,7 @@ namespace Refosus.Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                        ModelState.AddModelError(string.Empty, ex.Message);
+                    ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
             return View(newViewModel);
@@ -138,7 +138,7 @@ namespace Refosus.Web.Controllers
                     path = await _imageHelper.UploadImageAsync(model.LogoFile, "News");
                 }
 
-                NewEntity newEntity =  _converterHelper.ToNewEntity(model, path, false);
+                NewEntity newEntity = _converterHelper.ToNewEntity(model, path, false);
 
                 _context.Update(newEntity);
                 try
@@ -191,9 +191,11 @@ namespace Refosus.Web.Controllers
             if (User.Identity.IsAuthenticated == true)
             {
                 UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
-                UserPhotoInfoModel info=new UserPhotoInfoModel();
-                info.PhotoPath = user.PhotoPath;
-                info.Name = user.FullName;
+                UserPhotoInfoModel info = new UserPhotoInfoModel
+                {
+                    PhotoPath = user.PhotoPath,
+                    Name = user.FullName
+                };
                 return PartialView("_UserPhotoInfo", info);
             }
             return NotFound();

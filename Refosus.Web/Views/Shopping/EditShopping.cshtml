@@ -1,13 +1,13 @@
 ﻿@model Refosus.Web.Models.ShoppingViewModel
 @{
-    ViewData["Title"] = "CreateShopping";
+    ViewData["Title"] = "EditShopping";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <section class="content">
     <div class="container-fluid">
         <div class="row">
             <section class="col col-lg-12 connectedSortable">
-                <form asp-action="CreateShopping" enctype="multipart/form-data">
+                <form asp-action="EditShopping" enctype="multipart/form-data">
                     <div class="card card-primary">
                         <div class="card-header">
                             <a class="card-title">Editar Compra</a>
@@ -50,12 +50,23 @@
                                             <select asp-for="IdState" asp-items="Model.ShoppingStates" class="form-control" disabled></select>
                                             <span asp-validation-for="IdState" class="text-danger"></span>
                                         </div>
+                                        @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Por Autorización")
+                                        {
+                                            <div class="col col-sm-4">
+                                                <label asp-for="IdProject" class="control-label"></label>
+                                                <select asp-for="IdProject" asp-items="Model.Projects" class="form-control"></select>
+                                                <span asp-validation-for="IdProject" class="text-danger"></span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col col-sm-4">
+                                                <label asp-for="IdProject" class="control-label"></label>
+                                                <select asp-for="IdProject" asp-items="Model.Projects" class="form-control" disabled></select>
+                                                <span asp-validation-for="IdProject" class="text-danger"></span>
+                                            </div>
+                                        }
 
-                                        <div class="col col-sm-4">
-                                            <label asp-for="IdProject" class="control-label"></label>
-                                            <select asp-for="IdProject" asp-items="Model.Projects" class="form-control"></select>
-                                            <span asp-validation-for="IdProject" class="text-danger"></span>
-                                        </div>
                                         <div class="col col-sm-4">
                                             <label asp-for="IdUserProjectBoss" class="control-label"></label>
                                             <div><select asp-for="IdUserProjectBoss" asp-items="Model.Users" class="form-control" disabled></select></div>
@@ -67,12 +78,13 @@
                                         <div class="col col-sm-12">
                                             <div class="card card-success">
                                                 <div class="card-header">
-                                                    <a class="card-title">
-                                                        <button data-id="" type="button" class="btn btn-primary addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
-
-
+                                                    <div class="card-title">
+                                                        @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                        {
+                                                            <button id="PlusArticle" type="button" class="btn btn-primary addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
+                                                        }
                                                         Articulos
-                                                    </a>
+                                                    </div>
                                                     <div class="card-tools">
                                                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                                                     </div>
@@ -111,76 +123,25 @@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        2010
-                                                                    </td>
-                                                                    <td>
-                                                                        Esferos
-                                                                    </td>
-                                                                    <td>
-                                                                        Cristal
-                                                                    </td>
-                                                                    <td>
-                                                                        Oficina
-                                                                    </td>
-                                                                    <td>
-                                                                        Papeleria
-                                                                    </td>
-
-                                                                    <td>
-                                                                        Unidades
-                                                                    </td>
-                                                                    <td>
-                                                                        Decenas
-                                                                    </td>
-                                                                    <td>
-                                                                        6
-                                                                    </td>
-                                                                    <td>
-                                                                        <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
-                                                                        <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                                                        <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        2011
-                                                                    </td>
-                                                                    <td>
-                                                                        Resina
-                                                                    </td>
-                                                                    <td>
-                                                                        Bricomart
-                                                                    </td>
-                                                                    <td>
-                                                                        Insumos
-                                                                    </td>
-                                                                    <td>
-                                                                        Madera
-                                                                    </td>
-
-                                                                    <td>
-                                                                        líquidos
-                                                                    </td>
-                                                                    <td>
-                                                                        Metro Cubico
-                                                                    </td>
-                                                                    <td>
-                                                                        2
-                                                                    </td>
-                                                                    <td>
-                                                                        <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
-                                                                        <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                                                        <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
-                                                                    </td>
-                                                                </tr>
-                                                                @*@foreach (var item in Model.Items)
+                                                                @foreach (var item in Model.ItemsTemp)
                                                                 {
                                                                     <tr>
                                                                         <td>
+                                                                            @Html.DisplayFor(modelItem => item.CodSAP)
+                                                                        </td>
+                                                                        <td>
                                                                             @Html.DisplayFor(modelItem => item.Description)
                                                                         </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Refence)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Category.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                                                                        </td>
+
                                                                         <td>
                                                                             @Html.DisplayFor(modelItem => item.Unit.Name)
                                                                         </td>
@@ -191,26 +152,49 @@
                                                                             @Html.DisplayFor(modelItem => item.Quantity)
                                                                         </td>
                                                                         <td>
-                                                                            <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
-                                                                            <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                                                            <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                                            {
+                                                                                <button data-id="" type="button" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                            }
                                                                         </td>
                                                                     </tr>
-                                                                }*@
+                                                                }
+                                                                @foreach (var item in Model.Items)
+                                                                {
+                                                                    <tr>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.CodSAP)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Description)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Refence)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Category.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                                                                        </td>
 
-                                                                @*@foreach (var item in Model.MessageFiles)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
-                        <i class="oi oi-cloud-download style="color:white"></i>
-                    </a>
-                </td>
-            </tr>
-        }*@
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Unit.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Measure.Name)
+                                                                        </td>
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Quantity)
+                                                                        </td>
+                                                                        <td>
+                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                                            {
+                                                                                <button data-id="" type="button" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                            }
+                                                                        </td>
+                                                                    </tr>
+                                                                }
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -218,53 +202,40 @@
                                             </div>
                                         </div>
                                     </div>
-
-
-
-
-                                    @*<div class="row col-sm-12">
-
-
-                                            <div class="col col-sm-4">
-                                                <label asp-for="Reference" class="control-label"></label>
-                                                <input asp-for="Reference" class="form-control" />
-                                                <span asp-validation-for="Reference" class="text-danger"></span>
-                                            </div>
-                                            <div class="col col-sm-4">
-                                                <label asp-for="TypeId" class="control-label"></label>
-                                                <select asp-for="TypeId" asp-items="Model.MessageType" class="form-control"></select>
-                                                <span asp-validation-for="TypeId" class="text-danger"></span>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form-group col-sm-6">
-                                                <label asp-for="CreateUser" class="control-label"></label>
-                                                <select asp-for="CreateUser" asp-items="Model.Users" class="form-control"></select>
-                                                <span asp-validation-for="CreateUser" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group col-sm-6">
-                                                <label asp-for="File" class="control-label"></label>
-                                                <input asp-for="File" type="file" multiple="multiple" class="form-control" />
-                                                <span asp-validation-for="File" class="text-danger"></span>
-                                            </div>
-                                            <div class="form-group col-sm-12">
-                                                <label asp-for="Transaction.Observation" class="control-label"></label>
-                                                <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
-                                                <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
-                                            </div>
-
-                                        </div>*@
                                 </div>
                             </div>
                         </div>
                         <div class="card-footer ">
-                            <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnSaveShopping" />
-                            <input type="submit" value="Crear" class="btn btn-primary col-sm-2" id="btnCreateShopping" />
+                            @if (Model.State.Name != "Cancelado" && Model.State.Name != "Rechazado" && Model.State.Name != "Entregado")
+                            {
+                                <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnSaveShopping" />
+                            }
+                            @if (Model.State.Name == "Devuelto")
+                            {
+                                <button type="submit" class="btn btn-success col-sm-2" id="btnSendShopping">Enviar Compra</button>
+                            }
+                            @if (Model.State.Name == "En Cotización")
+                            {
+                                <input type="submit" value="Enviar Cotización" class="btn btn-success col-sm-2" id="" />
+                                <input type="button" value="Devolver Compra" class="btn btn-warning ReturnedShopping col-sm-2" data-toggle="modal" data-target="#ReturnedShoppingDialog" />
+                                <input type="button" value="Cancelar Compra" class="btn btn-danger CancelShopping col-sm-2" data-toggle="modal" data-target="#CancelShoppingDialog" />
+                            }
+                            @if (Model.State.Name == "Por Autorización")
+                            {
+                                <input type="submit" value="Autorizar" class="btn btn-success col-sm-2" id="" />
+                                <input type="submit" value="Rechazar" class="btn btn-danger col-sm-2" id="" />
+                            }
+                            @if (Model.State.Name == "Autorizado")
+                            {
+                                <input type="submit" value="Entregar Compra" class="btn btn-success col-sm-2" id="" />
+                                <input type="submit" value="Cancelar Compra" class="btn btn-danger col-sm-2" id="" />
+                            }
                             <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
-
                     </div>
                     <partial name="_AddArticleDialog" />
+                    <partial name="_CancelShoppingDialog" />
+                    <partial name="_ReturnedShoppingDialog" />
                 </form>
             </section>
         </div>
@@ -275,36 +246,44 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script>
-        document.getElementById("test").addEventListener("load", clean);
-        function clean() {
-            alert("Page is loaded");
-        }
-        
-
+<script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
 
-
         $(document).ready(function () {
+
+            $("#btnYesCancelShopping").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "7";
+            });
+            $("#btnYesReturnedShopping").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "8";
+            });
+
+
+            $("#btnSendShopping").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "9";
+            });
             $("#btnAddArticle").click(function () {
-                document.getElementById("Operation").value = "1";
+                document.getElementById("Operation").value = "10";
+                Enable();
+            });
+
+
+
+
+
+            function Enable() {
                 document.getElementById("IdUserCreate").disabled = false;
                 document.getElementById("CreateDate").disabled = false;
                 document.getElementById("UpdateDate").disabled = false;
                 document.getElementById("IdUserAssign").disabled = false;
                 document.getElementById("IdState").disabled = false;
                 document.getElementById("IdUserProjectBoss").disabled = false;
-                clean();
-            });
-
-            $("#btnCreateShopping").click(function () {
-                document.getElementById("Operation").value = "2";
-            });
-            $("#btnSaveShopping").click(function () {
-                document.getElementById("Operation").value = "3";
-            });
+            };
         });
 
 
@@ -319,7 +298,27 @@
         //Var BossProject
         var cboProject = document.getElementById("IdProject");
         cboProject.addEventListener("change", UserProjectBoss);
-
+        function Enable() {
+            document.getElementById("IdUserCreate").disabled = false;
+            document.getElementById("CreateDate").disabled = false;
+            document.getElementById("UpdateDate").disabled = false;
+            document.getElementById("IdUserAssign").disabled = false;
+            document.getElementById("IdState").disabled = false;
+            document.getElementById("IdUserProjectBoss").disabled = false;
+        };
+        function Clear() {
+            document.getElementById("CodSap").value = null;
+            document.getElementById("IdCategory").value = 0;
+            document.getElementById("IdSubCategory").value = 0;
+            document.getElementById("IdUnit").value = 0;
+            document.getElementById("IdMeasure").value = 0;
+            document.getElementById("Quantity").value = 0;
+            document.getElementById("Description").value = null;
+            document.getElementById("Reference").value = null;
+            document.getElementById("Mark").value = null;
+            document.getElementById("InternalOrder").value = null;
+            document.getElementById("NumInternalOrder").value = null;
+        };
         function CombosSubCategory() {
         fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + cboCat.value)
             .then(function (result) {
@@ -366,14 +365,12 @@
             .then(function (result) {
                 if (result.ok) {
                     return result.text();
-
                 }
             })
                 .then(function (data) {
                     document.getElementById("IdUserProjectBoss").value = data;
                 })
     };
-
-    </script>
+</script>
 }
 

@@ -36,7 +36,7 @@ namespace Refosus.Web.Helpers
         #endregion
 
         #region Roles
-        Task< List<RoleEntity>> GetRoles();
+        Task<List<RoleEntity>> GetRoles();
         Task CheckRoleAsync(string roleName);
         Task<RoleEntity> GetRoleByIdAsync(string id);
         Task RemoveRoleAsync(RoleEntity role);

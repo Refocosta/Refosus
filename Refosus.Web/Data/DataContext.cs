@@ -34,17 +34,19 @@ namespace Refosus.Web.Data
         public DbSet<MessageFileEntity> MessagesFile { get; set; }
         public DbSet<MessageCheckEntity> MessagesCheckes { get; set; }
         #endregion
-        
+
         public DbSet<NewEntity> News { get; set; }
         public DbSet<CeCoEntity> CeCos { get; set; }
 
 
         #region Shopping
+        public DbSet<ShoppingEntity> Shoppings { get; set; }
         public DbSet<ShoppingUnitEntity> ShoppingUnits { get; set; }
         public DbSet<ShoppingMeasureEntity> ShoppingMeasures { get; set; }
         public DbSet<ShoppingStateEntity> ShoppingStates { get; set; }
         public DbSet<ShoppingCategoryEntity> ShoppingCategories { get; set; }
         public DbSet<ShoppingTempItems> ShoppingTempItems { get; set; }
+        public DbSet<ShoppingItemsEntity> ShoppingItems { get; set; }
 
         #endregion
 

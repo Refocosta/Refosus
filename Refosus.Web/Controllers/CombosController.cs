@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Refosus.Web.Helpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Refosus.Web.Helpers;
 
 namespace Refosus.Web.Controllers
 {
@@ -17,7 +17,7 @@ namespace Refosus.Web.Controllers
         private readonly DbContext _context;
         private readonly CombosHelper _combosHelper;
 
-        public CombosController(DbContext context,CombosHelper combosHelper)
+        public CombosController(DbContext context, CombosHelper combosHelper)
         {
             _context = context;
             _combosHelper = combosHelper;

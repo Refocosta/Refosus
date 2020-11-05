@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Models
 {
-    public class ShoppingViewModel :ShoppingEntity
+    public class ShoppingViewModel : ShoppingEntity
     {
         [DisplayName("Usuario Solicitante")]
         public string IdUserCreate { get; set; }
@@ -26,7 +26,7 @@ namespace Refosus.Web.Models
         public string IdUserProjectBoss { get; set; }
 
 
-        
+
 
 
 
@@ -94,5 +94,7 @@ namespace Refosus.Web.Models
 
         [DisplayName("Operación")]
         public int Operation { get; set; }
+        [DisplayName("DeleteItem")]
+        public int DeleteItem { get; set; }
     }
 }

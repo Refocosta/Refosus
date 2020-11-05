@@ -8,6 +8,6 @@ namespace Refosus.Web.Helpers
     {
         Task<List<RoleMenuEntity>> GetMenusRoleAsync(UserEntity userEntity);
         Task<List<RoleEntity>> GetRoleByUserAsync(UserEntity userEntity);
-        
+
     }
 }

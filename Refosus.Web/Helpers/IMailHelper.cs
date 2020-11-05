@@ -7,6 +7,6 @@ namespace Refosus.Web.Helpers
 {
     public interface IMailHelper
     {
-        Boolean sendMail(string [] to,string subject, string body);
+        bool sendMail(string[] to, string subject, string body);
     }
 }

@@ -22,7 +22,6 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboShoppingCategory(int sub);
         IEnumerable<SelectListItem> GetComboShoppingUnit();
         IEnumerable<SelectListItem> GetComboShoppingMeasure(int uni);
-        
         IEnumerable<SelectListItem> GetComboShoppingState();
 
 

@@ -1,18 +1,8 @@
-﻿
+﻿@model Refosus.Web.Data.Entities.ShoppingEntity
 @{
     ViewData["Title"] = "DetailsShopping";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Detalles</h1>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -27,112 +17,125 @@
                     <div class="card-body">
                         <div class="col col-md-12">
                             <div class="row">
-                                <div class="form-group col col-sd-4">
+                                <div class="form-group col col-3">
                                     <label class="control-label">Consecutivo</label>
-                                    <input class="form-control" value="" disabled>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Id)" disabled>
                                 </div>
-                                <div class="form-group col col-sd-4">
-                                    <label class="control-label">Solicitado Por</label>
-                                    <input class="form-control" value="" disabled>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UserCreate)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UserCreate.FullName)" disabled>
                                 </div>
-                                <div class="form-group col col-sd-4">
-                                    <label class="control-label">Estado</label>
-                                    <input class="form-control" value="" disabled>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.CreateDateLocal)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.CreateDateLocal)" disabled>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="form-group col col-sd-4">
-                                    <label class="control-label">Encargado</label>
-                                    <input class="form-control" value="" disabled>
-                                </div>
-                                <div class="form-group col col-sd-4">
-                                    <label class="control-label">Fecha de Solicitud</label>
-                                    <input class="form-control" value="" disabled>
-                                </div>
-                                <div class="form-group col col-sd-4">
-                                    <label class="control-label">Fecha de Estimada</label>
-                                    <input class="form-control" value="" disabled>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
                                 </div>
                             </div>
                             <div class="row">
-
-                                <div class="col-md-12 table-responsive">
-                                    <label class="control-label">Articulos</label>
-                                    <table class="table table-hover table-striped display" id="tblDatos1">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    Nombre
-                                                </th>
-                                                <th>
-                                                    Medida
-                                                </th>
-                                                <th>
-                                                    Unidades
-                                                </th>
-                                                <th>
-                                                    Cantidad
-                                                </th>
-                                                <th>
-                                                    Responsable
-                                                </th>
-                                                <th>
-                                                    Estado
-                                                </th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>
-                                                    Nombre
-                                                </td>
-                                                <td>
-                                                    Medida
-                                                </td>
-                                                <td>
-                                                    Unidades
-                                                </td>
-                                                <td>
-                                                    Cantidad
-                                                </td>
-                                                <td>
-                                                    Responsable
-                                                </td>
-                                                <td>
-                                                    Estado
-                                                </td>
-                                                <td>
-                                                    <a asp-action="EditArticleShopping" asp-route-id="1" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
-                                                    <a asp-action="DetailsArticleShopping" asp-route-id="1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                                    <button data-id="1" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
-                                                </td>
-                                            </tr>
-                                            @*@foreach (var item in Model.MessageFiles)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @Html.DisplayFor(modelItem => item.Name)
-                                                        </td>
-                                                        <td>
-                                                            <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
-                                                                <i class="oi oi-cloud-download style="color:white"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                }*@
-                                        </tbody>
-                                    </table>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UserAssigned)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UserAssigned.FullName)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.State)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.State.Name)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Project)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Project.Name)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UserProjectBoss)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UserProjectBoss.FullName)" disabled>
                                 </div>
                             </div>
-                        </div>
-
+                            </div>
                     </div>
                     <div class="card-footer ">
                         <div class="col col-12">
-                            <a asp-action="EditShopping" asp-route-id="1" class="btn btn-warning col-sm-2">Editar</a>
+                            <a asp-action="EditShopping" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Editar</a>
                             <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
+                    </div>
+                </div>
+                <div class="card card-success">
+                    <div class="card-header">
+                        <a class="card-title">Articulos</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table class="table table-hover table-striped display" id="tblDatos1">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Codigo SAP
+                                            </th>
+                                            <th>
+                                                Descripción
+                                            </th>
+                                            <th>
+                                                Referencia
+                                            </th>
+                                            <th>
+                                                Categoria
+                                            </th>
+                                            <th>
+                                                Sub Categoria
+                                            </th>
+                                            <th>
+                                                Unidades
+                                            </th>
+                                            <th>
+                                                Medida
+                                            </th>
+                                            <th>
+                                                Cantidad
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Items)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.CodSAP)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Description)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Refence)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Unit.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Measure.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Quantity)
+                                                </td>
+                                            </tr>
+                                        }
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
                     </div>
                 </div>
             </section>
@@ -142,9 +145,7 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
     <script type="text/javascript">
-
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })

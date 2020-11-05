@@ -32,7 +32,7 @@ namespace Refosus.Web.Data
             await CheckDocumentTypeAsync();
             await CheckUserAsync("1010", "Administrator", "Nativa", "nativa@refocosta.com", "", "Refocosta Principal");
             await CheckRolesUser();
-            
+
 
             #region Message
             await CheckMessageTypesAsync();
@@ -50,12 +50,12 @@ namespace Refosus.Web.Data
         {
             if (!_context.DocumentTypes.Any())
             {
-                await AddDocumentTypes( "Cédula de Ciudadanía", "CC");
+                await AddDocumentTypes("Cédula de Ciudadanía", "CC");
             }
         }
         private async Task AddDocumentTypes(string name, string nom)
         {
-            _context.DocumentTypes.Add(new DocumentTypeEntity { Name = name,Nom = nom});
+            _context.DocumentTypes.Add(new DocumentTypeEntity { Name = name, Nom = nom });
             await _context.SaveChangesAsync();
         }
 
@@ -74,7 +74,7 @@ namespace Refosus.Web.Data
                 await AddMenuAsync("Reportes", "", "", 1);
                 await AddMenuAsync("Iniciativas TE", "TE", "Index", 1);
                 await AddMenuAsync("BSC", "", "", 1);
-                
+
 
                 await AddMenuAsync("Compañias", "Companies", "Index", 2);
                 await AddMenuAsync("Paises", "Countries", "Index", 2);
@@ -298,8 +298,8 @@ namespace Refosus.Web.Data
                     IsActive = true,
                     CreateDate = System.DateTime.Now.ToUniversalTime(),
                     ActiveDate = System.DateTime.Now.ToUniversalTime(),
-                    PhotoPath= $"~/Images/Users/{email}.jpg",
-                    Company= _context.Companies.FirstOrDefault()
+                    PhotoPath = $"~/Images/Users/{email}.jpg",
+                    Company = _context.Companies.FirstOrDefault()
                 };
                 await _userHelper.AddUserAsync(user, "123456789");
             }

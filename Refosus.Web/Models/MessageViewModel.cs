@@ -43,7 +43,7 @@ namespace Refosus.Web.Models
         [Display(Name = "Usuario que Proceso")]
         public string ProUser { get; set; }
 
-        
+
 
         public IEnumerable<SelectListItem> MessageType { get; set; }
         public IEnumerable<SelectListItem> MessageState { get; set; }

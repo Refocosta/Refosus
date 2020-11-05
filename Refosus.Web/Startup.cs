@@ -21,7 +21,7 @@ namespace Refosus.Web
         }
 
         public IConfiguration Configuration { get; }
-                public void ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureApplicationCookie(options =>
             {
@@ -31,7 +31,7 @@ namespace Refosus.Web
 
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("Refosus"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusDesarrollo"));
             });
             services.AddDbContext<RefocostaContext>(cfg =>
             {

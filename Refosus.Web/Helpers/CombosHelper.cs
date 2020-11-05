@@ -17,12 +17,12 @@ namespace Refosus.Web.Helpers
 
         public IEnumerable<SelectListItem> GetComboCeCo(int comp)
         {
-            List<SelectListItem> list = _context.CeCos.Where(c=>c.Company.Id == comp).Select(t =>
-              new SelectListItem
-              {
-                  Text = t.Code + "-" + t.Name,
-                  Value = $"{t.Id}"
-              })
+            List<SelectListItem> list = _context.CeCos.Where(c => c.Company.Id == comp).Select(t =>
+                new SelectListItem
+                {
+                    Text = t.Code + "-" + t.Name,
+                    Value = $"{t.Id}"
+                })
                 .OrderBy(t => t.Text)
                 .ToList();
             list.Insert(0, new SelectListItem
@@ -151,8 +151,8 @@ namespace Refosus.Web.Helpers
         }
         public IEnumerable<SelectListItem> GetComboUser()
         {
-            List <SelectListItem> list = _context.Users
-                .OrderBy(t=>t.FirstName)
+            List<SelectListItem> list = _context.Users
+                .OrderBy(t => t.FirstName)
                 .Select(t =>
               new SelectListItem
               {
@@ -173,7 +173,7 @@ namespace Refosus.Web.Helpers
                 .Select(t =>
               new SelectListItem
               {
-                  Text = t.Nom+"-" + t.Name,
+                  Text = t.Nom + "-" + t.Name,
                   Value = $"{t.Id}"
               })
 
@@ -227,7 +227,7 @@ namespace Refosus.Web.Helpers
         public IEnumerable<SelectListItem> GetComboShoppingCategory()
         {
             List<SelectListItem> list = _context.ShoppingCategories
-                .Where(c=>c.SubCategory==null)
+                .Where(c => c.SubCategory == null)
                 .Select(t =>
               new SelectListItem
               {
@@ -289,7 +289,7 @@ namespace Refosus.Web.Helpers
         public IEnumerable<SelectListItem> GetComboShoppingMeasure(int uni)
         {
             List<SelectListItem> list = _context.ShoppingMeasures
-                .Where(m=>m.Unit.Id== uni)
+                .Where(m => m.Unit.Id == uni)
                 .Select(t =>
               new SelectListItem
               {

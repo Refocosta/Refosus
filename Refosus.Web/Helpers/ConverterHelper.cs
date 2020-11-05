@@ -307,31 +307,33 @@ namespace Refosus.Web.Helpers
         }
         public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
         {
-            MessageViewModel model = new MessageViewModel();
-            model.Id = messagentity.Id;
-            model.Company = messagentity.Company;
-            model.CompanyId = messagentity.Company.Id;
-            model.Type = messagentity.Type;
-            model.TypeId = messagentity.Type.Id;
-            model.Sender = messagentity.Sender;
-            model.Reference = messagentity.Reference;
-            model.CreateDate = messagentity.CreateDateLocal.ToUniversalTime();
-            model.UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime();
-            model.UserCreate = messagentity.UserCreate;
-            model.CreateUser = messagentity.UserCreate.Id;
-            model.UserSender = messagentity.UserSender;
-            model.UserTrn = messagentity.UserSender.Id;
-            model.User = messagentity.User;
-            model.UserRec = messagentity.User.Id;
-            model.State = messagentity.State;
-            model.StateId = messagentity.State.Id;
-            model.StateBill = messagentity.StateBill;
-            model.StateBillId = messagentity.StateBill.Id;
-            model.NumberBill = messagentity.NumberBill; 
+            MessageViewModel model = new MessageViewModel
+            {
+                Id = messagentity.Id,
+                Company = messagentity.Company,
+                CompanyId = messagentity.Company.Id,
+                Type = messagentity.Type,
+                TypeId = messagentity.Type.Id,
+                Sender = messagentity.Sender,
+                Reference = messagentity.Reference,
+                CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
+                UserCreate = messagentity.UserCreate,
+                CreateUser = messagentity.UserCreate.Id,
+                UserSender = messagentity.UserSender,
+                UserTrn = messagentity.UserSender.Id,
+                User = messagentity.User,
+                UserRec = messagentity.User.Id,
+                State = messagentity.State,
+                StateId = messagentity.State.Id,
+                StateBill = messagentity.StateBill,
+                StateBillId = messagentity.StateBill.Id,
+                NumberBill = messagentity.NumberBill
+            };
             if (messagentity.Ceco != null)
             {
-                model.Ceco= messagentity.Ceco;
-                model.CecoId= messagentity.Ceco.Id;
+                model.Ceco = messagentity.Ceco;
+                model.CecoId = messagentity.Ceco.Id;
             }
             if (messagentity.UserAut != null)
             {
@@ -426,21 +428,35 @@ namespace Refosus.Web.Helpers
         #endregion
 
         #region Shopping
-        public ShoppingEntity ToShoppingEntity(ShoppingViewModel model, bool isNew)
+        public async Task<ShoppingEntity> ToShoppingEntityAsync(ShoppingViewModel model, bool isNew)
         {
             return new ShoppingEntity
             {
-                Id = isNew ? 0 : model.Id
+                Id = isNew ? 0 : model.Id,
+                UserCreate = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserCreate),
+                CreateDate = model.CreateDate,
+                UpdateDate = model.UpdateDate,
+                UserAssigned = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserAssign),
+                State = await _context.ShoppingStates.FirstOrDefaultAsync(p => p.Id == model.IdState),
+                Project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == model.IdProject),
+                UserProjectBoss = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserProjectBoss)
             };
         }
 
-        public ShoppingViewModel ToShoppingViewModel(ShoppingEntity model)
+        public async Task<ShoppingViewModel> ToShoppingViewModelAsync(ShoppingEntity model)
         {
             return new ShoppingViewModel
             {
                 Id = model.Id,
-
-
+                IdUserCreate=model.UserCreate.Id,
+                CreateDate=model.CreateDate,
+                UpdateDate = model.CreateDate,
+                IdUserAssign = model.UserAssigned.Id,
+                State= await _context.ShoppingStates.FirstOrDefaultAsync(s=>s.Id== model.State.Id),
+                IdState = model.State.Id,
+                Project = await _context.Projects.FirstOrDefaultAsync(s => s.Id == model.Project.Id),
+                IdProject = model.Project.Id,
+                IdUserProjectBoss = model.UserProjectBoss.Id,
                 ShoppingUnits = _combosHelper.GetComboShoppingUnit(),
                 ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0),
                 Categories = _combosHelper.GetComboShoppingCategory(),

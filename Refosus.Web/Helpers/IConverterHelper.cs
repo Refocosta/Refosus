@@ -65,8 +65,8 @@ namespace Refosus.Web.Helpers
 
         //#endregion
         #region Shopping
-        ShoppingEntity ToShoppingEntity(ShoppingViewModel model, bool isNew);
-        ShoppingViewModel ToShoppingViewModel(ShoppingEntity model);
+        Task<ShoppingEntity> ToShoppingEntityAsync(ShoppingViewModel model, bool isNew);
+        Task<ShoppingViewModel> ToShoppingViewModelAsync(ShoppingEntity model);
         #endregion
     }
 }

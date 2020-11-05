@@ -51,8 +51,8 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Articulos")]
         public IEnumerable<ShoppingTempItems> ItemsTemp { get; set; }
 
-        
 
-        
+
+
     }
 }

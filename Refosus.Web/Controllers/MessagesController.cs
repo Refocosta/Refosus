@@ -85,7 +85,7 @@ namespace Refosus.Web.Controllers
             return View(await _context
                 .Messages
                 .Where(t =>
-                (((t.UserSender == Userme) || (t.User == Userme))&&((t.State.Name == "Tramitado") || (t.State.Name == "Recibido")))
+                (((t.UserSender == Userme) || (t.User == Userme)) && ((t.State.Name == "Tramitado") || (t.State.Name == "Recibido")))
                 ||
                 ((t.UserSender == Userme) && (t.User != Userme))
                 ||
@@ -224,17 +224,20 @@ namespace Refosus.Web.Controllers
                 #endregion
                 #region AddTransaction
                 MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                messagetransactionEntity.Message = messageEntity;
-                messagetransactionEntity.UpdateDate = DateNow;
-                messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                messagetransactionEntity.UserUpdate = messageEntity.User;
-                messagetransactionEntity.StateCreate = messageEntity.State;
-                messagetransactionEntity.StateUpdate = messageEntity.State;
-                messagetransactionEntity.StateBillCreate = billstateold;
-                messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                messagetransactionEntity.UserBillFinished = messageEntity.UserPros; ;
+                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                {
+                    Message = messageEntity,
+                    UpdateDate = DateNow,
+                    UserCreate = messageEntity.UserSender,
+                    UserUpdate = messageEntity.User,
+                    StateCreate = messageEntity.State,
+                    StateUpdate = messageEntity.State,
+                    StateBillCreate = billstateold,
+                    StateBillUpdate = messageEntity.StateBill,
+                    UserBillAutho = messageEntity.UserAut,
+                    UserBillFinished = messageEntity.UserPros
+                };
+                ;
                 messagetransactionEntity.Observation = model.Transaction.Observation;
                 string Description = "Se crea el mensaje de tipo " + messageEntity.Type.Name
                     + " en la fecha " + messageEntity.UpdateDateLocal
@@ -354,17 +357,20 @@ namespace Refosus.Web.Controllers
                 #endregion
                 #region AddTransaction
                 MessageBillStateEntity billstateold = _context.MessagesBillState.FirstOrDefault(s => s.Id == model.StateBillId);
-                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                messagetransactionEntity.Message = messageEntity;
-                messagetransactionEntity.UpdateDate = DateNow;
-                messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                messagetransactionEntity.UserUpdate = messageEntity.User;
-                messagetransactionEntity.StateCreate = messageEntity.State;
-                messagetransactionEntity.StateUpdate = messageEntity.State;
-                messagetransactionEntity.StateBillCreate = billstateold;
-                messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                messagetransactionEntity.UserBillFinished = messageEntity.UserPros; ;
+                MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                {
+                    Message = messageEntity,
+                    UpdateDate = DateNow,
+                    UserCreate = messageEntity.UserSender,
+                    UserUpdate = messageEntity.User,
+                    StateCreate = messageEntity.State,
+                    StateUpdate = messageEntity.State,
+                    StateBillCreate = billstateold,
+                    StateBillUpdate = messageEntity.StateBill,
+                    UserBillAutho = messageEntity.UserAut,
+                    UserBillFinished = messageEntity.UserPros
+                };
+                ;
                 messagetransactionEntity.Observation = model.Transaction.Observation;
                 string Description = "Se crea el mensaje de tipo " + messageEntity.Type.Name
                     + " en la fecha " + messageEntity.UpdateDateLocal
@@ -729,14 +735,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -814,18 +822,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nse aprueba la factura por el usuario " + messagetransactionEntity.UserBillAutho.FullName
@@ -877,18 +887,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nse rechaza la factura por el usuario " + messagetransactionEntity.UserBillAutho.FullName
@@ -940,18 +952,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nSe procesa la factura por el usuario " + messagetransactionEntity.UserBillFinished.FullName
@@ -1040,14 +1054,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -1088,14 +1104,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -1216,14 +1234,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -1301,18 +1321,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nse aprueba la factura por el usuario " + messagetransactionEntity.UserBillAutho.FullName
@@ -1364,18 +1386,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nse rechaza la factura por el usuario " + messagetransactionEntity.UserBillAutho.FullName
@@ -1427,18 +1451,20 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.StateBillCreate = billstateold;
-                    messagetransactionEntity.StateBillUpdate = messageEntity.StateBill;
-                    messagetransactionEntity.UserBillAutho = messageEntity.UserAut;
-                    messagetransactionEntity.UserBillFinished = messageEntity.UserPros;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = messageEntity.UserAut,
+                        UserBillFinished = messageEntity.UserPros,
+                        Observation = model.Transaction.Observation
+                    };
                     string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
                         + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
                         + "\nSe procesa la factura por el usuario " + messagetransactionEntity.UserBillFinished.FullName
@@ -1527,14 +1553,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName
@@ -1575,14 +1603,16 @@ namespace Refosus.Web.Controllers
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
-                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity();
-                    messagetransactionEntity.Message = messageEntity;
-                    messagetransactionEntity.UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime();
-                    messagetransactionEntity.UserCreate = messageEntity.UserSender;
-                    messagetransactionEntity.UserUpdate = messageEntity.User;
-                    messagetransactionEntity.StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld);
-                    messagetransactionEntity.StateUpdate = messageEntity.State;
-                    messagetransactionEntity.Observation = model.Transaction.Observation;
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = await _context.MessagesStates.FirstOrDefaultAsync(s => s.Id == model.StateIdOld),
+                        StateUpdate = messageEntity.State,
+                        Observation = model.Transaction.Observation
+                    };
                     string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
                         + " en la fecha " + messageEntity.UpdateDateLocal
                         + " por el usuario " + messagetransactionEntity.UserCreate.FullName

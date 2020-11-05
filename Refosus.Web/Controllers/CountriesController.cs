@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
-    [Authorize (Roles = "Administrator")]
+    [Authorize(Roles = "Administrator")]
     public class CountriesController : Controller
     {
         private readonly DataContext _context;

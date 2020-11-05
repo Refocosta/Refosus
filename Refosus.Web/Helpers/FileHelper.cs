@@ -12,14 +12,14 @@ namespace Refosus.Web.Helpers
             string guid = Guid.NewGuid().ToString();
 
             string ext = Path.GetExtension(File.FileName);
-            string file = $"{guid}"+ ext;
+            string file = $"{guid}" + ext;
             string path = Path.Combine(
                 Directory.GetCurrentDirectory(),
                 $"wwwroot\\Message\\{folder}",
                 file);
             using (FileStream stream = new FileStream(path, FileMode.Create))
             {
-                await File.CopyToAsync(stream); 
+                await File.CopyToAsync(stream);
             }
             return $"~/Message/{folder}/{file}";
         }

@@ -9,13 +9,13 @@ namespace Refosus.Web.Models
     public class LoginViewModel
     {
         [EmailAddress]
-        [Display (Name ="Usuario")]
+        [Display(Name = "Usuario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public string UserName { get; set; }
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MinLength(6)]
         [Display(Name = "Contraseña")]
         public string Password { get; set; }
-        public Boolean RememberMe { get; set; }
+        public bool RememberMe { get; set; }
     }
 }

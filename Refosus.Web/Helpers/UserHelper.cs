@@ -44,8 +44,8 @@ namespace Refosus.Web.Helpers
         public async Task<UserEntity> GetUserAsync(string email)
         {
             return await _context.Users
-                .Include(u=>u.TypeDocument)
-                .Include(u=>u.Company)
+                .Include(u => u.TypeDocument)
+                .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.Email == email);
         }
         public async Task<UserEntity> GetUserAsync(Guid userId)
@@ -60,7 +60,7 @@ namespace Refosus.Web.Helpers
         {
             return await _userManager.CreateAsync(user, password);
         }
-        
+
         public async Task<UserEntity> GetUserByIdAsync(string id)
         {
             return await _userManager.FindByIdAsync(id);
@@ -137,7 +137,7 @@ namespace Refosus.Web.Helpers
         public async Task<List<UserEntity>> GetUsersAsync()
         {
             return await _userManager.Users
-                .Include(t=>t.TypeDocument)
+                .Include(t => t.TypeDocument)
                 .Include(t => t.Company)
                 .ToListAsync();
         }
@@ -147,6 +147,6 @@ namespace Refosus.Web.Helpers
             throw new System.NotImplementedException();
         }
 
-        
+
     }
 }

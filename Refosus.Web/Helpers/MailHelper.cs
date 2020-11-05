@@ -19,25 +19,27 @@ namespace Refosus.Web.Helpers
             MailMessage mail = new MailMessage();
 
             int count = 0;
-            foreach (var item in to)
+            foreach (string item in to)
             {
-                
+
                 mail.To.Add(new MailAddress(to[count]));
                 count++;
             }
 
-            mail.From= new MailAddress(EmailOrigen);
+            mail.From = new MailAddress(EmailOrigen);
             mail.Subject = subject;
             mail.Body = body;
 
             mail.IsBodyHtml = true;
-            SmtpClient client = new SmtpClient("mail.refocosta.com");
-            client.EnableSsl = false;
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-            client.UseDefaultCredentials = true;
-            client.Host = "mail.refocosta.com";
-            client.Port = 587;
-            client.Credentials = new System.Net.NetworkCredential(EmailOrigen, Password);
+            SmtpClient client = new SmtpClient("mail.refocosta.com")
+            {
+                EnableSsl = false,
+                DeliveryMethod = SmtpDeliveryMethod.Network,
+                UseDefaultCredentials = true,
+                Host = "mail.refocosta.com",
+                Port = 587,
+                Credentials = new System.Net.NetworkCredential(EmailOrigen, Password)
+            };
             client.Send(mail);
             return true;
         }

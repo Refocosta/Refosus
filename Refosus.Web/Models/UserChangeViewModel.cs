@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Models
 {
-    public class UserChangeViewModel :UserEntity
+    public class UserChangeViewModel : UserEntity
     {
         [Display(Name = "Compañia")]
         public int CompanyId { get; set; }

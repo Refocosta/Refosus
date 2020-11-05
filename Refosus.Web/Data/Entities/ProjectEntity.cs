@@ -11,7 +11,7 @@ namespace Refosus.Web.Data.Entities
         public int Id { get; set; }
 
         [DisplayName("Nombre")]
-        public string Name{get;set;}
+        public string Name { get; set; }
 
         [DisplayName("Jefe del Proyecto")]
         public string IdUserProjectBoss { get; set; }
