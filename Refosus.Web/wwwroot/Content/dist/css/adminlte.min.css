@@ -19379,7 +19379,10 @@ html.maximized-card {
     flex-direction: column;
     height: 100vh;
     -ms-flex-pack: center;
-    justify-content: center
+    justify-content: center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-size:cover;
 }
 
 .login-box, .register-box {

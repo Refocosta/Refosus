@@ -19,6 +19,15 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Fecha de creación")]
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime CreateDateLocal => CreateDate.ToLocalTime();
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha de creación")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
+        public DateTime UpdateDate { get; set; }
+
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha de creación")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
+        public DateTime UpdateDateLocal => UpdateDate.ToLocalTime();
 
         [Display(Name = "Creado Por")]
         public UserEntity UserCreate { get; set; }

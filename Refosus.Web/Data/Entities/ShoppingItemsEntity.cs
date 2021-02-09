@@ -17,5 +17,9 @@ namespace Refosus.Web.Data.Entities
         public string Mark { get; set; }
         public string InternalOrder { get; set; }
         public string NumInternalOrder { get; set; }
+        public double UnitCost { get; set; }
+        public int QuantityDelivered { get; set; }
+        public TP_Shoping_Item_StateEntity State { get; set; }
+        public double FullCost { get; set; }
     }
 }

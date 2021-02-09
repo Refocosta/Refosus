@@ -51,6 +51,7 @@ namespace Refosus.Web.Helpers
         Task<MessageEntity> ToMessageEntityAsync(MessageViewModel model, bool isNew);
         Task<MessagetransactionEntity> ToMessageTransactionEntityAsync(MessageViewModel model);
         MessageViewModel ToMessageViewModel(MessageEntity messagentity);
+        MessageAutorizeViewModel ToMessageAutorizeViewModel(MessageEntity messagentity);
 
         #endregion
 

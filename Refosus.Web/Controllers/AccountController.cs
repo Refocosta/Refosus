@@ -7,9 +7,9 @@ using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using Refosus.Web.Models;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 namespace Refosus.Web.Controllers
 {
     public class AccountController : Controller
@@ -18,21 +18,22 @@ namespace Refosus.Web.Controllers
         private readonly DataContext _context;
         private readonly ICombosHelper _combosHelper;
         private readonly IConverterHelper _converterHelper;
+        private readonly IImageHelper _imageHelper;
         private readonly ISecurityHelper _securityHelper;
-
         public AccountController(IUserHelper userHelper,
             DataContext dataContext,
             ICombosHelper combosHelper,
             IConverterHelper converterHelper,
+            IImageHelper imageHelper,
             ISecurityHelper securityHelper)
         {
             _userHelper = userHelper;
             _context = dataContext;
             _combosHelper = combosHelper;
             _converterHelper = converterHelper;
+            _imageHelper = imageHelper;
             _securityHelper = securityHelper;
         }
-
         #region System
         public IActionResult Login()
         {
@@ -51,13 +52,24 @@ namespace Refosus.Web.Controllers
                 Microsoft.AspNetCore.Identity.SignInResult result = await _userHelper.LoginAsync(model);
                 if (result.Succeeded)
                 {
-                    if (Request.Query.Keys.Contains("ReturnUrl"))
+
+                    UserEntity user = await _userHelper.GetUserAsync(model.UserName);
+                    if (user.IsActive == true)
                     {
-                        return Redirect(Request.Query["ReturnUrl"].First());
+                        if (Request.Query.Keys.Contains("ReturnUrl"))
+                        {
+                            return Redirect(Request.Query["ReturnUrl"].First());
+                        }
+                        return RedirectToAction("Index", "Home");
                     }
-                    return RedirectToAction("Index", "Home");
+                    else
+                    {
+                        await _userHelper.LogoutAsync();
+                        ModelState.AddModelError(string.Empty, "Usuario no activo");
+                    }
                 }
-                ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
+                else
+                    ModelState.AddModelError(string.Empty, "Usuario o contraseña incorrectos.");
             }
             return View(model);
         }
@@ -71,9 +83,6 @@ namespace Refosus.Web.Controllers
             return View();
         }
         #endregion
-
-
-
         #region Roles
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> IndexRoles()
@@ -138,7 +147,6 @@ namespace Refosus.Web.Controllers
                 new { controller = "Account", action = "IndexRoles" }));
         }
         #endregion
-
         #region Users
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> IndexUsers()
@@ -186,12 +194,12 @@ namespace Refosus.Web.Controllers
             }
             UserRolesViewModel modelView = new UserRolesViewModel
             {
-                user = await _context.Users
+                User = await _context.Users
                 .Include(t => t.TypeDocument)
                 .FirstOrDefaultAsync(g => g.Id == id)
             };
 
-            modelView.roles = await _securityHelper.GetRoleByUserAsync(modelView.user);
+            modelView.Roles = await _securityHelper.GetRoleByUserAsync(modelView.User);
 
             if (modelView == null)
             {
@@ -210,6 +218,7 @@ namespace Refosus.Web.Controllers
             UserEntity userEntity =
                 userEntity = await _context.Users
                 .Include(t => t.TypeDocument)
+                .Include(t => t.Company)
                 .FirstOrDefaultAsync(g => g.Id == id);
             if (userEntity == null)
             {
@@ -218,6 +227,32 @@ namespace Refosus.Web.Controllers
             UserViewModel userViewModel = _converterHelper.ToUserViewModel(userEntity);
             return View(userViewModel);
         }
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(UserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                UserEntity user = await _userHelper.GetUserByIdAsync(model.Id);
+                user.TypeDocument = await _context.DocumentTypes.FirstOrDefaultAsync(t => t.Id == model.DocumentTypeId);
+                user.Document = model.Document;
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.UserName = model.UserName;
+                user.Email = model.Email;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Address = model.Address;
+                user.IsActive = model.IsActive;
+                user.Company = await _context.Companies.FirstOrDefaultAsync(t => t.Id == model.CompanyId);
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("IndexUsers", new RouteValueDictionary(
+                        new { controller = "Account", action = "IndexUsers" }));
+            }
+            return View(model);
+        }
+
+
 
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteUserRole(string email, string name)
@@ -236,29 +271,16 @@ namespace Refosus.Web.Controllers
                 }
                 await _userHelper.RemoveUserToRoleAsync(modelUser, name);
                 return RedirectToAction("DetailsUser", new RouteValueDictionary(
-                        new { controller = "Account", action = "DetailsUser", email = email }));
+                        new { controller = "Account", action = "DetailsUser", Id = modelUser.Id }));
 
             }
         }
 
-
-
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> ChangeUser()
-        {
-            UserChangeViewModel model = new UserChangeViewModel();
-            //model = _converterHelper.ToUserChangeViewModelAsync(_userHelper.GetUserAsync(User.Identity.Name));
-            return View(model);
-        }
-
-
-
         [Authorize]
-        public async Task<IActionResult> ChangePassword()
+        public IActionResult ChangePassword()
         {
             return View();
         }
-
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
@@ -269,7 +291,8 @@ namespace Refosus.Web.Controllers
                 Microsoft.AspNetCore.Identity.IdentityResult result = await _userHelper.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("ChangeUser");
+                    ModelState.AddModelError(string.Empty, "Contraseña Cambiada con exito");
+                    return View(new ChangePasswordViewModel { });
                 }
                 else
                 {
@@ -278,9 +301,119 @@ namespace Refosus.Web.Controllers
             }
             return View(model);
         }
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> ChangePasswordAllUser()
+        {
+            ChangePasswordAllUserViewModel model = new ChangePasswordAllUserViewModel
+            {
+                Users = _combosHelper.GetComboUser()
+            };
+            return View(model);
+        }
+        [Authorize(Roles = "Administrator")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordAllUser(ChangePasswordAllUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                UserEntity user = await _context.Users.FirstOrDefaultAsync(u => u.Id == model.UserId);
+                string token = await _userHelper.GenerateTokenChangePasswordAllAsync(user);
+                Microsoft.AspNetCore.Identity.IdentityResult result = await _userHelper.ChangePasswordAllUserAsync(user, token, model.NewPassword);
+                if (result.Succeeded)
+                {
+                    ModelState.AddModelError(string.Empty, "Contraseña Cambiada con exito");
+                    return View(new ChangePasswordAllUserViewModel { Users = _combosHelper.GetComboUser() });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, result.Errors.FirstOrDefault().Description);
+                }
+            }
+            model.Users = _combosHelper.GetComboUser();
+            return View(model);
+        }
+
+
+
+
+
+        [Authorize]
+        public async Task<IActionResult> ChangeUser()
+        {
+            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+            UserChangeViewModel model = _converterHelper.ToUserChangeViewModelAsync(user);
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangeUser(UserChangeViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+                model.Companies = _combosHelper.GetComboCompany();
+                model.DocumentTypes = _combosHelper.GetComboDocumentType();
+                user.Company = await _context.Companies.FirstOrDefaultAsync(c => c.Id == model.CompanyId);
+                user.TypeDocument = await _context.DocumentTypes.FirstOrDefaultAsync(d => d.Id == model.DocumentTypeId);
+                user.FirstName = model.FirstName;
+                user.LastName = model.LastName;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Address = model.Address;
+
+                string path = string.Empty;
+                if (model.PictureFile != null)
+                {
+                    path = await _imageHelper.UploadImageAsync(model.PictureFile, "Users", model.Email);
+                    user.PhotoPath = path;
+                }
+                _context.Update(user);
+                await _context.SaveChangesAsync();
+                ModelState.AddModelError(string.Empty, "Se actualizaron los datos correctamente.");
+                model.PhotoPath = user.PhotoPath;
+                return View(model);
+            }
+            return View(model);
+        }
+
+
+
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddUserRole(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            UserEntity user = await _userHelper.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            UserRolesViewModel model = new UserRolesViewModel
+            {
+                User = user,
+                userId = user.Id,
+                ListRoles = _userHelper.GetRolesCombo()
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> AddUserRole(UserRolesViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.User = await _userHelper.GetUserByIdAsync(model.userId);
+                model.Rol = await _userHelper.GetRoleByIdAsync(model.rolesId);
+                await _userHelper.AddUserToRoleAsync(model.User, model.Rol.Name);
+                return RedirectToAction("DetailsUser", new RouteValueDictionary(
+    new { controller = "Account", action = "DetailsUser", Id = model.userId }));
+            }
+            return View(model);
+        }
 
         #endregion
-
         #region RoleMenu
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> AddRoleMenus(string id)

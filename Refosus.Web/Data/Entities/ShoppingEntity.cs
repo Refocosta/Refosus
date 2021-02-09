@@ -51,8 +51,18 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Articulos")]
         public IEnumerable<ShoppingTempItems> ItemsTemp { get; set; }
 
+        [Display (Name ="Grupo Asignado")]
+        public TP_GroupEntity AssignedGroup { get; set; }
+
+        [Display(Name = "Grupo")]
+        public TP_GroupEntity CreateGroup { get; set; }
 
 
+        [Display(Name = "Valor Total")]
+        public double TotalValue { get; set; }
+
+        [Display(Name = "Observaciones")]
+        public string observations { get; set; }
 
     }
 }

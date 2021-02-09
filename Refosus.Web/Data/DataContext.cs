@@ -47,6 +47,22 @@ namespace Refosus.Web.Data
         public DbSet<ShoppingCategoryEntity> ShoppingCategories { get; set; }
         public DbSet<ShoppingTempItems> ShoppingTempItems { get; set; }
         public DbSet<ShoppingItemsEntity> ShoppingItems { get; set; }
+        public DbSet<TP_Shoping_Item_StateEntity> TP_Shoping_Item_State { get; set; }
+        public DbSet<TP_Shopping_ArticleEntity> TP_Shopping_Article { get; set; }
+        public DbSet<TP_Shopping_Usu_Apr_GroEntity> TP_Shopping_Usu_Apr_Gro { get; set; }
+
+        #endregion
+
+
+
+
+
+        // Almacenan todas las tablas de seguridad
+        #region Security
+        // Alamacena los grupos EJP"Compras"
+        public DbSet<TP_GroupEntity> TP_Groups { get; set; }
+        // Almacena los datos de relacion de los grupos con los usuarios
+        public DbSet<TM_User_GroupEntity> TM_User_Groups { get; set; }
 
         #endregion
 
@@ -61,5 +77,7 @@ namespace Refosus.Web.Data
                 .HasIndex(t => t.Code)
                 .IsUnique();
         }
+
+
     }
 }

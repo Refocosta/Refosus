@@ -97,5 +97,16 @@ namespace Refosus.Web.Data.Entities
 
         [Display(Name = "Centro de Costos")]
         public CeCoEntity Ceco { get; set; }
+
+        [Display(Name = "Observación")]
+        public string Observation { get; set; }
+
+        [Display(Name = "Valor")]
+        public int Value { get; set; }
+
+        public static implicit operator MessageEntity(List<MessageEntity> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

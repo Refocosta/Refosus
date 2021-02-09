@@ -15,7 +15,7 @@ namespace Refosus.Web.Models
         public string OldPassword { get; set; }
 
         [Display(Name = "Contraseña nueva")]
-        [Required(ErrorMessage = "The field {0} is mandatory.")]
+        [Required(ErrorMessage = "El campo {0} es Obligatorio.")]
         [DataType(DataType.Password)]
         [StringLength(20, MinimumLength = 6, ErrorMessage = "La {0} debe contener entre {2} y {1} caracteres.")]
         public string NewPassword { get; set; }
@@ -23,8 +23,7 @@ namespace Refosus.Web.Models
         [Display(Name = "Confirme la Contraseña")]
         [Required(ErrorMessage = "El campo {0} es Obligatorio.")]
         [DataType(DataType.Password)]
-        [StringLength(20, MinimumLength = 6, ErrorMessage = "La {0} debe contener entre {2} y {1} caracteres.")]
-        [Compare("NewPassword")]
+        [Compare("NewPassword",ErrorMessage ="La contraseña debe ser igual.")]
         public string Confirm { get; set; }
     }
 }

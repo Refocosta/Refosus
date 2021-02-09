@@ -9,6 +9,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201201235122_AddTableGroupV3.cs" />
+    <Compile Remove="Migrations\20201201235122_AddTableGroupV3.Designer.cs" />
+    <Compile Remove="Migrations\20201213061036_AddtablesGroups4.cs" />
+    <Compile Remove="Migrations\20201213061036_AddtablesGroups4.Designer.cs" />
+    <Compile Remove="Migrations\20201213063116_AddtablesGroups4.cs" />
+    <Compile Remove="Migrations\20201213063116_AddtablesGroups4.Designer.cs" />
+    <Compile Remove="Migrations\20201213080606_AddtablesGroups4.cs" />
+    <Compile Remove="Migrations\20201213080606_AddtablesGroups4.Designer.cs" />
+    <Compile Remove="Migrations\20201214031658_AddtablesGroups5.cs" />
+    <Compile Remove="Migrations\20201214031658_AddtablesGroups5.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.js" />
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap.min.js" />
     <None Include="wwwroot\DataTables\DataTables-1.10.20\js\dataTables.bootstrap4.js" />
@@ -51,7 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Migrations\" />
     <Folder Include="wwwroot\Images\News\" />
     <Folder Include="wwwroot\Message\Carta\" />
     <Folder Include="wwwroot\Message\Factura\" />

@@ -10,7 +10,6 @@ using Refosus.Web.Data.Entities;
 using Refosus.Web.Data.EntitiesTE;
 using Refosus.Web.Helpers;
 using System;
-
 namespace Refosus.Web
 {
     public class Startup
@@ -19,7 +18,6 @@ namespace Refosus.Web
         {
             Configuration = configuration;
         }
-
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
@@ -28,7 +26,6 @@ namespace Refosus.Web
                 options.LoginPath = "/Account/NotAuthorized";
                 options.AccessDeniedPath = "/Account/NotAuthorized";
             });
-
             services.AddDbContext<DataContext>(cfg =>
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("RefosusDesarrollo"));
@@ -37,7 +34,6 @@ namespace Refosus.Web
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("AWS"));
             });
-
             services.AddIdentity<UserEntity, RoleEntity>(options =>
              {
                  // Lockout settings.
@@ -54,8 +50,8 @@ namespace Refosus.Web
                  options.Password.RequiredLength = 6;
                  // User settings.
                  options.User.RequireUniqueEmail = true;
-             }).AddEntityFrameworkStores<DataContext>();
-
+             }).AddEntityFrameworkStores<DataContext>()
+             .AddDefaultTokenProviders();
             services.AddTransient<SeedDb>();
             services.AddScoped<IConverterHelper, ConverterHelper>();
             services.AddScoped<IImageHelper, ImageHelper>();
@@ -81,12 +77,9 @@ namespace Refosus.Web
             app.UseStatusCodePagesWithReExecute("/Error/{0}");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

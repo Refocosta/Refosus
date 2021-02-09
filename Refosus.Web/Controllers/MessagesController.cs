@@ -9,6 +9,7 @@ using Refosus.Web.Data.Entities;
 using Refosus.Web.Helpers;
 using Refosus.Web.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -39,7 +40,6 @@ namespace Refosus.Web.Controllers
             _mailHelper = mailHelper;
             _converterHelper = converterHelper;
         }
-        // RV 2020-10-14
         #region Index
         [Authorize(Roles = "Administrator,MessageAdministrator")]
         public async Task<IActionResult> Index()
@@ -65,7 +65,7 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => (t.User.Id == user.Id && t.State.Name != "Tramitado" && t.State.Name != "Recibido"))
+                .Where(t => (t.User.Id == user.Id && t.State.Name != "Tramitado" && t.State.Name != "Recibido" && t.State.Name != "Anulado"))
                 .Include(t => t.Type)
                 .Include(t => t.State)
                 .Include(t => t.User)
@@ -85,7 +85,7 @@ namespace Refosus.Web.Controllers
             return View(await _context
                 .Messages
                 .Where(t =>
-                (((t.UserSender == Userme) || (t.User == Userme)) && ((t.State.Name == "Tramitado") || (t.State.Name == "Recibido")))
+                (((t.UserSender == Userme) || (t.User == Userme)) && ((t.State.Name == "Tramitado") || (t.State.Name == "Recibido") || (t.State.Name == "Anulado")))
                 ||
                 ((t.UserSender == Userme) && (t.User != Userme))
                 ||
@@ -109,7 +109,7 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => t.Type.Name == "Factura" && t.State.Name != "Tramitado" && t.State.Name != "Rechazado")
+                .Where(t => t.Type.Name == "Factura" && t.State.Name != "Tramitado" && t.State.Name != "Rechazado" && t.State.Name != "Anulado")
                 .Where(t => t.Company.Id == user.Company.Id)
                 .Include(t => t.Type)
                 .Include(t => t.State)
@@ -129,7 +129,7 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
             return View(await _context
                 .Messages
-                .Where(t => t.Type.Name == "Factura" && (t.State.Name == "Tramitado" || t.State.Name == "Rechazado"))
+                .Where(t => t.Type.Name == "Factura" && (t.State.Name == "Tramitado" || t.State.Name == "Rechazado" || t.State.Name != "Anulado"))
                 .Where(t => t.Company.Id == user.Company.Id)
                 .Include(t => t.Type)
                 .Include(t => t.State)
@@ -144,7 +144,6 @@ namespace Refosus.Web.Controllers
                 );
         }
         #endregion
-        // RV 2020-10-15
         #region Create
         [Authorize(Roles = "Administrator,MessageCreator")]
         public IActionResult CreateMessageAsync()
@@ -413,7 +412,6 @@ namespace Refosus.Web.Controllers
             return View(model);
         }
         #endregion
-        // RV 2020-10-15
         #region Transaction
         [Authorize(Roles = "Administrator,MessageAdministrator")]
         public async Task<IActionResult> DetailsTransaction(int? id)
@@ -516,7 +514,6 @@ namespace Refosus.Web.Controllers
             return View(messagetransaction);
         }
         #endregion
-        // RV 2020-10-15
         #region Detaills
         [Authorize(Roles = "Administrator,MessageAdministrator")]
         public async Task<IActionResult> DetailsMessage(int? id)
@@ -662,7 +659,6 @@ namespace Refosus.Web.Controllers
             return View(messageEntity);
         }
         #endregion
-        // RV 2020-10-15
         #region Edit
         [Authorize(Roles = "Administrator,MessageAdministrator")]
         public async Task<IActionResult> EditMessage(int? id)
@@ -731,7 +727,15 @@ namespace Refosus.Web.Controllers
                 if (model.Operation == 1)
                 {
                     #region Update Info
-                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
+                    if (model.StateIdOld == messageEntity.State.Id)
+                    {
+                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
+                    }
+                    else
+                    {
+                        messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Id == model.StateId);
+                    }
+                    //message = null;
                     _context.Update(messageEntity);
                     #endregion
                     #region Create Transaction
@@ -1656,6 +1660,170 @@ namespace Refosus.Web.Controllers
             model.MessageBillState = _combosHelper.GetComboMessageBillState();
             model.Cecos = _combosHelper.GetComboCeCo(model.CompanyId);
             return View(model);
+        }
+        #endregion
+        #region Especial
+        [Authorize(Roles = "Administrator,MessageAllAuthorize")]
+        public async Task<IActionResult> MessageAuthorize()
+        {
+            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+            List<MessageEntity> list = await
+                _context.Messages
+                .Where(t => t.Company.Id == user.Company.Id)
+                .Where(t => t.StateBill.Name == "Nuevo")
+                .Where(t => t.User == user)
+                .Where(t => t.Ceco != null)
+                .Include(t => t.Type)
+                .Include(t => t.State)
+                .Include(t => t.User)
+                .Include(t => t.UserSender)
+                .Include(t => t.MessageFiles)
+                .Include(t => t.Ceco)
+                .Include(t => t.Company)
+                .OrderBy(t => t.UpdateDate)
+                .ToListAsync()
+                ;
+            List<MessageAutorizeViewModel> lista2 = new List<MessageAutorizeViewModel>();
+            foreach (MessageEntity item in list)
+            {
+                lista2.Add(_converterHelper.ToMessageAutorizeViewModel(item));
+            }
+            if(lista2.Count>0)
+            lista2[0].Users = _combosHelper.GetComboUserActive();
+
+
+            return View(lista2);
+        }
+        [Authorize(Roles = "Administrator,MessageAllAuthorize")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MessageAuthorize(IEnumerable<MessageAutorizeViewModel> model)
+        {
+            UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
+
+            var i = model.FirstOrDefault();
+            string usuario = i.UserId;
+
+            foreach (MessageAutorizeViewModel item in model)
+            {
+                if (item.Auto == true)
+                {
+                    MessageEntity messageEntity = new MessageEntity();
+                    messageEntity = await _context.Messages
+                       .Include(t => t.State)
+                       .Include(t => t.User)
+                       .Include(t => t.Type)
+                       .Include(t => t.Ceco)
+                       .ThenInclude(t => t.UserResponsible)
+                       .Include(t => t.Company)
+                       .Include(t => t.StateBill)
+                       .FirstOrDefaultAsync(t => t.Id == item.Id);
+                    MessageBillStateEntity billstateold = messageEntity.StateBill;
+                    MessageStateEntity stateold = messageEntity.State;
+
+                    #region Update Info
+
+                    if (usuario == "0"|| usuario == null)
+                    {
+                        if (messageEntity.Ceco.UserResponsible == null)
+                        {
+                            //Enviar a responsable de facturacion de la empresa
+                            messageEntity.User = user;
+                        }
+                        else
+                        {
+                            messageEntity.User = messageEntity.Ceco.UserResponsible;
+                        }
+                    }
+                    else
+                    {
+                        messageEntity.User = await _userHelper.GetUserByIdAsync(usuario); 
+                    }
+                    messageEntity.UpdateDate = System.DateTime.Now.ToUniversalTime();
+                    messageEntity.UserSender = user;
+                    messageEntity.StateBill = _context.MessagesBillState.FirstOrDefault(o => o.Name == "Aprobado");
+                    messageEntity.State = _context.MessagesStates.FirstOrDefault(o => o.Name == "En Proceso");
+                    messageEntity.UserAut = user;
+                    messageEntity.DateAut = messageEntity.UpdateDate;
+                    _context.Update(messageEntity);
+                    #endregion
+                    #region Create Transaction
+                    MessagetransactionEntity messagetransactionEntity = new MessagetransactionEntity
+                    {
+                        Message = messageEntity,
+                        UpdateDate = messageEntity.UpdateDateLocal.ToUniversalTime(),
+                        UserCreate = messageEntity.UserSender,
+                        UserUpdate = messageEntity.User,
+                        StateCreate = stateold,
+                        StateUpdate = messageEntity.State,
+                        StateBillCreate = billstateold,
+                        StateBillUpdate = messageEntity.StateBill,
+                        UserBillAutho = user,
+                        UserBillFinished = messageEntity.UserPros
+                    };
+                    string Factura = "\nSe cambia el estado de la factura de " + messagetransactionEntity.StateBillCreate.Name
+                        + " por el estado " + messagetransactionEntity.StateBillUpdate.Name
+                        + "\nse aprueba la factura por el usuario " + messagetransactionEntity.UserBillAutho.FullName
+                        + " a las " + messageEntity.UpdateDateLocal;
+                    string Description = "Se actualiza el mensaje de tipo " + messageEntity.Type.Name
+                        + " en la fecha " + messageEntity.UpdateDateLocal
+                        + " por el usuario " + messagetransactionEntity.UserCreate.FullName
+                        + " enviado al usuario  " + messagetransactionEntity.UserUpdate.FullName
+                        + " con un estado inicial " + messagetransactionEntity.StateCreate.Name
+                        + " y un estado final " + messagetransactionEntity.StateUpdate.Name
+                        + Factura
+                        ;
+                    messagetransactionEntity.Description = Description;
+                    _context.Add(messagetransactionEntity);
+                    #endregion
+                    await _context.SaveChangesAsync();
+                    #region Send email
+                    string subject = "Correspondencia No. " + messageEntity.Id + " - " + messageEntity.Reference;
+                    string body =
+                        "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia.Por favor no responda este mensaje. <br/>" +
+                        " <br/> Hola. <br/> " +
+                        "Se ha autorizado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
+                        messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                        "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
+                        "Usted recibió este mensaje automático por que le fue asignado un documento, " +
+                        "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
+                        "usuario y contraseña para revisar y dale trámite al registro. Este mensaje es enviado " +
+                        "desde una cuenta no gestionada, por lo tanto si usted contesta este correo no recibirá " +
+                        "una respuesta. <br/> <br/> " +
+                        "Atentamente,<br/>" +
+                        "Equipo de Soporte - Refocosta.<br/>";
+                    string[] to = new string[1];
+                    to[0] = messagetransactionEntity.UserUpdate.Email;
+                    _mailHelper.sendMail(to, subject, body);
+                    #endregion
+                }
+            }
+
+
+            List<MessageEntity> list = await
+                _context.Messages
+                .Where(t => t.Company.Id == user.Company.Id)
+                .Where(t => t.StateBill.Name == "Nuevo")
+                .Where(t => t.User == user)
+                .Where(t => t.Ceco != null)
+                .Include(t => t.Type)
+                .Include(t => t.State)
+                .Include(t => t.User)
+                .Include(t => t.UserSender)
+                .Include(t => t.MessageFiles)
+                .Include(t => t.Ceco)
+                .Include(t => t.Company)
+                .OrderBy(t => t.UpdateDate)
+                .ToListAsync()
+                ;
+            List<MessageAutorizeViewModel> lista2 = new List<MessageAutorizeViewModel>();
+            foreach (MessageEntity item in list)
+            {
+                lista2.Add(_converterHelper.ToMessageAutorizeViewModel(item));
+            }
+
+
+            return View(lista2);
         }
         #endregion
     }

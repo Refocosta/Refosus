@@ -31,7 +31,7 @@ namespace Refosus.Web.Data.Entities
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime UpdateDateLocal => UpdateDate.ToLocalTime();
 
-        [Display(Name = "Observaciones")]
+        [Display(Name = "Nota de Transacción")]
         public string Observation { get; set; }
 
         [Display(Name = "Estado Anterior de Factura")]

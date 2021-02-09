@@ -25,7 +25,11 @@ namespace Refosus.Web.Models
         [DisplayName("Jefe del Projecto")]
         public string IdUserProjectBoss { get; set; }
 
+        [DisplayName("Departamento")]
+        public int IdGroupCreate { get; set; }
 
+        [DisplayName("Departamento Asignado")]
+        public int IdGroupAssigned { get; set; }
 
 
 
@@ -89,6 +93,8 @@ namespace Refosus.Web.Models
         public IEnumerable<SelectListItem> Categories { get; set; }
         [DisplayName("Sub Categorias")]
         public IEnumerable<SelectListItem> SubCategories { get; set; }
+        [DisplayName("Departamentos")]
+        public IEnumerable<SelectListItem> Groups { get; set; }
 
 
 

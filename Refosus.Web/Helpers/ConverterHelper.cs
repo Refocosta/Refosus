@@ -302,7 +302,9 @@ namespace Refosus.Web.Helpers
                 DateAut = model.DateAutLocal.ToUniversalTime(),
                 UserPros = await _context.Users.FindAsync(model.ProUser),
                 DateProcess = model.DateProcessLocal.ToUniversalTime(),
-                NumberBill = model.NumberBill
+                NumberBill = model.NumberBill,
+                Value = model.Value,
+                Observation = model.Observation
             };
         }
         public MessageViewModel ToMessageViewModel(MessageEntity messagentity)
@@ -328,7 +330,9 @@ namespace Refosus.Web.Helpers
                 StateId = messagentity.State.Id,
                 StateBill = messagentity.StateBill,
                 StateBillId = messagentity.StateBill.Id,
-                NumberBill = messagentity.NumberBill
+                NumberBill = messagentity.NumberBill,
+                Value = messagentity.Value,
+                Observation = messagentity.Observation
             };
             if (messagentity.Ceco != null)
             {
@@ -368,6 +372,33 @@ namespace Refosus.Web.Helpers
                 Observation = model.Transaction.Observation
             };
         }
+        public MessageAutorizeViewModel ToMessageAutorizeViewModel(MessageEntity messagentity)
+        {
+            MessageAutorizeViewModel model = new MessageAutorizeViewModel
+            {
+                Id = messagentity.Id,
+                Company = messagentity.Company,
+                Type = messagentity.Type,
+                Sender = messagentity.Sender,
+                Reference = messagentity.Reference,
+                CreateDate = messagentity.CreateDateLocal.ToUniversalTime(),
+                UpdateDate = messagentity.UpdateDateLocal.ToUniversalTime(),
+                UserCreate = messagentity.UserCreate,
+                UserSender = messagentity.UserSender,
+                User = messagentity.User,
+                State = messagentity.State,
+                StateBill = messagentity.StateBill,
+                NumberBill = messagentity.NumberBill,
+                Ceco = messagentity.Ceco,
+                UserAut = messagentity.UserAut,
+                DateAut = messagentity.DateAutLocal.ToUniversalTime(),
+                UserPros = messagentity.UserPros,
+                DateProcess = messagentity.DateProcessLocal.ToUniversalTime(),
+                Value = messagentity.Value,
+                Observation = messagentity.Observation
+            };
+            return model;
+        }
         #endregion
 
         #region Users
@@ -395,12 +426,13 @@ namespace Refosus.Web.Helpers
             return new UserViewModel
             {
                 DocumentTypes = _combosHelper.GetComboDocumentType(),
+                Companies = _combosHelper.GetComboCompany(),
                 Id = model.Id,
                 UserName = model.UserName,
-
                 TypeDocument = model.TypeDocument,
                 DocumentTypeId = model.TypeDocument.Id,
                 Document = model.Document,
+                CompanyId = model.Company.Id,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
@@ -408,7 +440,7 @@ namespace Refosus.Web.Helpers
                 IsActive = model.IsActive,
                 Email = model.Email
             };
-        }
+        } 
 
 
         public UserChangeViewModel ToUserChangeViewModelAsync(UserEntity user)
@@ -417,9 +449,16 @@ namespace Refosus.Web.Helpers
             {
                 Companies = _combosHelper.GetComboCompany(),
                 DocumentTypes = _combosHelper.GetComboDocumentType(),
+                PhotoPath = user.PhotoPath,
+                DocumentTypeId =user.TypeDocument.Id,
                 Document = user.Document,
+                UserName = user.UserName,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                Address=user.Address,
+                CompanyId=user.Company.Id,
+                Email=user.Email,
+                PhoneNumber=user.PhoneNumber
             };
         }
 
@@ -433,41 +472,76 @@ namespace Refosus.Web.Helpers
             return new ShoppingEntity
             {
                 Id = isNew ? 0 : model.Id,
+                CreateGroup = await _context.TP_Groups.FirstOrDefaultAsync(p => p.Id == model.IdGroupCreate),
                 UserCreate = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserCreate),
-                CreateDate = model.CreateDate,
-                UpdateDate = model.UpdateDate,
+
                 UserAssigned = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserAssign),
+                AssignedGroup = await _context.TP_Groups.FirstOrDefaultAsync(p => p.Id == model.IdGroupAssigned),
+
                 State = await _context.ShoppingStates.FirstOrDefaultAsync(p => p.Id == model.IdState),
+
+                CreateDate = model.CreateDateLocal.ToUniversalTime(),
+                UpdateDate = model.UpdateDateLocal.ToUniversalTime(),
+
                 Project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == model.IdProject),
-                UserProjectBoss = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserProjectBoss)
+                UserProjectBoss = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserProjectBoss),
+
+
+                
+                
+               
+                observations = model.observations,
+                TotalValue = model.TotalValue
             };
         }
 
         public async Task<ShoppingViewModel> ToShoppingViewModelAsync(ShoppingEntity model)
         {
-            return new ShoppingViewModel
+            ShoppingViewModel modelView = new ShoppingViewModel();
+            modelView.Id = model.Id;
+            modelView.IdUserCreate = model.UserCreate.Id;
+            modelView.CreateDate = model.CreateDate;
+            modelView.UpdateDate = model.UpdateDate;
+            if (model.UserAssigned != null)
             {
-                Id = model.Id,
-                IdUserCreate=model.UserCreate.Id,
-                CreateDate=model.CreateDate,
-                UpdateDate = model.CreateDate,
-                IdUserAssign = model.UserAssigned.Id,
-                State= await _context.ShoppingStates.FirstOrDefaultAsync(s=>s.Id== model.State.Id),
-                IdState = model.State.Id,
-                Project = await _context.Projects.FirstOrDefaultAsync(s => s.Id == model.Project.Id),
-                IdProject = model.Project.Id,
-                IdUserProjectBoss = model.UserProjectBoss.Id,
-                ShoppingUnits = _combosHelper.GetComboShoppingUnit(),
-                ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0),
-                Categories = _combosHelper.GetComboShoppingCategory(),
-                SubCategories = _combosHelper.GetComboShoppingCategory(0),
-                Users = _combosHelper.GetComboUser(),
-                ShoppingStates = _combosHelper.GetComboShoppingState(),
-                Projects = _combosHelper.GetComboProject()
-            };
+                modelView.UserAssigned = model.UserAssigned;
+                modelView.IdUserAssign = model.UserAssigned.Id;
+            }
+            else
+            {
+                modelView.UserAssigned = null;
+                modelView.IdUserAssign = null;
+            }
+            modelView.State = await _context.ShoppingStates.FirstOrDefaultAsync(s => s.Id == model.State.Id);
+            modelView.IdState = model.State.Id;
+            
+            if (model.AssignedGroup != null)
+            {
+                modelView.AssignedGroup = model.AssignedGroup;
+                modelView.IdGroupAssigned = (int)model.AssignedGroup.Id;
+            }
+            if (model.CreateGroup != null)
+            {
+                modelView.CreateGroup = model.CreateGroup;
+                modelView.IdGroupCreate = (int)model.CreateGroup.Id;
+            }
+            if (model.Project != null)
+            {
+                modelView.Project = await _context.Projects.FirstOrDefaultAsync(s => s.Id == model.Project.Id);
+                modelView.IdProject = model.Project.Id;
+                modelView.IdUserProjectBoss = model.UserProjectBoss.Id;
+            }
+            
+            modelView.ShoppingUnits = _combosHelper.GetComboShoppingUnit();
+            modelView.ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0);
+            modelView.Categories = _combosHelper.GetComboShoppingCategory();
+            modelView.SubCategories = _combosHelper.GetComboShoppingCategory(0);
+            modelView.Users = _combosHelper.GetComboUser();
+            modelView.ShoppingStates = _combosHelper.GetComboShoppingState();
+            modelView.Projects = _combosHelper.GetComboProject();
+            modelView.Groups = _combosHelper.GetGroups();
+            return modelView;
         }
-
-
         #endregion
 
         //#region Iniciativas

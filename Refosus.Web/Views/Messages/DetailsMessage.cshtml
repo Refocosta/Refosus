@@ -15,253 +15,22 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            @if (Model.Type.Name != "Factura")
+                        <partial name="_DetailsMessage" />
+                    </div>
+                    <div class="card-footer ">
+                        <div class="col col-12">
+                            @if (Model.State.Name != "Tramitado" && Model.State.Name != "Recibido"|| User.IsInRole("MessageChangeState"))
                             {
-                                <div class="col col-md-12">
-                                    <div class="row">
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">Consecutivo</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Id)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Company)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Company.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Sender)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Sender)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Reference)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Reference)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Type.Name)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Type.Name)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.CreateDateLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.CreateDateLocal)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.State)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.State.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.User.FullName)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.User.FullName)" disabled>
-                                        </div>
-                                    </div>
-
-                                </div>
+                                <a asp-action="EditMessage" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Gestionar</a>
                             }
-                            else
-                            {
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">Consecutivo</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Id)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Company)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Company.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Sender)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Sender)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Reference)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Reference)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-4">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Type.Name)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Type.Name)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.CreateDateLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.CreateDateLocal)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.State)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.State.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.User.FullName)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.User.FullName)" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6">
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.StateBill)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.StateBill.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.UserAut)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UserAut.FullName)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.UserPros)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.UserPros.FullName)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.DateAutLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.DateAutLocal)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.DateProcessLocal)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.DateProcessLocal)" disabled>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.Ceco)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.Ceco.Name)" disabled>
-                                        </div>
-                                        <div class="form-group col col-sd-6">
-                                            <label class="control-label">@Html.DisplayNameFor(model => model.NumberBill)</label>
-                                            <input class="form-control" value="  @Html.DisplayFor(model => model.NumberBill)" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                        <div class="card-footer ">
-                            <div class="col col-12">
-                                @if (Model.State.Name != "Tramitado" && Model.State.Name != "Recibido")
-                                {
-                                    <a asp-action="EditMessage" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Gestionar</a>
-                                }
-                                <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            </div>
+                            <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
-        <div class="row">
-            <section class="col-lg-12 connectedSortable">
-                <div class="card card-danger">
-                    <div class="card-header">
-                        <a class="card-title">Adjuntos</a>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12 table-responsive">
-                                <table class="table table-hover table-striped display" id="tblDatos1">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Nombre
-                                            </th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach (var item in Model.MessageFiles)
-                                        {
-                                            <tr>
-                                                <td>
-                                                    @Html.DisplayFor(modelItem => item.Name)
-                                                </td>
-                                                <td>
-                                                    <a href="@Url.Content(item.FilePath)" download="@item.Name" class="btn btn-info">
-                                                        <i class="oi oi-cloud-download style="color:white"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-        @if (Model.Type.Name == "Factura")
-        {
-            <div class="row">
-                <section class="col-lg-12 connectedSortable">
-                    <div class="card card-warning">
-                        <div class="card-header">
-                            <a class="card-title">Vistos Buenos</a>
-                            <div class="card-tools">
-                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12 table-responsive">
-                                    <table class="table table-hover table-striped display" id="tblDatos">
-                                        <thead>
-                                            <tr>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.Checks.FirstOrDefault().User)
-                                                </th>
-                                                <th>
-                                                    @Html.DisplayNameFor(model => model.Checks.FirstOrDefault().DateAutLocal)
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var item in Model.Checks.OrderBy(d => d.DateAut))
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.User.FullName)
-                                                    </td>
-                                                    <td>
-                                                        @Html.DisplayFor(modelItem => item.DateAutLocal)
-                                                    </td>
-
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        }
+        <partial name="_DetailsTables" />
+        @*tabla de transacciones*@
         <div class="row">
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
@@ -322,7 +91,7 @@
                                                     @Html.DisplayFor(modelItem => item.Observation)
                                                 </td>
                                                 <td>
-                                                    <a asp-action="Detailstransaction" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                    <a asp-action="DetailsTransaction" asp-route-id="@item.Id" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
                                                 </td>
                                             </tr>
                                         }

@@ -33,45 +33,45 @@
                                         <div class="row">
                                             <div class="form-group col col-sd-3">
                                                 <label class="control-label">Tipo de Documento</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.TypeDocument.Name)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.TypeDocument.Name)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-3">
                                                 <label class="control-label">Documento</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.Document)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.Document)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-3">
                                                 <label class="control-label">Nombres</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.FirstName)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.FirstName)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-3">
                                                 <label class="control-label">Apellidos</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.LastName)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.LastName)" disabled>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col col-sd-4">
                                                 <label class="control-label">Usuario</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.UserName)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.UserName)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-4">
                                                 <label class="control-label">Correo</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.Email)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.Email)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-4">
                                                 <label class="control-label">Celular</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.PhoneNumber)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.PhoneNumber)" disabled>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="form-group col col-sd-4">
                                                 <label class="control-label">Direccion</label>
-                                                <input class="form-control" value="  @Html.DisplayFor(model => model.user.Address)" disabled>
+                                                <input class="form-control" value="  @Html.DisplayFor(model => model.User.Address)" disabled>
                                             </div>
                                             <div class="form-group col col-sd-1">
                                                 <label class="control-label">
-                                                    @Html.DisplayNameFor(model => model.user.IsActive)
+                                                    @Html.DisplayNameFor(model => model.User.IsActive)
                                                     <br />
-                                                    @if (Html.DisplayTextFor(model => model.user.IsActive).Equals("True"))
+                                                    @if (Html.DisplayTextFor(model => model.User.IsActive).Equals("True"))
                                                     {
                                                         <input checked="checked" class="form-control" disabled="disabled" type="checkbox">
                                                     }
@@ -86,11 +86,11 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-4">
-                                                @if (!string.IsNullOrEmpty(Model.user.PhotoPath))
+                                                @if (!string.IsNullOrEmpty(Model.User.PhotoPath))
                                                 {
                                                     <br />
                                                     <br />
-                                                    <img src="@Url.Content(Model.user.PhotoPath)" alt="Image" class="img-fluid" />
+                                                    <img src="@Url.Content(Model.User.PhotoPath)" alt="Image" class="img-fluid" />
                                                 }
                                             </div>
                                         </div>
@@ -100,8 +100,8 @@
                         </div>
                     </div>
                     <div class="card-footer ">
-                        <a asp-action="EditUser" asp-route-id="@Model.user.Id" class="btn btn-warning col-sm-2"> Editar</a>
-                        <a asp-action="AddUserRole" asp-route-id="@Model.user.Id" class="btn btn-primary col-sm-2"><i class="oi oi-plus" style="color:white"></i> Peril</a>
+                        <a asp-action="EditUser" asp-route-id="@Model.User.Id" class="btn btn-warning col-sm-2"> Editar</a>
+                        <a asp-action="AddUserRole" asp-route-id="@Model.User.Id" class="btn btn-primary col-sm-2"><i class="oi oi-plus" style="color:white"></i> Peril</a>
                         <a asp-action="IndexUsers" class="btn btn-success col-sm-2 ">Listado</a>
                     </div>
                 </div>
@@ -130,14 +130,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach (var item in Model.roles.OrderBy(d => d.Name))
+                                        @foreach (var item in Model.Roles.OrderBy(d => d.Name))
                                         {
                                             <tr>
                                                 <td>
                                                     @Html.DisplayFor(modelItem => item.Name)
                                                 </td>
                                                 <td>
-                                                    <button data-email="@Model.user.Email" data-name="@item.Name" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                    <button data-email="@Model.User.Email" data-name="@item.Name" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
                                                 </td>
                                             </tr>
                                         }

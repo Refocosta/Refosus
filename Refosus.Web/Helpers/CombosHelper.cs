@@ -167,6 +167,25 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+        public IEnumerable<SelectListItem> GetComboUserActive()
+        {
+            List<SelectListItem> list = _context.Users
+                .Where(u=>u.IsActive==true)
+                 .OrderBy(t => t.FirstName)
+                 .Select(t =>
+               new SelectListItem
+               {
+                   Text = t.FullName,
+                   Value = $"{t.Id}"
+               })
+                 .ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Text = "[Seleccione un Usuario]",
+                Value = "0"
+            });
+            return list;
+        }
         public IEnumerable<SelectListItem> GetComboDocumentType()
         {
             List<SelectListItem> list = _context.DocumentTypes
@@ -204,6 +223,52 @@ namespace Refosus.Web.Helpers
             });
             return list;
         }
+
+        public IEnumerable<SelectListItem> GetGroupsUser(string user)
+        {
+            List<SelectListItem> list = _context.TM_User_Groups
+                .Include(g=>g.Group)
+                .Include(g=>g.User)
+                .Where(u => u.User.Id == user)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Group.Name,
+                  Value = $"{t.Group.Id}"
+              })
+                .ToList();
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetGroupsActive()
+        {
+            List<SelectListItem> list = _context.TM_User_Groups
+                .Include(g => g.Group)
+                .Include(g => g.User)
+                .Where(u => u.Group.Stade == true)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Group.Name,
+                  Value = $"{t.Group.Id}"
+              })
+                .ToList();
+            return list;
+        }
+        public IEnumerable<SelectListItem> GetGroups()
+        {
+            List<SelectListItem> list = _context.TM_User_Groups
+                .Include(g => g.Group)
+                .Include(g => g.User)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Group.Name,
+                  Value = $"{t.Group.Id}"
+              })
+                .ToList();
+            return list;
+        }
+
         #endregion
         #region Shopping
         public IEnumerable<SelectListItem> GetComboShoppingState()

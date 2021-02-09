@@ -15,8 +15,12 @@ namespace Refosus.Web.Helpers
         IEnumerable<SelectListItem> GetComboMessageState();
         IEnumerable<SelectListItem> GetComboMessageBillState();
         IEnumerable<SelectListItem> GetComboUser();
+        IEnumerable<SelectListItem> GetComboUserActive();
         IEnumerable<SelectListItem> GetComboCeCo(int comp);
         IEnumerable<SelectListItem> GetComboDocumentType();
+        IEnumerable<SelectListItem> GetGroupsUser(string user);
+        IEnumerable<SelectListItem> GetGroupsActive();
+        IEnumerable<SelectListItem> GetGroups();
         #region Shopping
         IEnumerable<SelectListItem> GetComboShoppingCategory();
         IEnumerable<SelectListItem> GetComboShoppingCategory(int sub);

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
@@ -33,6 +34,16 @@ namespace Refosus.Web.Helpers
         public async Task<IdentityResult> ChangePasswordAsync(UserEntity user, string oldPassword, string newPassword)
         {
             return await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        }
+
+        public async Task<IdentityResult> ChangePasswordAllUserAsync(UserEntity user, string token, string newPassword)
+        {
+            return await _userManager.ResetPasswordAsync(user, token, newPassword);
+        }
+
+        public async Task<string> GenerateTokenChangePasswordAllAsync(UserEntity user)
+        {
+            return await _userManager.GeneratePasswordResetTokenAsync(user);
         }
 
         public async Task<IdentityResult> UpdateUserAsync(UserEntity user)
@@ -142,10 +153,26 @@ namespace Refosus.Web.Helpers
                 .ToListAsync();
         }
 
-        public Task<List<RoleEntity>> GetRoles()
+        public async Task<List<RoleEntity>> GetRoles()
         {
-            throw new System.NotImplementedException();
+            return await _roleManager.Roles
+                .ToListAsync();
         }
+
+        public IEnumerable<SelectListItem> GetRolesCombo()
+        {
+            List<SelectListItem> list = _roleManager.Roles
+                .Where(r => r.IsActive == true)
+                .Select(t =>
+              new SelectListItem
+              {
+                  Text = t.Name,
+                  Value = $"{t.Id}"
+              })
+                .ToList();
+            return list;
+        }
+
 
 
     }

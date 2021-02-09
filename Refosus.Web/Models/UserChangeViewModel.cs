@@ -12,9 +12,11 @@ namespace Refosus.Web.Models
     public class UserChangeViewModel : UserEntity
     {
         [Display(Name = "Compañia")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una compañia.")]
         public int CompanyId { get; set; }
 
         [Display(Name = "Tipo de Documento")]
+        [Range(1, int.MaxValue, ErrorMessage = "Debe seleccionar una compañia.")]
         public int DocumentTypeId { get; set; }
 
 

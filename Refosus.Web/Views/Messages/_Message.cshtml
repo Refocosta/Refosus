@@ -1,5 +1,40 @@
 ﻿@model Refosus.Web.Models.MessageViewModel
 <div class="row">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="text-danger">
+        @ViewBag.Mensaje
+    </div>
+</div>
+<div class="row">
+    <input type="hidden" asp-for="CreateDate" />
+    <input type="hidden" asp-for="StateIdOld" />
+    <input type="hidden" asp-for="UserTrn" />
+    <input type="hidden" asp-for="CreateUser" />
+    <input type="hidden" asp-for="Operation" />
+    <div class="form-group col col-sm-4">
+        <label asp-for="Id" class="control-label">Consecutivo</label>
+        <input asp-for="Id" class="form-control" disabled />
+        <span asp-validation-for="Id" class="text-danger"></span>
+    </div>
+    <div class="form-group col col-sm-4">
+        <label asp-for="CompanyId" class="control-label"></label>
+        <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control" disabled></select>
+        <span asp-validation-for="CompanyId" class="text-danger"></span>
+    </div>
+    <div class="form-group col col-sm-4">
+        <label asp-for="StateId" class="control-label"></label>
+        @if (User.IsInRole("MessageChangeState")|| User.IsInRole("Administrator"))
+        {
+            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control"></select>
+        }
+        else
+        {
+            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control" disabled></select>
+        }
+        <span asp-validation-for="StateId" class="text-danger"></span>
+    </div>
+</div>
+<div class="row">
     <div class="col col-sm-4">
         <label asp-for="Sender" class="control-label"></label>
         <input asp-for="Sender" class="form-control" disabled />
@@ -55,10 +90,22 @@
             <input asp-for="NumberBill" class="form-control" />
             <span asp-validation-for="NumberBill" class="text-danger"></span>
         </div>
+        <div class="col col-sm-4">
+            <label asp-for="Value" class="control-label"></label>
+            <input asp-for="Value" class="form-control" />
+            <span asp-validation-for="Value" class="text-danger"></span>
+        </div>
     </div>
 }
-<div class="form-group col-sm-12">
-    <label asp-for="Transaction.Observation" class="control-label"></label>
-    <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
-    <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
+<div class="row">
+    <div class="form-group col-sm-6">
+        <label asp-for="Observation" class="control-label"></label>
+        <textarea asp-for="Observation" class="form-control"></textarea>
+        <span asp-validation-for="Observation" class="text-danger"></span>
+    </div>
+    <div class="form-group col-sm-6">
+        <label asp-for="Transaction.Observation" class="control-label"></label>
+        <textarea asp-for="Transaction.Observation" class="form-control"></textarea>
+        <span asp-validation-for="Transaction.Observation" class="text-danger"></span>
+    </div>
 </div>

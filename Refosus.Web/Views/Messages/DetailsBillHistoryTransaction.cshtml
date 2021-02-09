@@ -3,17 +3,6 @@
     ViewData["Title"] = "DetailsBillHistoryTransaction";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-
-
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Detalles</h1>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -26,45 +15,10 @@
                         </div>
                     </div>
                     <div class="card-body">
-
-
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
-                            </div>
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.UserCreate)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.UserCreate.FullName)" disabled>
-                            </div>
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.UserUpdate)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.UserUpdate.FullName)" disabled>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.StateCreate)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.StateCreate.Name)" disabled>
-                            </div>
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.StateUpdate)</label>
-                                <input class="form-control" value="  @Html.DisplayFor(model => model.StateUpdate.Name)" disabled>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col col-sd-6">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.Observation)</label>
-                                <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Observation)</textarea>
-                            </div>
-                            <div class="form-group col col-sd-6">
-                                <label class="control-label">@Html.DisplayNameFor(model => model.Description)</label>
-                                <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Description)</textarea>
-                            </div>
-                        </div>
-                        <div class="card-footer ">
-                            <a asp-action="DetailsBillHistoryMessage" asp-route-id="@Model.Message.Id" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                        </div>
+                        <partial name="_DetailsMessageTransaction" />
+                    </div>
+                    <div class="card-footer ">
+                        <a asp-action="DetailsBillHistoryMessage" asp-route-id="@Model.Message.Id" class="btn btn-danger col-sm-2 ">Cancelar</a>
                     </div>
                 </div>
             </section>

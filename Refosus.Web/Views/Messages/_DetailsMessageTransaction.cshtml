@@ -1,0 +1,35 @@
+﻿@model Refosus.Web.Data.Entities.MessagetransactionEntity
+<div class="row">
+    <div class="form-group col col-sd-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
+        <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
+    </div>
+    <div class="form-group col col-sd-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.UserCreate)</label>
+        <input class="form-control" value="  @Html.DisplayFor(model => model.UserCreate.FullName)" disabled>
+    </div>
+    <div class="form-group col col-sd-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.UserUpdate)</label>
+        <input class="form-control" value="  @Html.DisplayFor(model => model.UserUpdate.FullName)" disabled>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col col-sd-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.StateCreate)</label>
+        <input class="form-control" value="  @Html.DisplayFor(model => model.StateCreate.Name)" disabled>
+    </div>
+    <div class="form-group col col-sd-4">
+        <label class="control-label">@Html.DisplayNameFor(model => model.StateUpdate)</label>
+        <input class="form-control" value="  @Html.DisplayFor(model => model.StateUpdate.Name)" disabled>
+    </div>
+</div>
+<div class="row">
+    <div class="form-group col col-sd-6">
+        <label class="control-label">@Html.DisplayNameFor(model => model.Observation)</label>
+        <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Observation)</textarea>
+    </div>
+    <div class="form-group col col-sd-6">
+        <label class="control-label">@Html.DisplayNameFor(model => model.Description)</label>
+        <textarea class="form-control" disabled>@Html.DisplayFor(model => model.Description)</textarea>
+    </div>
+</div>

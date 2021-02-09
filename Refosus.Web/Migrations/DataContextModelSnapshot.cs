@@ -446,6 +446,9 @@ namespace Refosus.Web.Migrations
                     b.Property<string>("NumberBill")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Observation")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Reference")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
@@ -482,6 +485,9 @@ namespace Refosus.Web.Migrations
 
                     b.Property<string>("UserSenderId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -769,14 +775,23 @@ namespace Refosus.Web.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AssignedGroupId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("CreateGroupId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<int?>("StateId")
                         .HasColumnType("int");
+
+                    b.Property<double>("TotalValue")
+                        .HasColumnType("float");
 
                     b.Property<DateTime>("UpdateDate")
                         .HasColumnType("datetime2");
@@ -790,7 +805,14 @@ namespace Refosus.Web.Migrations
                     b.Property<string>("UserProjectBossId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("observations")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AssignedGroupId");
+
+                    b.HasIndex("CreateGroupId");
 
                     b.HasIndex("ProjectId");
 
@@ -821,6 +843,9 @@ namespace Refosus.Web.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("FullCost")
+                        .HasColumnType("float");
+
                     b.Property<string>("InternalOrder")
                         .HasColumnType("nvarchar(max)");
 
@@ -836,14 +861,23 @@ namespace Refosus.Web.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int>("QuantityDelivered")
+                        .HasColumnType("int");
+
                     b.Property<string>("Refence")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ShopingId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("StateId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("SubCategoryId")
                         .HasColumnType("int");
+
+                    b.Property<double>("UnitCost")
+                        .HasColumnType("float");
 
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
@@ -855,6 +889,8 @@ namespace Refosus.Web.Migrations
                     b.HasIndex("MeasureId");
 
                     b.HasIndex("ShopingId");
+
+                    b.HasIndex("StateId");
 
                     b.HasIndex("SubCategoryId");
 
@@ -896,6 +932,9 @@ namespace Refosus.Web.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(20)")
                         .HasMaxLength(20);
+
+                    b.Property<bool>("State")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -948,6 +987,9 @@ namespace Refosus.Web.Migrations
                     b.Property<int?>("UnitId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserCreateId")
                         .HasColumnType("nvarchar(450)");
 
@@ -983,6 +1025,140 @@ namespace Refosus.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ShoppingUnits");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TM_User_GroupEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TM_User_Groups");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_GroupEntity", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Stade")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("TP_Groups");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_Shoping_Item_StateEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("State")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TP_Shoping_Item_State");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_Shopping_ArticleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodSAP")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InternalOrder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Mark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MeasureId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NumInternalOrder")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Refence")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("MeasureId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.HasIndex("UnitId");
+
+                    b.ToTable("TP_Shopping_Article");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_Shopping_Usu_Apr_GroEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Group")
+                        .HasColumnType("int");
+
+                    b.Property<string>("User")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TP_Shopping_Usu_Apr_Gro");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.UserEntity", b =>
@@ -1317,6 +1493,14 @@ namespace Refosus.Web.Migrations
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.ShoppingEntity", b =>
                 {
+                    b.HasOne("Refosus.Web.Data.Entities.TP_GroupEntity", "AssignedGroup")
+                        .WithMany()
+                        .HasForeignKey("AssignedGroupId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.TP_GroupEntity", "CreateGroup")
+                        .WithMany()
+                        .HasForeignKey("CreateGroupId");
+
                     b.HasOne("Refosus.Web.Data.Entities.ProjectEntity", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId");
@@ -1351,6 +1535,10 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.ShoppingEntity", "Shoping")
                         .WithMany("Items")
                         .HasForeignKey("ShopingId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.TP_Shoping_Item_StateEntity", "State")
+                        .WithMany()
+                        .HasForeignKey("StateId");
 
                     b.HasOne("Refosus.Web.Data.Entities.ShoppingCategoryEntity", "SubCategory")
                         .WithMany()
@@ -1395,6 +1583,43 @@ namespace Refosus.Web.Migrations
                     b.HasOne("Refosus.Web.Data.Entities.UserEntity", "UserCreate")
                         .WithMany()
                         .HasForeignKey("UserCreateId");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TM_User_GroupEntity", b =>
+                {
+                    b.HasOne("Refosus.Web.Data.Entities.TP_GroupEntity", "Group")
+                        .WithMany("Users")
+                        .HasForeignKey("GroupId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.UserEntity", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_GroupEntity", b =>
+                {
+                    b.HasOne("Refosus.Web.Data.Entities.CompanyEntity", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.TP_Shopping_ArticleEntity", b =>
+                {
+                    b.HasOne("Refosus.Web.Data.Entities.ShoppingCategoryEntity", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.ShoppingMeasureEntity", "Measure")
+                        .WithMany()
+                        .HasForeignKey("MeasureId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.ShoppingCategoryEntity", "SubCategory")
+                        .WithMany()
+                        .HasForeignKey("SubCategoryId");
+
+                    b.HasOne("Refosus.Web.Data.Entities.ShoppingUnitEntity", "Unit")
+                        .WithMany()
+                        .HasForeignKey("UnitId");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.UserEntity", b =>

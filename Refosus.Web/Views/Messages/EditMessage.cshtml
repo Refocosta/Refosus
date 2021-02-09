@@ -35,34 +35,6 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <div class="row">
-                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                        <div class="text-danger">
-                                            @ViewBag.Mensaje
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <input type="hidden" asp-for="CreateDate" />
-                                        <input type="hidden" asp-for="StateIdOld" />
-                                        <input type="hidden" asp-for="UserTrn" />
-                                        <input type="hidden" asp-for="CreateUser" />
-                                        <input type="hidden" asp-for="Operation" />
-                                        <div class="form-group col col-sm-4">
-                                            <label asp-for="Id" class="control-label">Consecutivo</label>
-                                            <input asp-for="Id" class="form-control" disabled />
-                                            <span asp-validation-for="Id" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group col col-sm-4">
-                                            <label asp-for="CompanyId" class="control-label"></label>
-                                            <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control" disabled></select>
-                                            <span asp-validation-for="CompanyId" class="text-danger"></span>
-                                        </div>
-                                        <div class="form-group col col-sm-4">
-                                            <label asp-for="StateId" class="control-label"></label>
-                                            <select asp-for="StateId" asp-items="Model.MessageState" class="form-control" disabled></select>
-                                            <span asp-validation-for="StateId" class="text-danger"></span>
-                                        </div>
-                                    </div>
                                     <partial name="_Message" />
                                 </div>
                                 <div class="col-sm-5">
@@ -76,7 +48,7 @@
                                     {
                                         if (Model.Type.Name == "Factura")
                                         {
-                                            if (Model.State.Name != "Tramitado")
+                                            if (Model.State.Name != "Tramitado" || User.IsInRole("MessageChangeState"))
                                             {
                                                 <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh" />
                                                 if (User.IsInRole("MessageBillChecker") || User.IsInRole("Administrator"))
@@ -106,7 +78,7 @@
                                         }
                                         else
                                         {
-                                            if (Model.State.Name != "Tramitado" && Model.State.Name != "Rechazado" && Model.State.Name != "Recibido")
+                                            if (Model.State.Name != "Tramitado" && Model.State.Name != "Rechazado" && Model.State.Name != "Recibido"|| User.IsInRole("MessageChangeState"))
                                             {
                                                 <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnRefresh2" />
                                             }
@@ -131,14 +103,13 @@
                             </div>
                         </div>
                     </div>
-                    <partial name="_AuthorizeMessageDialog" />
-                    <partial name="_Bill" />
                     <partial name="_CheckMessageDialog" />
-                    <partial name="_CloseMessagePackage" />
-                    <partial name="_CloseMessageDialog" />
-                    <partial name="_ProcessMessageDialog" />
-                    <partial name="_ReceiveCtrMessageDialog" />
+                    <partial name="_AuthorizeMessageDialog" />
                     <partial name="_RefuseMessageDialog" />
+                    <partial name="_ProcessMessageDialog" />
+                    <partial name="_Bill" />
+                    <partial name="_CloseMessagePackage" />
+                    <partial name="_ReceiveCtrMessageDialog" />
                 </form>
             </section>
         </div>
@@ -150,7 +121,6 @@
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         });
-        document.getElementById("StateId").disabled = true;
         document.getElementById("StateIdOld").value = document.getElementById("StateId").value;
         $(document).ready(function () {
             //Guardar
@@ -232,4 +202,4 @@
             document.getElementById("TypeId").disabled = false;
         };
     </script>
-}}
+}

@@ -3,15 +3,6 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-12">
-                <h1>Editar Menu</h1>
-            </div>
-        </div>
-    </div>
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -30,7 +21,6 @@
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <input type="hidden" asp-for="Id" />
                                     <input type="hidden" asp-for="LogoPath" />
-
                                     <partial name="_Menu" />
                                 </div>
                             </div>
@@ -45,7 +35,7 @@
                         </div>
                         <div class="card-footer ">
                             <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" />
-                            <a asp-action="Index"  class="btn btn-success col-sm-2 ">Listado</a>
+                            <a asp-action="Index" class="btn btn-success col-sm-2 ">Listado</a>
                         </div>
                     </div>
                 </form>
@@ -53,8 +43,6 @@
         </div>
     </div>
 </section>
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
-

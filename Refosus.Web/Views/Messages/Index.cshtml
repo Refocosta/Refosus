@@ -100,7 +100,7 @@
                                                     @Html.DisplayFor(modelItem => item.MessageFiles.Count)
                                                 </td>
                                                 <td>
-                                                    @if (item.State.Name != "Tramitado" && item.State.Name != "Recibido")
+                                                    @if (item.State.Name != "Tramitado" && item.State.Name != "Recibido" || User.IsInRole("MessageChangeState"))
                                                     {
                                                         <a asp-action="EditMessage" asp-route-id="@item.Id" class="btn btn-warning"><i class="oi oi-pencil" style="color:white"></i></a>
                                                     }

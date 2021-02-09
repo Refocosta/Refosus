@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
 using System;
@@ -18,7 +19,9 @@ namespace Refosus.Web.Helpers
         Task<UserEntity> GetUserAsync(Guid userId);
         Task<UserEntity> GetUserByIdAsync(string id);
         Task<IdentityResult> ChangePasswordAsync(UserEntity user, string oldPassword, string newPassword);
-        Task<IdentityResult> UpdateUserAsync(UserEntity user);
+        Task<IdentityResult> ChangePasswordAllUserAsync(UserEntity user, string token, string newPassword);
+        Task<string> GenerateTokenChangePasswordAllAsync(UserEntity user);
+        Task<IdentityResult>  UpdateUserAsync(UserEntity user);
         #endregion
 
         #region Cuenta
@@ -37,6 +40,7 @@ namespace Refosus.Web.Helpers
 
         #region Roles
         Task<List<RoleEntity>> GetRoles();
+        IEnumerable<SelectListItem> GetRolesCombo();
         Task CheckRoleAsync(string roleName);
         Task<RoleEntity> GetRoleByIdAsync(string id);
         Task RemoveRoleAsync(RoleEntity role);

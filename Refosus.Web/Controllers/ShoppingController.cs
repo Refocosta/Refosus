@@ -257,9 +257,9 @@ namespace Refosus.Web.Controllers
             model.UserCreate = await _context.Users.FirstOrDefaultAsync(u => u.Id == model.IdUserCreate);
             model.Project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == model.IdProject);
             model.State = await _context.ShoppingStates.FirstOrDefaultAsync(s => s.Id == model.IdState);
-            model.Items = _context.ShoppingItems.Where(i => i.Shoping == entity);
             ShoppingEntity entity = await _converterHelper.ToShoppingEntityAsync(model, false);
-            
+            model.Items = _context.ShoppingItems.Where(i => i.Shoping == entity);
+
             //Guardar
             if (model.Operation == 1)
             {

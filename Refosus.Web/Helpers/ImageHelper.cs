@@ -21,5 +21,19 @@ namespace Refosus.Web.Helpers
             }
             return $"~/images/{folder}/{file}";
         }
+        public async Task<string> UploadImageAsync(IFormFile imageFile, string folder,string name)
+        {
+            string guid = Guid.NewGuid().ToString();
+            string file = $"{name}.jpg";
+            string path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                $"wwwroot\\images\\{folder}",
+                file);
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+            return $"~/images/{folder}/{file}";
+        }
     }
 }

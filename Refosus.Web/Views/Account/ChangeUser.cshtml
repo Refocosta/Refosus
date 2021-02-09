@@ -10,54 +10,126 @@
 </section>
 <section class="content">
     <div class="container-fluid">
-        <div class="row">
-            <section class="col-lg-12 connectedSortable">
-                <div class="row">
-                    <div class="form-group col col-sm-4">
-                        <label asp-for="DocumentTypeId" class="control-label"></label>
-                        <select asp-for="DocumentTypeId" asp-items="Model.DocumentTypes" class="form-control"></select>
-                        <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label asp-for="Document" class="control-label">Documento</label>
-                        <input asp-for="Document" class="form-control" />
-                        <span asp-validation-for="Document" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-sm-4">
-                        <label class="control-label">Usuario</label>
-                        <input asp-for="UserName" class="form-control" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+        <form asp-action="ChangeUser" enctype="multipart/form-data">
+            <div class="card card-blue">
+                <div class="card-header">
+                    <a class="card-title">Actualizacion de datos</a>
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col-sm-4">
-                        <label asp-for="FirstName" class="control-label"></label>
-                        <input asp-for="FirstName" class="form-control" />
-                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            @if (!string.IsNullOrEmpty(Model.PhotoPath))
+                            {
+                                <img src="@Url.Content(Model.PhotoPath)" alt="Image" class="img-fluid brand-image img-circle elevation-3 " />
+                            }
+                        </div>
+                        <div class="col-sm-10">
+
+                            <div asp-validation-summary="ModelOnly" class="warning text-warning"></div>
+                            <div class="row">
+                                <div class="form-group col col-sm-4">
+                                    <label asp-for="DocumentTypeId" class="control-label"></label>
+                                    <select asp-for="DocumentTypeId" asp-items="Model.DocumentTypes" class="form-control" disabled></select>
+                                    <span asp-validation-for="DocumentTypeId" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="Document" class="control-label">Documento</label>
+                                    <input asp-for="Document" class="form-control" disabled />
+                                    <span asp-validation-for="Document" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label class="control-label">Usuario</label>
+                                    <input asp-for="UserName" class="form-control" disabled />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="FirstName" class="control-label"></label>
+                                    <input asp-for="FirstName" class="form-control" />
+                                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="LastName" class="control-label"></label>
+                                    <input asp-for="LastName" class="form-control" />
+                                    <span asp-validation-for="LastName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col col-sm-4">
+                                    <label asp-for="CompanyId" class="control-label"></label>
+                                    <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control" disabled></select>
+                                    <span asp-validation-for="CompanyId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="Email" class="control-label"></label>
+                                    <input asp-for="Email" class="form-control" disabled />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="Address" class="control-label"></label>
+                                    <input asp-for="Address" class="form-control" />
+                                    <span asp-validation-for="Address" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label asp-for="PhoneNumber" class="control-label"></label>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group col-sm-4">
-                        <label asp-for="LastName" class="control-label"></label>
-                        <input asp-for="LastName" class="form-control" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    <div class="row">
+                        <div class="col col-sm-2">
+                        </div>
+                        <div class="col col-sm-2">
+                            <div class="form-group col-sm-12">
+                                <label asp-for="PictureFile" class="control-label"></label>
+                                <input asp-for="PictureFile" type="file" class="form-control" />
+                                <span asp-validation-for="PictureFile" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-sm-2">
+                            <a class="btn btn-secondary mb-2" asp-area="" asp-controller="Account" asp-action="ChangePassword">Cambiar contraseña</a>
+                        </div>
+                        <div class="col col-sm-2">
+                            <button id="btnGuardar" type="submit" class="btn btn-success mb-2">Guardar cambios</button>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="form-group col-sm-4">
-                        <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" class="form-control" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col col-sm-4">
-                        <label asp-for="CompanyId" class="control-label"></label>
-                        <select asp-for="CompanyId" asp-items="Model.Companies" class="form-control"></select>
-                        <span asp-validation-for="CompanyId" class="text-danger"></span>
-                    </div>
-            </section>
-        </div>
+                <div class="card-footer">
+
+                </div>
+            </div>
+        </form>
     </div>
 </section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
 
+        $("#btnGuardar").click(function () {
+            btnActive();
+        });
 
+        function btnActive() {
+            document.getElementById("DocumentTypeId").disabled = false
+            document.getElementById("Document").disabled = false
+            document.getElementById("UserName").disabled = false
+            document.getElementById("FirstName").disabled = false
+            document.getElementById("LastName").disabled = false
+            document.getElementById("CompanyId").disabled = false
+            document.getElementById("Email").disabled = false
+            document.getElementById("Address").disabled = false
+            document.getElementById("PhoneNumber").disabled = false
+        };
+    </script>
+}
 
 
 
