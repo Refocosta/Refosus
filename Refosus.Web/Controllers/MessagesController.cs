@@ -255,7 +255,7 @@ namespace Refosus.Web.Controllers
                     "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia. <br/> Por favor no responda este mensaje. <br/>" +
                     " <br/> Hola. <br/> " +
                     "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, con referencia <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                    messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                    messageEntity.Id + ",</strong> con Remitente  <strong>" + messageEntity.Sender + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
                     "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
                     "Usted recibió este mensaje automático por que le fue asignado un documento, " +
                     "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
@@ -388,7 +388,7 @@ namespace Refosus.Web.Controllers
                     "Mensaje enviado automáticamente por Nativa - Módulo de Correspondencia. <br/> Por favor no responda este mensaje. <br/>" +
                     " <br/> Hola. <br/> " +
                     "Se ha creado el registro de tipo <strong>" + messageEntity.Type.Name + "</strong>, con referencia <strong>" + messageEntity.Reference + "</strong> con número de radicado <strong>" +
-                    messageEntity.Id + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
+                    messageEntity.Id + ",</strong> con Remitente <strong>" + messageEntity.Sender + ".</strong> Recibido por <strong>" + messagetransactionEntity.UserCreate.FullName + "</strong> y asignado a <strong>" + messagetransactionEntity.UserUpdate.FullName + ".</strong> <br/> " +
                     "Ingrese a http://nativa.refocosta.com para revisar el registro. <br/> <br/> " +
                     "Usted recibió este mensaje automático por que le fue asignado un documento, " +
                     "factura y / o paquete en el sistema de información NATIVA. Por favor ingrese con su " +
