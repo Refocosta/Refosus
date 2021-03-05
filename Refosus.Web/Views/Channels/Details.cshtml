@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "CRM | CANALES";
+}
+<div class="container col-md-10">
+    <br />
+    <a asp-controller="Channels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Detalles</h3></center>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="detailsId" key="@ViewBag.Id" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Nombre</label>
+                    <input id="nameDetails" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha de creación</label>
+                    <input id="createdDetails" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha de ultima actualización</label>
+                    <input id="updatedDetails" type="text" class="form-control" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<partial name="_DeleteDialog" />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js" ></script>
+    <script src="~/js/Channels.js"></script>
+}

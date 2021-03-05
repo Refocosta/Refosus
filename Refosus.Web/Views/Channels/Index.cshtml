@@ -1,0 +1,36 @@
+﻿@{ 
+    ViewData["Title"] = "CRM | CANALES";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container col-md-10">
+    <br />
+    <a asp-controller="Channels" asp-action="Create"  class="btn btn-outline-info" role="button" >Agregar nuevos canales</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Lista de canales</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Estado</th>
+                        <th>Fecha de creacion</th>
+                        <th>Ver</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="crmchannels">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<partial name="_DeleteDialog" />
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js" ></script>
+    <script src="~/js/Channels.js" ></script>
+}
