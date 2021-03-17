@@ -1,14 +1,14 @@
-﻿@{ 
-    ViewData["Title"] = "CRM | CANALES";
+﻿@{
+    ViewData["Title"] = "CRM | TIPOS DE CANALES";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <div class="container col-md-11">
     <br />
-    <a asp-controller="Channels" asp-action="Create"  class="btn btn-outline-info" role="button" >Agregar nuevos canales</a>
-    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-info" role="button" >Tipos de canales</a>
+    <a asp-controller="Channels" asp-action="Index" class="btn btn-outline-primary" role="button" >Atras</a>
+    <a asp-controller="TypesChannels" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevos tipos</a>
     <div class="card mt-2">
         <div class="card-header">
-            <center><h3>Lista de canales</h3></center>
+            <center><h3>Lista de categorias de canales</h3></center>
         </div>
         <div class="card-body table-responsive">
             <table class="table">
@@ -23,7 +23,7 @@
                         <th>Eliminar</th>
                     </tr>
                 </thead>
-                <tbody id="crmchannels">
+                <tbody id="typesChannels">
                 </tbody>
             </table>
         </div>
@@ -31,6 +31,6 @@
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/Fetch.js" ></script>
-    <script src="~/js/Channels.js" ></script>
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesChannels.js"></script>
 }

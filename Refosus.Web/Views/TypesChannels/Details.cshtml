@@ -4,7 +4,7 @@
 }
 <div class="container col-md-11">
     <br />
-    <a asp-controller="Channels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
     <div class="card mt-2">
         <div class="card-header">
             <center><h3>Detalles</h3></center>
@@ -25,11 +25,16 @@
                     <input id="updatedDetails" type="text" class="form-control" readonly />
                 </div>
             </div>
+            <hr />
+            <div class="row mt-2" >
+                <div id="channelsList" class="col-md-6">
+                </div>
+            </div>
         </div>
     </div>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/Fetch.js" ></script>
-    <script src="~/js/Channels.js"></script>
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesChannels.js"></script>
 }

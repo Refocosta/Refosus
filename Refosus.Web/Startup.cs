@@ -21,6 +21,7 @@ namespace Refosus.Web
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc().AddRazorRuntimeCompilation();
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/Account/NotAuthorized";

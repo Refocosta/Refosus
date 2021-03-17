@@ -1,7 +1,37 @@
-﻿<div class="container" >
-    <div class="mt-2" >
-        <center><h3>SITE GOOGLE</h3></center>
-        <iframe src="https://accounts.google.com/ServiceLogin/signinchooser?passive=1209600&continue=https%3A%2F%2Fsites.google.com%2Frefocosta.com%2Fsgirfc%2Finicio&followup=https%3A%2F%2Fsites.google.com%2Frefocosta.com%2Fsgirfc%2Finicio&flowName=GlifWebSignIn&flowEntry=ServiceLogin" ></iframe>
-        <iframe src="https://www.refocosta.com/"></iframe>
+﻿@{
+    ViewData["Title"] = "CRM | CONTACTOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <a asp-controller="Contacts" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevos contactos</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Lista de contactos</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Celular</th>
+                        <th>Email</th>
+                        <th>Estado</th>
+                        <th>Fecha de creacion</th>
+                        <th>Detalles</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody id="crmContacts">
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Contacts.js"></script>
+}

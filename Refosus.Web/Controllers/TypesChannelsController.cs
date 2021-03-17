@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
-    public class ContactsController : Controller
+    public class TypesChannelsController : Controller
     {
         public IActionResult Index()
         {

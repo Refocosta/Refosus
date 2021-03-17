@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "CRM | CANALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Crea un nuevo tipo</h3></center>
+        </div>
+        <div class="card-body">
+            <form id="typesChannelsform">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Nombre</label>
+                        <input id="name" type="text" placeholder="Nombre..." class="form-control" required />
+                    </div>
+                    <div class="col-md-6" >
+                        <label>Selecciona a que canal pertenece</label>
+                        <select id="channels" class="form-control" required="required" >
+                            <option value="" >-- CANALES --</option>
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-outline-success">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesChannels.js"></script>
+}
+

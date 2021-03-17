@@ -1,7 +1,8 @@
 ﻿@{
     ViewData["Title"] = "CRM | CANALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
-<div class="container col-md-10">
+<div class="container col-md-11">
     <br />
     <a asp-controller="Channels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
     <div class="card mt-2">
@@ -22,7 +23,6 @@
         </div>
     </div>
 </div>
-<partial name="_DeleteDialog" />
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/Fetch.js"></script>
