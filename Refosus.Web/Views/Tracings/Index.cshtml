@@ -4,14 +4,40 @@
 }
 <div class="container col-md-11">
     <br />
-    <a asp-controller="#" asp-action="#" class="btn btn-outline-info" role="button">Agregar nuevo seguimiento</a>
-    <a asp-controller="TypesObservations" asp-action="Index" class="btn btn-outline-info" role="button" >Tipos de observaciones</a>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Seguimientos</li>
+        </ol>
+    </nav>
+    <a asp-controller="Tracings" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevo seguimiento</a>
+    <a asp-controller="TypesObservations" asp-action="Index" class="btn btn-outline-info" role="button">Tipos de observaciones</a>
+    <a asp-controller="Tasks" asp-action="Index" class="btn btn-outline-info" role="button">Tareas</a>
     <div class="card mt-2">
         <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
             <center><h3>Seguimientos</h3></center>
         </div>
-        <div class="card-body" >
-
+        <div class="card-body table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Contacto</th>
+                        <th>Fecha</th>
+                        <th>Detalles</th>
+                    </tr>
+                </thead>
+                <tbody id="tracings">
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Tracings.js"></script>
+}

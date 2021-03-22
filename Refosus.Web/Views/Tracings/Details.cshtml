@@ -1,10 +1,10 @@
 ﻿@{
-    ViewData["Title"] = "CRM | CANALES";
+    ViewData["Title"] = "CRM | CONTACTOS";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <div class="container col-md-11">
     <br />
-    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
     <div class="card mt-2">
         <div class="card-header">
             <div class="card-tools">
@@ -16,21 +16,32 @@
             <input type="hidden" id="detailsId" key="@ViewBag.Id" />
             <div class="row">
                 <div class="col-md-4">
-                    <label>Nombre</label>
-                    <input id="nameDetails" type="text" class="form-control" readonly />
+                    <label>Contacto</label>
+                    <input id="contactDetails" type="text" class="form-control" readonly />
                 </div>
                 <div class="col-md-4">
+                    <label>Tipo de observacion</label>
+                    <input id="typeObservationDetails" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label>Canal</label>
+                    <input id="typeChannelDetails" type="text" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row mt-3" >
+                <div class="col-md-6" >
                     <label>Fecha de creación</label>
                     <input id="createdDetails" type="text" class="form-control" readonly />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label>Fecha de ultima actualización</label>
                     <input id="updatedDetails" type="text" class="form-control" readonly />
                 </div>
             </div>
-            <hr />
-            <div class="row mt-2" >
-                <div id="channelsList" class="col-md-6">
+            <div class="row mt-3" >
+                <div class="col-md-12" >
+                    <label>Observación</label>
+                    <textarea id="observationDetails" class="form-control" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -39,5 +50,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/Fetch.js"></script>
-    <script src="~/js/TypesChannels.js"></script>
+    <script src="~/js/Tracings.js"></script>
 }

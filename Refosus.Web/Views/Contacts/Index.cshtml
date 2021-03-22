@@ -4,13 +4,22 @@
 }
 <div class="container col-md-11">
     <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Contactos</li>
+        </ol>
+    </nav>
     <a asp-controller="Contacts" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevos contactos</a>
     <div class="card mt-2">
         <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
             <center><h3>Lista de contactos</h3></center>
         </div>
         <div class="card-body table-responsive">
-            <table class="table">
+            <table id="tableContacts" class="table table-striped">
                 <thead>
                     <tr>
                         <th>#</th>

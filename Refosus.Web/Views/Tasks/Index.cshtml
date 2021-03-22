@@ -4,29 +4,35 @@
 }
 <div class="container col-md-11">
     <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/Tracings">Seguimientos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tareas</li>
+        </ol>
+    </nav>
     <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
-    <a asp-controller="TypesObservations" asp-action="Create" class="btn btn-outline-info" role="button">Crear tipo de observacion</a>
+    <a asp-controller="Tasks" asp-action="Create" class="btn btn-outline-info" role="button">Añadir tarea</a>
     <div class="card mt-2">
         <div class="card-header">
             <div class="card-tools">
                 <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
             </div>
-            <center><h3>Tipos de observaciones</h3></center>
+            <center><h3>Tareas</h3></center>
         </div>
         <div class="card-body table-responsive">
             <table class="table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
+                        <th>Observacion</th>
                         <th>Estado</th>
-                        <th>Fecha de creacion</th>
+                        <th>Fecha de creación</th>
                         <th>Detalles</th>
                         <th>Editar</th>
-                        <th>Eliminar</th>
                     </tr>
                 </thead>
-                <tbody id="typesObservations">
+                <tbody id="taskList">
                 </tbody>
             </table>
         </div>
@@ -35,5 +41,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/Fetch.js"></script>
-    <script src="~/js/TypesObservations.js"></script>
+    <script src="~/js/Tasks.js"></script>
 }

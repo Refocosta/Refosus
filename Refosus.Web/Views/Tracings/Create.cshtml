@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "CRM | CONTACTOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2" >
+        <div class="card-header" >
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Crear un nuevo seguimineto</h3></center>
+        </div>
+        <div class="card-body" >
+            <form id="tracingsForm" >
+                <div class="row" >
+                    <div class="col-md-4" >
+                        <label>Contacto</label>
+                        <select id="listContacts" class="form-control" required>
+                            <option value="" >-- Contacto --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" >
+                        <label>Tipo de observacion</label>
+                        <select id="listTypesObservations" class="form-control" required>
+                            <option value="" >-- tipo de observacion --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" >
+                        <label>Canal</label>
+                        <select id="listChannels" class="form-control" required>
+                            <option value="" >-- Canal --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3" >
+                    <div class="col-md-12" >
+                        <label>Observación</label>
+                        <textarea id="observation" class="form-control" required></textarea>
+                    </div>
+                </div>
+                <hr />
+                <button class="btn btn-outline-success" >Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Tracings.js"></script>
+}

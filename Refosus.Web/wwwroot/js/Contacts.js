@@ -44,6 +44,7 @@
                             </tr>`;
                     }
                     this.disable();
+                    this.dataTable();       
                 } else {
                     toastr.error(response.message, 'Ups');
                 }
@@ -308,6 +309,29 @@
                 }
             });
         }
+    }
+
+    dataTable()
+    {
+        if (document.getElementById('tableContacts') != null) {
+            $('#tableContacts').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No hay resultados",
+                    "info": "mostrar pagina _PAGE_ de _PAGES_",
+                    "infoEmpty": "No records available",
+                    "search": "Buscar:",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                }
+            });
+        }
+        return this;
     }
 }
 (new Contacts()).index().channelsList().show().edit();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
-    public class TracingsController : Controller
+    public class TasksController : Controller
     {
         public IActionResult Index()
         {
@@ -19,6 +19,12 @@ namespace Refosus.Web.Controllers
         }
 
         public IActionResult Details(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+
+        public IActionResult Edit(int id)
         {
             ViewBag.Id = id;
             return View();
