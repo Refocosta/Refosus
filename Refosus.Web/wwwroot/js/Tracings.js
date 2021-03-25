@@ -18,6 +18,9 @@
         this.tracingsForm = document.getElementById('tracingsForm');
         // SHOW //
         this.detailsId = document.getElementById('detailsId');
+
+        // ATTRIBUTES //
+        this.tasks = [];
     }
 
     index()
@@ -75,8 +78,7 @@
                                                             ${responseChannels.message[index].Name}
                                                         </option>`;
                                     }
-                                    let task = this.storeTasks();
-                                    console.log(task);
+                                    this.storeTasks();
                                     this.save();
                                 } else {
                                     toastr.error(response.message, 'Ups');
@@ -109,7 +111,8 @@
                     "ContactsId": parseInt(contactId),
                     "TypesChannelsId": parseInt(channelId),
                     "UsersId": parseInt(1),
-                    "Observation": observation
+                    "Observation": observation,
+                    "tasks": this.tasks
                 };
                 Fetch(this.route, data, 'POST').then(response => {
                     if (!response.error) {
@@ -152,36 +155,27 @@
     {
         let moreTask = document.getElementById('moreTask');
         let i = 0;
-        let task;
+        let status = 1;
         if (moreTask != null ) {
             moreTask.addEventListener('click', () => {
                 i = i + 1;
                 document.getElementById('listTask').innerHTML += MoreTask(i);
-                task = this.addTasks();
+                let moreTask = document.getElementsByClassName('moreTask');
+                for (let index = 0; index < moreTask.length; index++) {
+                    moreTask[index].addEventListener('submit', event => {
+                        event.preventDefault();
+                        this.tasks[index] = {
+                            "Description": document.getElementsByClassName('description')[index].value,
+                            "Status": status,
+                            "DeadLine": document.getElementsByClassName('deadline')[index].value
+                        };
+                        toastr.success('Tarea añadida', 'OK');
+                    });
+                }
                 this.removeTask();
             });
         }
-        return task;
-    }
-
-    addTasks()
-    {
-        let data = [];
-        let moreTask = document.getElementsByClassName('moreTask');
-        let status = 1;
-        for (let index = 0; index < moreTask.length; index++) {
-            moreTask[index].addEventListener('submit', event => {
-                event.preventDefault();
-                for (let index = 0; index < moreTask.length; index++) {
-                    data[index] = {
-                        "Description": document.getElementsByClassName('description')[index].value,
-                        "Status": status,
-                        "DeadLine": document.getElementsByClassName('deadline')[index].value
-                    };
-                }
-                return data;
-            });
-        }
+        return this;
     }
 
     removeTask()
@@ -192,6 +186,8 @@
                 const key = removeTasks[index].getAttribute('key');
                 const child = document.getElementById('cardTask_' + key);
                 child.remove();
+                this.tasks.splice(index, 1);
+                toastr.error('Tarea removida', 'Ups');
             });
         }
     }
