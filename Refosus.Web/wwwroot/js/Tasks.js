@@ -10,6 +10,7 @@
         //ROUTES//
         this.route = "https://nativacrm.api.local/api/v1/tasks";
         this.routeTracings = "https://nativacrm.api.local/api/v1/tracings";
+        this.routeTypesTasks = "https://nativacrm.api.local/api/v1/types-tasks";
         // INDEX //
         this.taskList = document.getElementById('taskList');
         // STORE //
@@ -57,22 +58,36 @@
     store()
     {
         if (this.tasksForm != null) {
-            Fetch(this.routeTracings, null, 'GET').then(responseTracings => {
-                if (!responseTracings.error) {
-                    let tracingsList = document.getElementById('tracingsList');
-                    for (let index = 0; index < responseTracings.message.length; index++) { 
-                        if (responseTracings.message[index].Id != 1) {
-                            tracingsList.innerHTML +=
-                                `<option value="${responseTracings.message[index].Id}">
-                                ${responseTracings.message[index].Observation}
-                            </option>`;
+            Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
+                if (!responseTypesTasks.error) {
+                    Fetch(this.routeTracings, null, 'GET').then(responseTracings => {
+                        if (!responseTracings.error) {
+                            let tracingsList = document.getElementById('tracingsList');
+                            let typesTasksList = document.getElementById('typesTasksList');
+                            for (let index = 0; index < responseTracings.message.length; index++) { 
+                                if (responseTracings.message[index].Id != 1) {
+                                    tracingsList.innerHTML +=
+                                        `<option value="${responseTracings.message[index].Id}">
+                                        ${responseTracings.message[index].Observation}
+                                    </option>`;
+                                }
+                            }
+                            for (let index = 0; index < responseTypesTasks.message.length; index++) {
+                                typesTasksList.innerHTML +=
+                                    `<option value="${responseTypesTasks.message[index].Id}">
+                                        ${responseTypesTasks.message[index].Name}
+                                    </option>`;
+                            }
+                            this.save();
+                        } else {
+                            toastr.error(response.message, 'Ups');
                         }
-                    }
-                    this.save();
+                    });
                 } else {
                     toastr.error(response.message, 'Ups');
                 }
             });
+                
         }
         return this;
     }
@@ -85,11 +100,13 @@
                 let description = document.getElementById('description').value;
                 let status = 1;
                 let tracingsId = document.getElementById('tracingsList').value;
+                let typesTasksId = document.getElementById('typesTasksList').value;
                 let deadline = document.getElementById('deadline').value;
                 const data = {
                     "Description": description,
                     "Status": status,
                     "TracingsId": parseInt(tracingsId),
+                    "TypesTasksId": parseInt(typesTasksId),
                     "DeadLine": deadline
                 };
                 Fetch(this.route, data, 'POST').then(response => {
@@ -116,6 +133,7 @@
                     document.getElementById('deadLineDetails').value = response.message.DeadLine.slice(0, 10);
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
+                    document.getElementById('typeTaskDetails').value = response.message.types_tasks.Name;
                     document.getElementById('descriptionDetails').value = response.message.Description;
                     if (response.message.Status == 1) {
                         document.getElementById('statusDetails').innerHTML = '<br /><span class="badge bg-danger"><h6>Pendiente</h6></span>';
@@ -136,28 +154,49 @@
             const id = this.editId.getAttribute('key');
             Fetch(this.routeTracings, null, 'GET').then(responseTracings => {
                 if (!responseTracings.error) {
-                    Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
-                        if (!response.error) {
-                            let tracingsEdit = document.getElementById('tracingsEdit');
-                            for (let index = 0; index < responseTracings.message.length; index++) {
-                                if (responseTracings.message[index].Id == response.message.TracingsId) {
-                                    tracingsEdit.innerHTML +=
-                                        `<option value="${responseTracings.message[index].Id}" selected>
-                                            ${responseTracings.message[index].Observation}
-                                        </option>`;
-                                            
+                    Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
+                        if (!responseTypesTasks.error) {
+                            Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
+                                if (!response.error) {
+                                    let tracingsEdit = document.getElementById('tracingsEdit');
+                                    let typesTasksEdit = document.getElementById('typesTasksEdit');
+                                    for (let index = 0; index < responseTracings.message.length; index++) {
+                                        if (responseTracings.message[index].Id == response.message.TracingsId) {
+                                            tracingsEdit.innerHTML +=
+                                                `<option value="${responseTracings.message[index].Id}" selected>
+                                                    ${responseTracings.message[index].Observation}
+                                                </option>`;
+                                                    
+                                        } else {
+                                            tracingsEdit.innerHTML +=
+                                                `<option value="${responseTracings.message[index].Id}" >
+                                                    ${responseTracings.message[index].Observation}
+                                                </option>`;
+                                        }
+                                    }
+                                    for (let index = 0; index < responseTypesTasks.message.length; index++) {
+                                        if (responseTypesTasks.message[index].Id == response.message.TypesTasksId) {
+                                            typesTasksEdit.innerHTML +=
+                                                `<option value="${responseTypesTasks.message[index].Id}" selected>
+                                                    ${responseTypesTasks.message[index].Name}
+                                                </option>`;
+                                                    
+                                        } else {
+                                            typesTasksEdit.innerHTML +=
+                                                `<option value="${responseTypesTasks.message[index].Id}" >
+                                                    ${responseTypesTasks.message[index].Name}
+                                                </option>`;
+                                        }
+                                    }
+                                    document.getElementById('deadLineEdit').value = response.message.DeadLine.slice(0, 10);
+                                    document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                                    document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
+                                    document.getElementById('descriptionEdit').value = response.message.Description;
+                                    this.update(id);
                                 } else {
-                                    tracingsEdit.innerHTML +=
-                                        `<option value="${responseTracings.message[index].Id}" >
-                                            ${responseTracings.message[index].Observation}
-                                        </option>`;
+                                    toastr.error(response.message, 'Ups');
                                 }
-                            }
-                            document.getElementById('deadLineEdit').value = response.message.DeadLine.slice(0, 10);
-                            document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
-                            document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
-                            document.getElementById('descriptionEdit').value = response.message.Description;
-                            this.update(id);
+                            });
                         } else {
                             toastr.error(response.message, 'Ups');
                         }
@@ -177,11 +216,13 @@
                 let description = document.getElementById('descriptionEdit').value;
                 let status = document.getElementById('statusEdit').value;
                 let tracingsId = document.getElementById('tracingsEdit').value;
+                let typesTasksId = document.getElementById('typesTasksEdit').value;
                 let deadLine = document.getElementById('deadLineEdit').value;
                 const data = {
                     'Description': description,
                     'Status': parseInt(status),
                     'TracingsId': parseInt(tracingsId),
+                    'TypesTasksId': parseInt(typesTasksId),
                     'DeadLine': deadLine
                 };
                 Fetch(`${this.route}/${id}`, data, 'PUT').then(response => {
