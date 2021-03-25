@@ -52,9 +52,22 @@
             </div>
         </div>
     </div>
+    <div  class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Tareas</h3></center>
+        </div>
+        <div  class="card-body">
+            <div id="tasks">
+            </div>
+        </div>
+    </div>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Ext.js"></script>
     <script src="~/js/Fetch.js"></script>
     <script src="~/js/Tracings.js"></script>
 }

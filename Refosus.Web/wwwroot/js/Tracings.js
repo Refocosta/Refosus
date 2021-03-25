@@ -12,6 +12,7 @@
         this.routeTypesObservations = 'https://nativacrm.api.local/api/v1/types-observations';
         this.routeContacts = 'https://nativacrm.api.local/api/v1/contacts';
         this.routeTypesChannels = 'https://nativacrm.api.local/api/v1/types-channels';
+        this.routeTypesTasks = 'https://nativacrm.api.local/api/v1/types-tasks';
         // INDEX //
         this.tracings = document.getElementById('tracings');
         // STORE //
@@ -141,6 +142,26 @@
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('observationDetails').value = response.message.Observation;
+                    let tasks = document.getElementById('tasks');
+                    let list = response.message.tasks.reverse();
+                    if (list.length > 0) {
+                        for (let index = 0; index < list.length; index++) {
+                            tasks.innerHTML += TasksOfTracings([
+                                list[index].Description,
+                                (list[index].Status == 1) ? 
+                                            '<br /><span class="badge bg-danger"><h6>Pendiente</h6></span>' : 
+                                            '<br /><span class="badge bg-success"><h6>Finalizado</h6></span>',
+                                list[index].DeadLine,
+                                list[index].created_at,
+                                list[index].types_tasks.Name
+                            ]);
+                        }
+                    } else {
+                        tasks.innerHTML = `<div class="alert alert-info" role="alert">
+                                            Este seguimiento no tiene tareas asignadas
+                                        </div>`;
+                    }
+                    
                 } else {
                     toastr.error(response.message, 'Ups');
                 }
@@ -158,21 +179,29 @@
         let status = 1;
         if (moreTask != null ) {
             moreTask.addEventListener('click', () => {
-                i = i + 1;
-                document.getElementById('listTask').innerHTML += MoreTask(i);
-                let moreTask = document.getElementsByClassName('moreTask');
-                for (let index = 0; index < moreTask.length; index++) {
-                    moreTask[index].addEventListener('submit', event => {
-                        event.preventDefault();
-                        this.tasks[index] = {
-                            "Description": document.getElementsByClassName('description')[index].value,
-                            "Status": status,
-                            "DeadLine": document.getElementsByClassName('deadline')[index].value
-                        };
-                        toastr.success('Tarea añadida', 'OK');
-                    });
-                }
-                this.removeTask();
+                Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
+                    if (!responseTypesTasks.error) {
+                        i = i + 1;
+                        document.getElementById('listTask').innerHTML += MoreTask(i);
+                        TypesTasksInTracings(responseTypesTasks.message);
+                        let moreTask = document.getElementsByClassName('moreTask');
+                        for (let index = 0; index < moreTask.length; index++) {
+                            moreTask[index].addEventListener('submit', event => {
+                                event.preventDefault();
+                                this.tasks[index] = {
+                                    "Description": document.getElementsByClassName('description')[index].value,
+                                    "Status": status,
+                                    "DeadLine": document.getElementsByClassName('deadline')[index].value,
+                                    "TypesTasksId": parseInt(document.getElementsByClassName('typesTasksList')[index].value)
+                                };
+                                toastr.success('Tarea añadida', 'OK');
+                            });
+                        }
+                        this.removeTask();
+                    } else {
+                        toastr.error(responseTypesTasks.message, 'Ups');
+                    }
+                });
             });
         }
         return this;

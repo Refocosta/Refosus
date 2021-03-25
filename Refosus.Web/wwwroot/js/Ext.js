@@ -13,6 +13,12 @@ const MoreTask = (i) => {
                         <label>Fecha limite de la tarea</label>
                         <input id="deadline" class="form-control deadline" type="date" required />
                     </div>
+                    <div class="col-md-6">
+                        <label>Tipo de tarea</label>
+                        <select id="typesTasksList" class="form-control typesTasksList" >
+                            <option value="">--TIPO DE TAREA--</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row mt-3">
                     <div class="col-md-12">
@@ -29,6 +35,16 @@ const MoreTask = (i) => {
     </div>
     `;
     return string;
+}
+
+const TypesTasksInTracings = (typesTasks) => {
+    let typesTasksList = document.getElementById('typesTasksList');
+    for (let index = 0; index < typesTasks.length; index++) {
+        typesTasksList.innerHTML += 
+            `<option value="${typesTasks[index].Id}">
+                ${typesTasks[index].Name}
+            </option>`;
+    }
 }
 
 const TracingsOfContac = (tracings) => {
@@ -58,3 +74,36 @@ const TracingsOfContac = (tracings) => {
         `;
     return string;
 }
+
+const TasksOfTracings = (tasks) => {
+    console.log('jeje');
+    let string = 
+        `
+        <div class="row">
+            <div class="col-md-3">
+                <label>Fecha limite</label>
+                <input value="${tasks[2]}" class="form-control" readonly />
+            </div>
+            <div class="col-md-3">
+                <label>Fecha de creacion</label>
+                <input value="${tasks[3]}" class="form-control" readonly />
+            </div>
+            <div class="col-md-3">
+                <label>Tipo de tarea</label>
+                <input value="${tasks[4]}" class="form-control" readonly />
+            </div>
+            <div class="col-md-3">
+                <label>Estado</label>
+                ${tasks[1]}
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-12">
+                <label>Descripcion</label>
+                <textarea class="form-control" readonly>${tasks[0]}</textarea>
+            </div>
+        </div>
+        <hr />
+        `;
+    return string
+};
