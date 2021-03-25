@@ -39,11 +39,13 @@
                                 <td>${response.message[index].Id}</td>
                                 <td>${response.message[index].Description}</td>
                                 <td>${status}</td>
-                                <td>${response.message[index].created_at}</td>
+                                <td>${response.message[index].DeadLine.slice(0, 10)}</td>
+                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Tasks/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
                                 <td><a href="Tasks/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
                             </tr>`;
                     }
+                    this.dataTable();
                 } else {
                     toastr.error(response.message, 'Ups');
                 }
@@ -58,8 +60,8 @@
             Fetch(this.routeTracings, null, 'GET').then(responseTracings => {
                 if (!responseTracings.error) {
                     let tracingsList = document.getElementById('tracingsList');
-                    for (let index = 0; index < responseTracings.message.length; index++) {
-                        if (responseTracings.message[index].TypesObservationsId != 1) {
+                    for (let index = 0; index < responseTracings.message.length; index++) { 
+                        if (responseTracings.message[index].Id != 1) {
                             tracingsList.innerHTML +=
                                 `<option value="${responseTracings.message[index].Id}">
                                 ${responseTracings.message[index].Observation}
@@ -83,10 +85,12 @@
                 let description = document.getElementById('description').value;
                 let status = 1;
                 let tracingsId = document.getElementById('tracingsList').value;
+                let deadline = document.getElementById('deadline').value;
                 const data = {
                     "Description": description,
                     "Status": status,
-                    "TracingsId": parseInt(tracingsId)
+                    "TracingsId": parseInt(tracingsId),
+                    "DeadLine": deadline
                 };
                 Fetch(this.route, data, 'POST').then(response => {
                     if (!response.error) {
@@ -109,8 +113,9 @@
             Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
                 if (!response.error) {
                     document.getElementById('tracingDetails').value = response.message.tracings.Observation;
-                    document.getElementById('createdDetails').value = response.message.created_at;
-                    document.getElementById('updatedDetails').value = response.message.updated_at;
+                    document.getElementById('deadLineDetails').value = response.message.DeadLine.slice(0, 10);
+                    document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                    document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('descriptionDetails').value = response.message.Description;
                     if (response.message.Status == 1) {
                         document.getElementById('statusDetails').innerHTML = '<br /><span class="badge bg-danger"><h6>Pendiente</h6></span>';
@@ -148,8 +153,9 @@
                                         </option>`;
                                 }
                             }
-                            document.getElementById('createdEdit').value = response.message.created_at;
-                            document.getElementById('updatedEdit').value = response.message.updated_at;
+                            document.getElementById('deadLineEdit').value = response.message.DeadLine.slice(0, 10);
+                            document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                            document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                             document.getElementById('descriptionEdit').value = response.message.Description;
                             this.update(id);
                         } else {
@@ -171,10 +177,12 @@
                 let description = document.getElementById('descriptionEdit').value;
                 let status = document.getElementById('statusEdit').value;
                 let tracingsId = document.getElementById('tracingsEdit').value;
+                let deadLine = document.getElementById('deadLineEdit').value;
                 const data = {
                     'Description': description,
                     'Status': parseInt(status),
-                    'TracingsId': parseInt(tracingsId)
+                    'TracingsId': parseInt(tracingsId),
+                    'DeadLine': deadLine
                 };
                 Fetch(`${this.route}/${id}`, data, 'PUT').then(response => {
                     if (!response.error) {
@@ -186,6 +194,29 @@
                         toastr.error(response.message, 'Ups');
                     }
                 });
+            });
+        }
+        return this;
+    }
+
+    dataTable()
+    {
+        if (document.getElementById('tableTasks') != null) {
+            $('#tableTasks').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No hay resultados",
+                    "info": "mostrar pagina _PAGE_ de _PAGES_",
+                    "infoEmpty": "No records available",
+                    "search": "Buscar:",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                }
             });
         }
         return this;

@@ -6,33 +6,34 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Tareas</li>
+            <li class="breadcrumb-item"><a href="/Tracings">Seguimientos</a></li>
+            <li class="breadcrumb-item"><a href="/Tasks">Tareas</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tipos de tareas</li>
         </ol>
     </nav>
     <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
-    <a asp-controller="Tasks" asp-action="Create" class="btn btn-outline-info" role="button">Añadir tarea</a>
-    <a asp-controller="TypesTasks" asp-action="Index" class="btn btn-outline-info" role="button">Tipos de tareas</a>
+    <a asp-controller="TypesTasks" asp-action="Create" class="btn btn-outline-info" role="button">Añadir tipo de tarea</a>
     <div class="card mt-2">
         <div class="card-header">
             <div class="card-tools">
                 <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
             </div>
-            <center><h3>Tareas</h3></center>
+            <center><h3>Tipos de tareas</h3></center>
         </div>
         <div class="card-body table-responsive">
-            <table id="tableTasks" class="table">
+            <table id="tableTypesTasks" class="table">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Observacion</th>
+                        <th>Nombre</th>
                         <th>Estado</th>
-                        <th>Fecha limite</th>
                         <th>Fecha de creación</th>
                         <th>Detalles</th>
                         <th>Editar</th>
+                        <th>Eliminar</th>
                     </tr>
                 </thead>
-                <tbody id="taskList">
+                <tbody id="typesTaskList">
                 </tbody>
             </table>
         </div>
@@ -41,5 +42,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/Fetch.js"></script>
-    <script src="~/js/Tasks.js"></script>
+    <script src="~/js/TypesTasks.js"></script>
 }

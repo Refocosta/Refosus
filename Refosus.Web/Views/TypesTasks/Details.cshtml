@@ -1,4 +1,4 @@
-﻿@{
+@{
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <div class="container col-md-11">
@@ -6,14 +6,14 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item"><a href="/Tracings">Seguimientos</a></li>
-            <li class="breadcrumb-item"><a href="/TypesObservations">Tipos de observacioness</a></li>
+            <li class="breadcrumb-item"><a href="/Tasks">Tareas</a></li>
+            <li class="breadcrumb-item"><a href="/TypesTasks">Tipos de tareas</a></li>
             <li class="breadcrumb-item active" aria-current="page">Detalles</li>
         </ol>
     </nav>
-    <a asp-controller="TypesObservations" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
-    <div class="card mt-2" >
-        <div class="card-header" >
+    <a asp-controller="TypesTasks" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
             <div class="card-tools">
                 <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
             </div>
@@ -21,18 +21,18 @@
         </div>
         <div class="card-body">
             <input type="hidden" id="detailsId" key="@ViewBag.Id" />
-            <div class="row" >
-                <div class="col-md-4" >
+            <div class="row">
+                <div class="col-md-4">
                     <label>Nombre</label>
-                    <input id="nameDetails" class="form-control" readonly />
-                </div>
-                <div class="col-md-4" >
-                    <label>Fecha de creación</label>
-                    <input id="createdDetails" class="form-control" readonly />
+                    <input id="nameDetails" class="form-control" readonly/>
                 </div>
                 <div class="col-md-4">
-                    <label>Fechal de ultima actualización</label>
-                    <input id="updatedDetails" class="form-control" readonly />
+                    <label>Fecha de creación</label>
+                    <input id="createdDetails" class="form-control" readonly/>
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha de ultima actualización</label>
+                    <input id="updatedDetails" class="form-control" readonly/>
                 </div>
             </div>
         </div>
@@ -41,5 +41,5 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script src="~/js/Fetch.js"></script>
-    <script src="~/js/TypesObservations.js"></script>
+    <script src="~/js/TypesTasks.js"></script>
 }

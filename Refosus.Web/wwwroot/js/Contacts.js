@@ -37,7 +37,7 @@
                                 <td>${response.message[index].Cellphone}</td>
                                 <td>${response.message[index].Email}</td>
                                 <td><span class="badge bg-success">Activo</span></td>
-                                <td>${response.message[index].created_at}</td>
+                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Contacts/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
                                 <td><a href="Contacts/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
                                 <td><button key="${response.message[index].Id}" class="btn btn-outline-primary deleteContacts" >Eliminar</button></td>
@@ -110,8 +110,8 @@
                     document.getElementById('nameDetails').value = response.message.Name;
                     document.getElementById('cellPhoneDetails').value = response.message.Cellphone;
                     document.getElementById('emailDetails').value = response.message.Email;
-                    document.getElementById('createdDetails').value = response.message.created_at;
-                    document.getElementById('updatedDetails').value = response.message.updated_at;
+                    document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                    document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('petitionDetails').value = response.message.Petition;
                     response.message.channels.sort(((a, b) => a.Id - b.Id));
                     if (response.message.channels.length > 0) {
@@ -123,6 +123,16 @@
                         }
                     } else {
                         document.getElementById('listChannels').innerHTML = '<alert class="alert alert-info" >No tiene canales de comunicación asignados</alert>';
+                    }
+                    let tracings = document.getElementById('tracings');
+                    let list = response.message.tracings.reverse();
+                    for (let index = 0; index < list.length; index++) {
+                        tracings.innerHTML += TracingsOfContac([
+                            list[index].Observation,
+                            list[index].types_observations.Name,
+                            list[index].created_at,
+                            list[index].types_channels.Name
+                        ]);
                     }
                 } else {
                     toastr.error(response.message, 'Ups');
@@ -143,8 +153,8 @@
                             document.getElementById('nameEdit').value = response.message.Name;
                             document.getElementById('cellPhoneEdit').value = response.message.Cellphone;
                             document.getElementById('emailEdit').value = response.message.Email;
-                            document.getElementById('createdEdit').value = response.message.created_at;
-                            document.getElementById('updatedEdit').value = response.message.updated_at;
+                            document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                            document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                             document.getElementById('petitionEdit').value = response.message.Petition;
                             let channelsList = document.getElementById('listChannelsEdit');
                             channelsList.innerHTML = `<label>Editar Canales asignados</label><ul class="list-group" >`;

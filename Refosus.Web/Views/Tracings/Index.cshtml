@@ -1,5 +1,4 @@
 ﻿@{
-    ViewData["Title"] = "CRM | TIPOS DE CANALES";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <div class="container col-md-11">
@@ -21,11 +20,13 @@
             <center><h3>Seguimientos</h3></center>
         </div>
         <div class="card-body table-responsive">
-            <table class="table">
+            <table id="tableTracings" class="table">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Contacto</th>
+                        <th>Tipo de observacion</th>
+                        <th>Observacion</th>
                         <th>Fecha</th>
                         <th>Detalles</th>
                     </tr>

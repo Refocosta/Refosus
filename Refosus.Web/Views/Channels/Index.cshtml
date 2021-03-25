@@ -4,6 +4,12 @@
 }
 <div class="container col-md-11">
     <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Categorias de canales</li>
+        </ol>
+    </nav>
     <a asp-controller="Channels" asp-action="Create"  class="btn btn-outline-info" role="button" >Agregar nuevas categorias</a>
     <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-info" role="button" >Canales</a>
     <div class="card mt-2">
@@ -14,7 +20,7 @@
             <center><h3>Lista de categorias de canales</h3></center>
         </div>
         <div class="card-body table-responsive">
-            <table class="table">
+            <table id="tableChannels" class="table">
                 <thead>
                     <tr>
                         <th>#</th>

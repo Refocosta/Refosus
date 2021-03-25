@@ -30,10 +30,13 @@
                             `<tr>
                                 <td>${response.message[index].Id}</td>
                                 <td>${response.message[index].contacts.Name}</td>
-                                <td>${response.message[index].created_at}</td>
+                                <td>${response.message[index].types_observations.Name}</td>
+                                <td>${response.message[index].Observation.slice(0, 90)}...</td>
+                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Tracings/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
                             </tr>`;
                     }
+                    this.dataTable();
                 } else {
                     toastr.error(responseContacts.message, 'Ups');
                 }
@@ -72,6 +75,8 @@
                                                             ${responseChannels.message[index].Name}
                                                         </option>`;
                                     }
+                                    let task = this.storeTasks();
+                                    console.log(task);
                                     this.save();
                                 } else {
                                     toastr.error(response.message, 'Ups');
@@ -130,11 +135,84 @@
                     document.getElementById('contactDetails').value = response.message.contacts.Name;
                     document.getElementById('typeObservationDetails').value = response.message.types_observations.Name;
                     document.getElementById('typeChannelDetails').value = response.message.types_channels.Name;
-                    document.getElementById('createdDetails').value = response.message.created_at;
-                    document.getElementById('updatedDetails').value = response.message.updated_at;
+                    document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                    document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('observationDetails').value = response.message.Observation;
                 } else {
                     toastr.error(response.message, 'Ups');
+                }
+            });
+        }
+        return this;
+    }
+
+    // SECTION TASK //
+
+    storeTasks()
+    {
+        let moreTask = document.getElementById('moreTask');
+        let i = 0;
+        let task;
+        if (moreTask != null ) {
+            moreTask.addEventListener('click', () => {
+                i = i + 1;
+                document.getElementById('listTask').innerHTML += MoreTask(i);
+                task = this.addTasks();
+                this.removeTask();
+            });
+        }
+        return task;
+    }
+
+    addTasks()
+    {
+        let data = [];
+        let moreTask = document.getElementsByClassName('moreTask');
+        let status = 1;
+        for (let index = 0; index < moreTask.length; index++) {
+            moreTask[index].addEventListener('submit', event => {
+                event.preventDefault();
+                for (let index = 0; index < moreTask.length; index++) {
+                    data[index] = {
+                        "Description": document.getElementsByClassName('description')[index].value,
+                        "Status": status,
+                        "DeadLine": document.getElementsByClassName('deadline')[index].value
+                    };
+                }
+                return data;
+            });
+        }
+    }
+
+    removeTask()
+    {
+        let removeTasks = document.getElementsByClassName('removeTasks');
+        for (let index = 0; index < removeTasks.length; index++) {
+            removeTasks[index].addEventListener('click', () => {
+                const key = removeTasks[index].getAttribute('key');
+                const child = document.getElementById('cardTask_' + key);
+                child.remove();
+            });
+        }
+    }
+
+    dataTable()
+    {
+        if (document.getElementById('tableTracings') != null) {
+            $('#tableTracings').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No hay resultados",
+                    "info": "mostrar pagina _PAGE_ de _PAGES_",
+                    "infoEmpty": "No records available",
+                    "search": "Buscar:",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
                 }
             });
         }

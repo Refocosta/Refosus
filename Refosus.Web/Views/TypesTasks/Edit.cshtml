@@ -1,5 +1,4 @@
-﻿@{
-    ViewData["Title"] = "CRM | CANALES";
+@{
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <div class="container col-md-11">
@@ -7,11 +6,12 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item"><a href="/Channels">Categorias de canales</a></li>
+            <li class="breadcrumb-item"><a href="/Tasks">Tareas</a></li>
+            <li class="breadcrumb-item"><a href="/TypesTasks">Tipos de tareas</a></li>
             <li class="breadcrumb-item active" aria-current="page">Editar</li>
         </ol>
     </nav>
-    <a asp-controller="Channels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <a asp-controller="TypesTasks" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
     <div class="card mt-2">
         <div class="card-header">
             <div class="card-tools">
@@ -20,27 +20,28 @@
             <center><h3>Editar</h3></center>
         </div>
         <div class="card-body">
-            <input type="hidden" id="detailsId" key="@ViewBag.Id" />
+            <input type="hidden" id="editId" key="@ViewBag.Id" />
             <div class="row">
                 <div class="col-md-4">
                     <label>Nombre</label>
-                    <input id="nameDetails" type="text" class="form-control"/>
+                    <input id="nameEdit" class="form-control" />
                 </div>
                 <div class="col-md-4">
                     <label>Fecha de creación</label>
-                    <input id="createdDetails" type="text" class="form-control" readonly />
+                    <input id="createdEdit" class="form-control" readonly />
                 </div>
                 <div class="col-md-4">
-                    <label>Fecha de ultima actualización</label>
-                    <input id="updatedDetails" type="text" class="form-control" readonly />
+                    <label>Fechal de ultima actualización</label>
+                    <input id="updatedEdit" class="form-control" readonly />
                 </div>
             </div>
-            <button id="editChannel" class="btn btn-outline-success mt-3" >Editar</button>
+            <hr />
+            <button id="editTypesTasks" class="btn btn-outline-success" >Editar</button>
         </div>
     </div>
 </div>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    <script src="~/js/Fetch.js" ></script>
-    <script src="~/js/Channels.js"></script>
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesTasks.js"></script>
 }

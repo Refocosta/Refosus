@@ -32,12 +32,13 @@
                                 <td>${response.message[index].Id}</td>
                                 <td>${response.message[index].Name}</td>
                                 <td><span class="badge bg-success">Activo</span></td>
-                                <td>${response.message[index].created_at}</td>
+                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Channels/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary">Ver</button></a></td>
                                 <td><a href="Channels/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
                                 <td><button key="${response.message[index].Id}" class="btn btn-outline-primary deleteChannel" >Eliminar</button></td>
                             </tr>`;
                     }
+                    this.dataTable();
                     this.disable();
                 } else {
                     toastr.error(response.message, 'Ups');
@@ -81,8 +82,8 @@
             Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
                 if (!response.error) {
                     document.getElementById('nameDetails').value = response.message.Name;
-                    document.getElementById('createdDetails').value = response.message.created_at;
-                    document.getElementById('updatedDetails').value = response.message.updated_at;
+                    document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                    document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                 } else {
                     toastr.error(response.message, 'Ups');
                 }
@@ -135,6 +136,29 @@
                     });
                 });
             }
+        }
+        return this;
+    }
+
+    dataTable()
+    {
+        if (document.getElementById('tableChannels') != null) {
+            $('#tableChannels').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No hay resultados",
+                    "info": "mostrar pagina _PAGE_ de _PAGES_",
+                    "infoEmpty": "No records available",
+                    "search": "Buscar:",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "paginate": {
+                        "first": "Primero",
+                        "last": "Ultimo",
+                        "next": "Siguiente",
+                        "previous": "Anterior"
+                    },
+                }
+            });
         }
         return this;
     }

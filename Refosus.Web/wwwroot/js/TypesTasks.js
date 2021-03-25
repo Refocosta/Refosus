@@ -1,4 +1,4 @@
-class TypesObservations
+class TypesTasks
 {
     constructor()
     {
@@ -8,36 +8,36 @@ class TypesObservations
         };
 
         // ROUTES //
-        this.route = "https://nativacrm.api.local/api/v1/types-observations";
+        this.route = "https://nativacrm.api.local/api/v1/types-tasks";
         // INDEX //
-        this.typesObservations = document.getElementById('typesObservations');
+        this.typesTaskList = document.getElementById('typesTaskList');
         // STORE //
-        this.typesObservationsForm = document.getElementById('typesObservationsForm');
-        // DETAILS //
+        this.typesTasksForm = document.getElementById('typesTasksForm');
+        // SHOW //
         this.detailsId = document.getElementById('detailsId');
         // EDIT //
         this.editId = document.getElementById('editId');
         // UPDATE //
-        this.editTypesObservations = document.getElementById('editTypesObservations');
+        this.editTypesTasks = document.getElementById('editTypesTasks');
         // DISABLE //
-        this.deleteTypesObsevations = document.getElementsByClassName('deleteTypesObsevations');
+        this.deleteTypesTasks = document.getElementsByClassName('deleteTypesTasks');
     }
 
     index()
     {
-        if (this.typesObservations != null) {
+        if (this.typesTaskList != null) {
             Fetch(this.route, null, 'GET').then(response => {
                 if (!response.error) {
                     for (let index = 0; index < response.message.length; index++) {
-                        this.typesObservations.innerHTML +=
+                        this.typesTaskList.innerHTML +=
                             `<tr>
                                 <td>${response.message[index].Id}</td>
                                 <td>${response.message[index].Name}</td>
                                 <td><span class="badge bg-success">Activo</span></td>
                                 <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
-                                <td><a href="TypesObservations/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
-                                <td><a href="TypesObservations/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
-                                <td><button key="${response.message[index].Id}" class="btn btn-outline-primary deleteTypesObsevations" >Eliminar</button></td>
+                                <td><a href="TypesTasks/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
+                                <td><a href="TypesTasks/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
+                                <td><button key="${response.message[index].Id}" class="btn btn-outline-primary deleteTypesTasks" >Eliminar</button></td>
                             </tr>`;
                     }
                     this.dataTable();
@@ -52,8 +52,8 @@ class TypesObservations
 
     store()
     {
-        if (this.typesObservationsForm != null) {
-            this.typesObservationsForm.addEventListener('submit', event => {
+        if (this.typesTasksForm != null) {
+            this.typesTasksForm.addEventListener('submit', event => {
                 event.preventDefault();
                 let name = document.getElementById('name').value;
                 let status = 1;
@@ -65,7 +65,7 @@ class TypesObservations
                     if (!response.error) {
                         toastr.success(`Se ha registrado el contacto ${response.message.Name}`, 'OK');
                         setTimeout(() => {
-                            location.replace("/TypesObservations");
+                            location.replace("/TypesTasks");
                         }, 1000);
                     } else {
                         toastr.error(response.message, 'Ups');
@@ -113,8 +113,8 @@ class TypesObservations
 
     update(id)
     {
-        if (this.editTypesObservations != null) {
-            this.editTypesObservations.addEventListener('click', () => {
+        if (this.editTypesTasks != null) {
+            this.editTypesTasks.addEventListener('click', () => {
                 let name = document.getElementById('nameEdit').value;
                 let status = 1;
                 const data = {
@@ -138,10 +138,10 @@ class TypesObservations
 
     disable()
     {
-        if (this.deleteTypesObsevations != null) {
-            for (let index = 0; index < this.deleteTypesObsevations.length; index++) {
-                this.deleteTypesObsevations[index].addEventListener('click', () => {
-                    let id = this.deleteTypesObsevations[index].getAttribute('key');
+        if (this.deleteTypesTasks != null) {
+            for (let index = 0; index < this.deleteTypesTasks.length; index++) {
+                this.deleteTypesTasks[index].addEventListener('click', () => {
+                    let id = this.deleteTypesTasks[index].getAttribute('key');
                     Fetch(`${this.route}/${id}`, null, 'PATCH').then(response => {
                         if (!response.error) {
                             toastr.success(`Actualizacion exitosa`, response.message);
@@ -160,8 +160,8 @@ class TypesObservations
 
     dataTable()
     {
-        if (document.getElementById('tableTypesObservations') != null) {
-            $('#tableTypesObservations').DataTable({
+        if (document.getElementById('tableTypesTasks') != null) {
+            $('#tableTypesTasks').DataTable({
                 "language": {
                     "lengthMenu": "Mostrar _MENU_ registros",
                     "zeroRecords": "No hay resultados",
@@ -181,4 +181,4 @@ class TypesObservations
         return this;
     }
 }
-(new TypesObservations()).index().store().show().edit();
+(new TypesTasks()).index().store().show().edit();
