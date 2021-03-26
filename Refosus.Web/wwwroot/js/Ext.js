@@ -11,11 +11,11 @@ const MoreTask = (i) => {
                 <div class="row">
                     <div class="col-md-6">
                         <label>Fecha limite de la tarea</label>
-                        <input id="deadline" class="form-control deadline" type="date" required />
+                        <input id="deadline" class="form-control deadline" type="datetime-local" required />
                     </div>
                     <div class="col-md-6">
                         <label>Tipo de tarea</label>
-                        <select id="typesTasksList" class="form-control typesTasksList" >
+                        <select id="typesTasksList" class="form-control typesTasksList_${i} typesTasksList" >
                             <option value="">--TIPO DE TAREA--</option>
                         </select>
                     </div>
@@ -27,7 +27,7 @@ const MoreTask = (i) => {
                     </div>
                 </div>
                 <hr />
-                <button class="btn btn-outline-success addTasks" >Añadir tarea</button>
+                <button class="btn btn-outline-success addTasks" >Guardar cambio</button>
             </form>
             <hr />
             <button key="${i}" class="btn btn-outline-primary float-right removeTasks" >Remover tarea</button>
@@ -37,10 +37,10 @@ const MoreTask = (i) => {
     return string;
 }
 
-const TypesTasksInTracings = (typesTasks) => {
-    let typesTasksList = document.getElementById('typesTasksList');
+const TypesTasksInTracings = (typesTasks, i) => {
+    let typesTasksList = document.getElementsByClassName('typesTasksList_'+ i);
     for (let index = 0; index < typesTasks.length; index++) {
-        typesTasksList.innerHTML += 
+        typesTasksList[0].innerHTML += 
             `<option value="${typesTasks[index].Id}">
                 ${typesTasks[index].Name}
             </option>`;

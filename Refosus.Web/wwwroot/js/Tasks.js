@@ -130,7 +130,7 @@
             Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
                 if (!response.error) {
                     document.getElementById('tracingDetails').value = response.message.tracings.Observation;
-                    document.getElementById('deadLineDetails').value = response.message.DeadLine.slice(0, 10);
+                    document.getElementById('deadLineDetails').value = response.message.DeadLine.slice(0, 19);
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('typeTaskDetails').value = response.message.types_tasks.Name;

@@ -152,7 +152,7 @@
                                             '<br /><span class="badge bg-danger"><h6>Pendiente</h6></span>' : 
                                             '<br /><span class="badge bg-success"><h6>Finalizado</h6></span>',
                                 list[index].DeadLine,
-                                list[index].created_at,
+                                list[index].created_at.replace('T', ' ').slice(0, 19),
                                 list[index].types_tasks.Name
                             ]);
                         }
@@ -183,7 +183,7 @@
                     if (!responseTypesTasks.error) {
                         i = i + 1;
                         document.getElementById('listTask').innerHTML += MoreTask(i);
-                        TypesTasksInTracings(responseTypesTasks.message);
+                        TypesTasksInTracings(responseTypesTasks.message, i);
                         let moreTask = document.getElementsByClassName('moreTask');
                         for (let index = 0; index < moreTask.length; index++) {
                             moreTask[index].addEventListener('submit', event => {
@@ -194,6 +194,7 @@
                                     "DeadLine": document.getElementsByClassName('deadline')[index].value,
                                     "TypesTasksId": parseInt(document.getElementsByClassName('typesTasksList')[index].value)
                                 };
+                                document.getElementsByClassName('addTasks')[index].disabled = true;
                                 toastr.success('Tarea añadida', 'OK');
                             });
                         }
