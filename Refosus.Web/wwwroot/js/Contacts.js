@@ -122,7 +122,18 @@
                                 </ul>`;
                         }
                     } else {
-                        document.getElementById('listChannels').innerHTML = '<alert class="alert alert-info" >No tiene canales de comunicación asignados</alert>';
+                        document.getElementById('listChannels').innerHTML = '<alert class="alert alert-info" >No tiene categorias de comunicación asignados</alert>';
+                    }
+                    response.message.types_channels.sort(((a, b) => a.Id - b.Id));
+                    if (response.message.types_channels.length > 0) {
+                        for (let index = 0; index < response.message.types_channels.length; index++) {
+                            document.getElementById('listTypesChannels').innerHTML +=
+                                    `<ul class="list-group" >
+                                        <li class="list-group-item" >${response.message.types_channels[index].Name}</li>
+                                    </ul>`;
+                        }
+                    } else {
+                        document.getElementById('listTypesChannels').innerHTML = '<alert class="alert alert-info" >No tiene canales de comunicación asignados</alert>';
                     }
                     let tracings = document.getElementById('tracings');
                     let list = response.message.tracings.reverse();

@@ -11,6 +11,8 @@
         this.route = "https://nativacrm.api.local/api/v1/tasks";
         this.routeTracings = "https://nativacrm.api.local/api/v1/tracings";
         this.routeTypesTasks = "https://nativacrm.api.local/api/v1/types-tasks";
+
+        this.routeContacts = "https://nativacrm.api.local/api/v1/contacts";
         // INDEX //
         this.taskList = document.getElementById('taskList');
         // STORE //
@@ -60,17 +62,15 @@
         if (this.tasksForm != null) {
             Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
                 if (!responseTypesTasks.error) {
-                    Fetch(this.routeTracings, null, 'GET').then(responseTracings => {
-                        if (!responseTracings.error) {
-                            let tracingsList = document.getElementById('tracingsList');
+                    Fetch(this.routeContacts, null, 'GET').then(responseContacts => {
+                        if (!responseContacts.error) {
+                            let contactsList = document.getElementById('contactsList');
                             let typesTasksList = document.getElementById('typesTasksList');
-                            for (let index = 0; index < responseTracings.message.length; index++) { 
-                                if (responseTracings.message[index].Id != 1) {
-                                    tracingsList.innerHTML +=
-                                        `<option value="${responseTracings.message[index].Id}">
-                                        ${responseTracings.message[index].Observation}
+                            for (let index = 0; index < responseContacts.message.length; index++) { 
+                                contactsList.innerHTML +=
+                                    `<option value="${responseContacts.message[index].Id}">
+                                        ${responseContacts.message[index].Name}
                                     </option>`;
-                                }
                             }
                             for (let index = 0; index < responseTypesTasks.message.length; index++) {
                                 typesTasksList.innerHTML +=
@@ -99,13 +99,13 @@
                 event.preventDefault();
                 let description = document.getElementById('description').value;
                 let status = 1;
-                let tracingsId = document.getElementById('tracingsList').value;
+                let contactsId = document.getElementById('contactsList').value;
                 let typesTasksId = document.getElementById('typesTasksList').value;
                 let deadline = document.getElementById('deadline').value;
                 const data = {
                     "Description": description,
                     "Status": status,
-                    "TracingsId": parseInt(tracingsId),
+                    "contactsId": parseInt(contactsId),
                     "TypesTasksId": parseInt(typesTasksId),
                     "DeadLine": deadline
                 };
