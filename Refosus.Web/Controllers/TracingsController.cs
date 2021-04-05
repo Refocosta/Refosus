@@ -23,5 +23,11 @@ namespace Refosus.Web.Controllers
             ViewBag.Id = id;
             return View();
         }
+
+        public IActionResult Edit(int id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
     }
 }

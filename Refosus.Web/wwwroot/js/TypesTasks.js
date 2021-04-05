@@ -8,7 +8,8 @@ class TypesTasks
         };
 
         // ROUTES //
-        this.route = "https://nativacrm.api.local/api/v1/types-tasks";
+        const server = 'https://nativacrm.api.local/api/v1';
+        this.route = server + '/types-tasks';
         // INDEX //
         this.typesTaskList = document.getElementById('typesTaskList');
         // STORE //

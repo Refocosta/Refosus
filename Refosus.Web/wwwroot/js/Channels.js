@@ -7,7 +7,9 @@
             "progressBar": true,
         };
 
-        this.route = "https://nativacrm.api.local/api/v1/channels";
+        const server = 'https://nativacrm.api.local/api/v1';
+
+        this.route = server + '/channels';
 
         //INDEX//
         this.bodyChannels = document.getElementById("crmchannels");

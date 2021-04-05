@@ -8,7 +8,8 @@ class TypesObservations
         };
 
         // ROUTES //
-        this.route = "https://nativacrm.api.local/api/v1/types-observations";
+        const server = 'https://nativacrm.api.local/api/v1';
+        this.route = server + '/types-observations';
         // INDEX //
         this.typesObservations = document.getElementById('typesObservations');
         // STORE //

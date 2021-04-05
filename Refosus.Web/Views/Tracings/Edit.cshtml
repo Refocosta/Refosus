@@ -1,0 +1,88 @@
+@{
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/Tracings">Seguimientos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+        </ol>
+    </nav>
+    <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Editar</h3></center>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="editId" key="@ViewBag.Id" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Contacto</label>
+                    <select id="contactEdit" class="form-control"></select>
+                </div>
+                <div class="col-md-4">
+                    <label>Tipo de observacion</label>
+                    <select id="typeObservationEdit" class="form-control"></select>
+                </div>
+                <div class="col-md-4">
+                    <label>Canal</label>
+                    <select id="typeChannelEdit" class="form-control" required></select>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-2 ml-5">
+                    <strong>
+                        <label>Cotizar</label>
+                    </strong>
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" value="0" type="checkbox" id="quotationEdit">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label>Valor cotizado</label>
+                    <input id="priceEdit" type="number" class="form-control" readonly/>
+                </div>
+                <div class="col-md-2 ml-5">
+                    <strong>
+                        <label>Venta</label>
+                    </strong>
+                    <div class="form-check ml-3">
+                        <input class="form-check-input" value="0" type="checkbox" id="saleEdit">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label>Valor de venta</label>
+                    <input id="valueEdit" type="number" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6" >
+                    <label>Fecha de creación</label>
+                    <input id="createdEdit" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-6">
+                    <label>Fecha de ultima actualización</label>
+                    <input id="updatedEdit" type="text" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row mt-3" >
+                <div class="col-md-12" >
+                    <label>Observación</label>
+                    <textarea id="observationEdit" class="form-control"></textarea>
+                </div>
+            </div>
+            <hr />
+            <button id="updateTracing" class="btn btn-outline-success">Editar</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Tracings.js"></script>
+}

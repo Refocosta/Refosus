@@ -8,8 +8,9 @@
         };
 
         //ROUTES//
-        this.route = "https://nativacrm.api.local/api/v1/contacts";
-        this.routeChannels = "https://nativacrm.api.local/api/v1/channels";
+        const server = 'https://nativacrm.api.local/api/v1';
+        this.route = server + "/contacts";
+        this.routeChannels = server + "/channels";
         //INDEX//
         this.crmContacts = document.getElementById('crmContacts');
         //STORE//
@@ -142,7 +143,8 @@
                             list[index].Observation,
                             list[index].types_observations.Name,
                             list[index].created_at,
-                            list[index].types_channels.Name
+                            list[index].types_channels.Name,
+                            list[index].Price
                         ]);
                     }
                 } else {

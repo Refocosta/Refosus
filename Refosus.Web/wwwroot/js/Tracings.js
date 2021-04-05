@@ -7,19 +7,25 @@
             "progressBar": true,
         };
 
+        const server = 'https://nativacrm.api.local/api/v1';
+
         // ROUTES //
-        this.route = 'https://nativacrm.api.local/api/v1/tracings';
-        this.routeTypesObservations = 'https://nativacrm.api.local/api/v1/types-observations';
-        this.routeContacts = 'https://nativacrm.api.local/api/v1/contacts';
-        this.routeTypesChannels = 'https://nativacrm.api.local/api/v1/types-channels';
-        this.routeTypesTasks = 'https://nativacrm.api.local/api/v1/types-tasks';
+        this.route = server + '/tracings';
+
+        this.routeTypesObservations = server + '/types-observations';
+        this.routeContacts = server + '/contacts';
+        this.routeTypesChannels = server + '/types-channels';
+        this.routeTypesTasks = server + '/types-tasks';
         // INDEX //
         this.tracings = document.getElementById('tracings');
         // STORE //
         this.tracingsForm = document.getElementById('tracingsForm');
         // SHOW //
         this.detailsId = document.getElementById('detailsId');
-
+        // EDIT //
+        this.editId = document.getElementById('editId');
+        // UPDATE //
+        this.updateTracing = document.getElementById('updateTracing');
         // ATTRIBUTES //
         this.tasks = [];
     }
@@ -38,11 +44,12 @@
                                 <td>${response.message[index].Observation.slice(0, 90)}...</td>
                                 <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Tracings/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
+                                <td><a href="Tracings/Edit/${response.message[index].Id}"><button class="btn btn-outline-primary">Editar</button></a></td>
                             </tr>`;
                     }
                     this.dataTable();
                 } else {
-                    toastr.error(responseContacts.message, 'Ups');
+                    toastr.error(response.message, 'Ups');
                 }
             });
         }
@@ -107,13 +114,17 @@
                 let typeObservationId = document.getElementById('listTypesObservations').value;
                 let channelId = document.getElementById('listChannels').value;
                 let observation = document.getElementById('observation').value;
+                let quotation = document.getElementById('quotation').value;
+                let price = document.getElementById('price').value;
                 const data = {
                     "TypesObservationsId": parseInt(typeObservationId),
                     "ContactsId": parseInt(contactId),
                     "TypesChannelsId": parseInt(channelId),
                     "UsersId": parseInt(1),
                     "Observation": observation,
-                    "tasks": this.tasks
+                    "tasks": this.tasks,
+                    "Quotation": quotation,
+                    "Price": price
                 };
                 Fetch(this.route, data, 'POST').then(response => {
                     if (!response.error) {
@@ -139,6 +150,7 @@
                     document.getElementById('contactDetails').value = response.message.contacts.Name;
                     document.getElementById('typeObservationDetails').value = response.message.types_observations.Name;
                     document.getElementById('typeChannelDetails').value = response.message.types_channels.Name;
+                    document.getElementById('quotationDetails').value = response.message.Price;
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('observationDetails').value = response.message.Observation;
@@ -166,6 +178,158 @@
                     toastr.error(response.message, 'Ups');
                 }
             });
+        }
+        return this;
+    }
+
+    edit()
+    {
+        if (this.editId != null) {
+            const id = this.editId.getAttribute('key');
+            Fetch(this.routeContacts, null, 'GET').then(responseContacts => {
+                if (!responseContacts.error) {
+                    Fetch(this.routeTypesObservations, null, 'GET').then(responseTypesObservations => {
+                        if (!responseTypesObservations.error) {
+                            Fetch(this.routeTypesChannels, null, 'GET').then(responseTypesChannels => {
+                                if (!responseTypesChannels.error) {
+                                    Fetch(`${this.route}/${id}`, null, 'GET').then(response => {
+                                        if (!response.error) {
+                                            let contactEdit = document.getElementById('contactEdit');
+                                            let typeObservationEdit = document.getElementById('typeObservationEdit');
+                                            let typeChannelEdit = document.getElementById('typeChannelEdit');
+                                            for (let index = 0; index < responseContacts.message.length; index++) {
+                                                if (responseContacts.message[index].Id == response.message.ContactsId) {
+                                                    contactEdit.innerHTML +=
+                                                        `<option value="${responseContacts.message[index].Id}" selected>
+                                                            ${responseContacts.message[index].Name}
+                                                        </option>`;
+                                                } else {
+                                                    contactEdit.innerHTML +=
+                                                        `<option value="${responseContacts.message[index].Id}" >
+                                                            ${responseContacts.message[index].Name}
+                                                        </option>`;
+                                                }   
+                                            }
+                                            for (let index = 0; index < responseTypesObservations.message.length; index++) {
+                                                if (responseTypesObservations.message[index].Id == response.message.TypesObservationsId) {
+                                                    typeObservationEdit.innerHTML += 
+                                                        `<option value="${responseTypesObservations.message[index].Id}" selected>
+                                                            ${responseTypesObservations.message[index].Name}
+                                                        </option>`;
+                                                } else {
+                                                    typeObservationEdit.innerHTML += 
+                                                        `<option value="${responseTypesObservations.message[index].Id}">
+                                                            ${responseTypesObservations.message[index].Name}
+                                                        </option>`;
+                                                }
+                                            }
+                                            for (let index = 0; index < responseTypesChannels.message.length; index++) {
+                                                if (responseTypesChannels.message[index].Id == response.message.TypesChannelsId) {
+                                                    typeChannelEdit.innerHTML +=
+                                                        `<option value="${responseTypesChannels.message[index].Id}" selected>
+                                                            ${responseTypesChannels.message[index].Name}
+                                                        </option>`;
+                                                } else {
+                                                    typeChannelEdit.innerHTML +=
+                                                        `<option value="${responseTypesChannels.message[index].Id}">
+                                                            ${responseTypesChannels.message[index].Name}
+                                                        </option>`;
+                                                }
+                                            }
+                                            if (response.message.Quotation == 1) {
+                                                document.getElementById('quotationEdit').setAttribute('checked', true);
+                                                document.getElementById('quotationEdit').setAttribute('disabled', true);
+                                                document.getElementById('priceEdit').setAttribute('readonly', true);
+                                                document.getElementById('quotationEdit').value = 1;
+                                            } else {
+                                                document.getElementById('quotationEdit').addEventListener('click', () => {
+                                                    if (document.getElementById('quotationEdit').checked == true) {
+                                                        document.getElementById('priceEdit').removeAttribute('readonly');
+                                                        document.getElementById('quotationEdit').value = 1;
+                                                    } else {
+                                                        document.getElementById('priceEdit').setAttribute('readonly', true);
+                                                        document.getElementById('quotationEdit').value = 0;
+                                                        document.getElementById('priceEdit').value = 0;
+                                                    }
+                                                });
+                                            }
+                                            if (response.message.Sale == 1) {
+                                                document.getElementById('saleEdit').setAttribute('checked', true);
+                                                document.getElementById('saleEdit').setAttribute('disabled', true);
+                                                document.getElementById('valueEdit').setAttribute('readonly', true);
+                                                document.getElementById('saleEdit').value = 1;
+                                            } else {
+                                                document.getElementById('saleEdit').addEventListener('click', () => {
+                                                    if (document.getElementById('saleEdit').checked == true) {
+                                                        document.getElementById('valueEdit').removeAttribute('readonly');
+                                                        document.getElementById('saleEdit').value = 1;
+                                                    } else {
+                                                        document.getElementById('valueEdit').setAttribute('readonly', true);
+                                                        document.getElementById('saleEdit').value = 0;
+                                                        document.getElementById('valueEdit').value = 0;
+                                                    }
+                                                });
+                                            }
+                                            document.getElementById('priceEdit').value = response.message.Price;
+                                            document.getElementById('valueEdit').value = response.message.Value;
+                                            document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                                            document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
+                                            document.getElementById('observationEdit').value = response.message.Observation;
+
+                                            this.update(id);
+                                        } else {
+                                            toastr.error(response.message, 'Ups');
+                                        }
+                                    });
+                                } else {
+                                    toastr.error(responseTypesChannels.message, 'Ups');
+                                }
+                            });
+                        } else {
+                            toastr.error(responseTypesObservations.message, 'Ups');
+                        }
+                    });
+                } else {
+                    toastr.error(responseContacts.message, 'Ups');
+                }
+            });
+        }
+        return this;
+    }
+
+    update(id)
+    {
+        if (this.updateTracing != null) {
+            this.updateTracing.addEventListener('click', () => {
+                let contactEdit = document.getElementById('contactEdit').value;
+                let typeObservationEdit = document.getElementById('typeObservationEdit').value;
+                let typeChannelEdit = document.getElementById('typeChannelEdit').value;
+                let observationEdit = document.getElementById('observationEdit').value;
+                let quotation = document.getElementById('quotationEdit').value;
+                let price = document.getElementById('priceEdit').value;
+                let sale = document.getElementById('saleEdit').value;
+                let value = document.getElementById('valueEdit').value;
+                const data = {
+                    "ContactsId": parseInt(contactEdit),
+                    "TypesObservationsId": parseInt(typeObservationEdit),
+                    "TypesChannelsId": parseInt(typeChannelEdit),
+                    "Observation": observationEdit,
+                    "Quotation": quotation,
+                    "Price": price,
+                    "Sale": sale,
+                    "Value": value
+                };
+                Fetch(`${this.route}/${id}`, data, 'PUT').then(response => {
+                    if (!response.error) {
+                        toastr.success(`Registro ${response.message.id} actualizado`, 'OK');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1000);
+                    } else {
+                        toastr.error(response.message, 'Ups');
+                    }
+                });
+            })
         }
         return this;
     }
@@ -222,6 +386,25 @@
         }
     }
 
+    quotationContent()
+    {
+        let quotation = document.getElementById('quotation');
+        if (quotation != null) {
+            quotation.addEventListener('click', () => {
+                if (quotation.checked) {
+                    document.getElementById('quotationContent').removeAttribute('hidden');
+                    quotation.value = 1;
+                    document.getElementById('price').setAttribute('required', true);
+                } else {
+                    document.getElementById('quotationContent').setAttribute('hidden', true);
+                    quotation.value = 0;
+                    document.getElementById('price').removeAttribute('required');
+                }
+            });
+        }
+        return this;
+    }
+
     dataTable()
     {
         if (document.getElementById('tableTracings') != null) {
@@ -245,4 +428,4 @@
         return this;
     }
 }
-(new Tracings()).index().store().show();
+(new Tracings()).index().store().show().edit().quotationContent();
