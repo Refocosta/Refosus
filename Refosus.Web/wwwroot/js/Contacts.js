@@ -79,6 +79,7 @@
                 let petition = document.getElementById('petition').value;
                 let status = 1;
                 const data = {
+                    "Type": 1,
                     "Name": name,
                     "Cellphone": cellPhone,
                     "Email": email,

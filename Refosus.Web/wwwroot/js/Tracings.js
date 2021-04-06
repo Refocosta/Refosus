@@ -36,6 +36,12 @@
             Fetch(this.route, null, 'GET').then(response => {
                 if (!response.error) {
                     for (let index = 0; index < response.message.length; index++) {
+                        let button;
+                        if (response.message[index].Auto != 1) {
+                            button = `<td><a href="Tracings/Edit/${response.message[index].Id}"><button class="btn btn-outline-primary">Editar</button></a></td>`;
+                        } else {
+                            button = `<td><a><button class="btn btn-outline-primary" disabled>Editar</button></a></td></tr>`;
+                        }
                         this.tracings.innerHTML +=
                             `<tr>
                                 <td>${response.message[index].Id}</td>
@@ -44,8 +50,7 @@
                                 <td>${response.message[index].Observation.slice(0, 90)}...</td>
                                 <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
                                 <td><a href="Tracings/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
-                                <td><a href="Tracings/Edit/${response.message[index].Id}"><button class="btn btn-outline-primary">Editar</button></a></td>
-                            </tr>`;
+                                ${button}`
                     }
                     this.dataTable();
                 } else {
@@ -150,7 +155,8 @@
                     document.getElementById('contactDetails').value = response.message.contacts.Name;
                     document.getElementById('typeObservationDetails').value = response.message.types_observations.Name;
                     document.getElementById('typeChannelDetails').value = response.message.types_channels.Name;
-                    document.getElementById('quotationDetails').value = response.message.Price;
+                    document.getElementById('quotationDetails').value = Intl.NumberFormat().format(response.message.Price);
+                    document.getElementById('valueDetails').value = Intl.NumberFormat().format(response.message.Value);
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('observationDetails').value = response.message.Observation;
@@ -261,8 +267,12 @@
                                             } else {
                                                 document.getElementById('saleEdit').addEventListener('click', () => {
                                                     if (document.getElementById('saleEdit').checked == true) {
-                                                        document.getElementById('valueEdit').removeAttribute('readonly');
-                                                        document.getElementById('saleEdit').value = 1;
+                                                        if (document.getElementById('quotationEdit').checked == 1) {
+                                                            document.getElementById('valueEdit').removeAttribute('readonly');
+                                                            document.getElementById('saleEdit').value = 1;
+                                                        } else {
+                                                            toastr.error('Debes seleccionar primero una cotizacion', 'UPS')
+                                                        }
                                                     } else {
                                                         document.getElementById('valueEdit').setAttribute('readonly', true);
                                                         document.getElementById('saleEdit').value = 0;
@@ -270,8 +280,8 @@
                                                     }
                                                 });
                                             }
-                                            document.getElementById('priceEdit').value = response.message.Price;
-                                            document.getElementById('valueEdit').value = response.message.Value;
+                                            document.getElementById('priceEdit').value = Intl.NumberFormat().format(response.message.Price);
+                                            document.getElementById('valueEdit').value = Intl.NumberFormat().format(response.message.Value);
                                             document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                                             document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                                             document.getElementById('observationEdit').value = response.message.Observation;
