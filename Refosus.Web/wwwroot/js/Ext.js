@@ -51,21 +51,27 @@ const TracingsOfContac = (tracings) => {
     let string = 
         `
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <label>Tipo de observacion</label>
                 <input value="${tracings[1]}" class="form-control" readonly />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <label>Fecha de creación</label>
                 <input value="${tracings[2].replace('T', ' ').slice(0, 19)}" class="form-control" readonly />
             </div>
-            <div class="col-md-3">
+        </div>
+        <div class="row">
+            <div class="col-md-4">
                 <label>Canal</label>
                 <input value="${tracings[3]}" class="form-control" readonly />
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label>Valor cotizado</label>
                 <input value="${tracings[4]}" class="form-control" readonly />
+            </div>
+            <div class="col-md-4">
+                <label>Valor de venta</label>
+                <input value="${tracings[5]}" class="form-control" readonly />
             </div>
         </div>
         <div class="row mt-2">

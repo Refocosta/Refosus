@@ -6,16 +6,13 @@
             "closeButton": true,
             "progressBar": true,
         };
-
-        const server = 'https://nativacrm.api.local/api/v1';
-
         // ROUTES //
-        this.route = server + '/tracings';
+        this.route = '/tracings';
 
-        this.routeTypesObservations = server + '/types-observations';
-        this.routeContacts = server + '/contacts';
-        this.routeTypesChannels = server + '/types-channels';
-        this.routeTypesTasks = server + '/types-tasks';
+        this.routeTypesObservations = '/types-observations';
+        this.routeContacts = '/contacts';
+        this.routeTypesChannels = '/types-channels';
+        this.routeTypesTasks = '/types-tasks';
         // INDEX //
         this.tracings = document.getElementById('tracings');
         // STORE //

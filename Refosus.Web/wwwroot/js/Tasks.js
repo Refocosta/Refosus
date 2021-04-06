@@ -8,11 +8,10 @@
         };
 
         //ROUTES//
-        const server = 'https://nativacrm.api.local/api/v1';
-        this.route = server + '/tasks';
-        this.routeTracings = server + '/tracings';
-        this.routeTypesTasks = server + '/types-tasks';
-        this.routeContacts = server + '/contacts';
+        this.route = '/tasks';
+        this.routeTracings = '/tracings';
+        this.routeTypesTasks = '/types-tasks';
+        this.routeContacts = '/contacts';
         // INDEX //
         this.taskList = document.getElementById('taskList');
         // STORE //

@@ -8,9 +8,8 @@
         };
 
         //ROUTES//
-        const server = 'https://nativacrm.api.local/api/v1';
-        this.route = server + '/types-channels';
-        this.routeChannels = server + '/channels';
+        this.route = '/types-channels';
+        this.routeChannels = '/channels';
         //INDEX//
         this.typesChannels = document.getElementById('typesChannels');
         //STORE//

@@ -8,9 +8,8 @@
         };
 
         //ROUTES//
-        const server = 'https://nativacrm.api.local/api/v1';
-        this.route = server + "/contacts";
-        this.routeChannels = server + "/channels";
+        this.route = "/contacts";
+        this.routeChannels = "/channels";
         //INDEX//
         this.crmContacts = document.getElementById('crmContacts');
         //STORE//
@@ -145,7 +144,8 @@
                             list[index].types_observations.Name,
                             list[index].created_at,
                             list[index].types_channels.Name,
-                            list[index].Price
+                            list[index].Price,
+                            list[index].Value
                         ]);
                     }
                 } else {
@@ -282,7 +282,7 @@
     {
         let channelsList = document.getElementById('channelsList');
         if (channelsList != null) {
-            Fetch('https://nativacrm.api.local/api/v1/channels', null, 'GET').then(response => {
+            Fetch(this.routeChannels, null, 'GET').then(response => {
                 if (!response.error) {
                     channelsList.innerHTML = '<hr /><label class="mt-2" >Asigna los canales correspondientes</label>';
                     for (let index = 0; index < response.message.length; index++) {
