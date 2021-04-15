@@ -21,6 +21,9 @@ namespace Refosus.Web
         public IConfiguration Configuration { get; }
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
             services.AddMvc().AddRazorRuntimeCompilation();
             services.ConfigureApplicationCookie(options =>
             {
@@ -29,7 +32,7 @@ namespace Refosus.Web
             });
             services.AddDbContext<DataContext>(cfg =>
             {
-                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusPruebas"));
+                cfg.UseSqlServer(Configuration.GetConnectionString("RefosusDesarrollo"));
             });
             services.AddDbContext<RefocostaContext>(cfg =>
             {
