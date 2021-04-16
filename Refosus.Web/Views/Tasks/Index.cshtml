@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Tareas</li>
+        </ol>
+    </nav>
+    <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <a asp-controller="Tasks" asp-action="Create" class="btn btn-outline-info" role="button">Añadir tarea</a>
+    <a asp-controller="TypesTasks" asp-action="Index" class="btn btn-outline-info" role="button">Tipos de tareas</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Tareas</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table id="tableTasks" class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Observacion</th>
+                        <th>Estado</th>
+                        <th>Fecha limite</th>
+                        <th>Fecha de creación</th>
+                        <th>Detalles</th>
+                        <th>Editar</th>
+                    </tr>
+                </thead>
+                <tbody id="taskList">
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Tasks.js"></script>
+}

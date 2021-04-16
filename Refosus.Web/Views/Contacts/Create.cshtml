@@ -1,0 +1,52 @@
+﻿@{
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/Contacts" >Contactos</a></li>
+            <li class="breadcrumb-item active" aria-current="page" >Crear contacto</li>
+        </ol>
+    </nav>
+    <a asp-controller="Contacts" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Crea un nuevo contacto</h3></center>
+        </div>
+        <div class="card-body">
+            <form id="contactsform">
+                <input type="hidden" id="user" value="@User.Identity.Name" />
+                <div class="row">
+                    <div class="col-md-4">
+                        <input id="name" type="text" placeholder="Nombre..." class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <input id="cellPhone" type="number" placeholder="Numero..." class="form-control" required />
+                    </div>
+                    <div class="col-md-4">
+                        <input id="email" type="email" placeholder="Email..." class="form-control" required />
+                    </div>
+                    <div class="col-md-12 mt-2">
+                        <textarea class="form-control" placeholder="Mensaje..." id="petition" required></textarea>
+                    </div>
+                    <div id="channelsList" class="col-md-6">
+
+                    </div>
+                </div>
+                <hr class="ml-1" />
+                <button type="submit" class="btn btn-outline-success mt-2 float-right">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/Contacts.js"></script>
+}
+

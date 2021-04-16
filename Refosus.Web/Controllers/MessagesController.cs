@@ -1826,5 +1826,22 @@ namespace Refosus.Web.Controllers
             return View(lista2);
         }
         #endregion
+        #region API
+        public async Task<List<MessageFileEntity>> GetMessageAdjuntos(int val)
+        {
+            List <MessageFileEntity> t = await _context.MessagesFile
+               .Where(o => o.message.Id == val)
+               .ToListAsync();
+            return t;
+        }
+        public async Task<List<MessageCheckEntity>> GetMessageVO(int val)
+        {
+            List<MessageCheckEntity> t = await _context.MessagesCheckes
+                .Include(o => o.User)
+               .Where(o => o.message.Id == val)
+               .ToListAsync();
+            return t;
+        }
+        #endregion
     }
 }

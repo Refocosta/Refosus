@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "CRM | CANALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/TypesChannels">Canales</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Crear canal</li>
+        </ol>
+    </nav>
+    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Crea un nuevo canal</h3></center>
+        </div>
+        <div class="card-body">
+            <form id="typesChannelsform">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Nombre</label>
+                        <input id="name" type="text" placeholder="Nombre..." class="form-control" required />
+                    </div>
+                    <div class="col-md-6" >
+                        <label>Selecciona a que canal pertenece</label>
+                        <select id="channels" class="form-control" required="required" >
+                            <option value="" >-- CANALES --</option>
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <div class="row mt-2">
+                    <div class="col-md-6">
+                        <button type="submit" class="btn btn-outline-success">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesChannels.js"></script>
+}
+

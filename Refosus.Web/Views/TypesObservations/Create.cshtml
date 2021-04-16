@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "CRM | TIPOS DE CANALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/Tracings">Seguimientos</a></li>
+            <li class="breadcrumb-item"><a href="/TypesObservations">Tipos de observacioness</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Crear tipo de observación</li>
+        </ol>
+    </nav>
+    <a asp-controller="TypesObservations" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Crear nuevo tipo observación</h3></center>
+        </div>
+        <div class="card-body">
+            <form id="typesObservationsForm">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Nombre</label>
+                        <input id="name" class="form-control" placeholder="Nombre..." required />
+                        <hr />
+                        <button class="btn btn-outline-success">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesObservations.js"></script>
+}

@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "CRM | CANALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/TypesChannels">Canales</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+        </ol>
+    </nav>
+    <a asp-controller="TypesChannels" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <div class="card-tools">
+                <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+            </div>
+            <center><h3>Editar</h3></center>
+        </div>
+        <div class="card-body">
+            <input type="hidden" id="editId" key="@ViewBag.Id" />
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Nombre</label>
+                    <input id="nameEdit" type="text" class="form-control" />
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha de creación</label>
+                    <input id="createdEdit" type="text" class="form-control" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label>Fecha de ultima actualización</label>
+                    <input id="updatedEdit" type="text" class="form-control" readonly />
+                </div>
+            </div>
+            <hr />
+            <div class="row" >
+                <div class="col-md-6">
+                    <label>Selecciona a que canal pertenece</label>
+                    <select id="channels" class="form-control" required="required">
+                        
+                    </select>
+                </div>
+            </div>
+            <hr />
+            <div class="row mt-2">
+                <div class="col-md-6">
+                    <button id="editTypesChannels" class="btn btn-outline-success" >Editar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/Fetch.js"></script>
+    <script src="~/js/TypesChannels.js"></script>
+}

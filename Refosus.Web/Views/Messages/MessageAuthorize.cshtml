@@ -57,6 +57,9 @@
                                                 <th>
                                                     @Html.DisplayNameFor(model => model[0].Observation)
                                                 </th>
+                                                <td>
+                                                    Detalles
+                                                </td>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -84,6 +87,10 @@
                                                         <td>
                                                             @Html.DisplayFor(modelItem => Model[i].Observation)
                                                         </td>
+                                                        <td>
+                                                            @*<button type="button" onclick="ItempTemp(@Model[i].Id)" class="btn btn-warning addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-magnifying-glass" style="color:white"></i></button>*@
+                                                            <button type="button" onclick="CargarDatos(@Model[i].Id)" class="btn btn-info DetallesModal" data-toggle="modal" data-target="#DetallesModal"><i class="oi oi-magnifying-glass" style="color:white"></i></button>
+                                                        </td>
                                                     </tr>
                                                 }
                                             }
@@ -94,6 +101,7 @@
                         </div>
                     </div>
                     <partial name="_MessageAuthorizeDialog" />
+                    <partial name="_MessageAuthorizeDetallesDialog" />
                 </form>
             </section>
         </div>
