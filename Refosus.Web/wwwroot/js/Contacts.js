@@ -72,6 +72,7 @@
                         arrayTypesChannels.push(typeschannels[index].value);
                     }
                 }
+                let user = document.getElementById('user').value;
                 let name = document.getElementById('name').value;
                 let cellPhone = document.getElementById('cellPhone').value;
                 let email = document.getElementById('email').value;
@@ -79,6 +80,7 @@
                 let status = 1;
                 const data = {
                     "Type": 1,
+                    "User": user,
                     "Name": name,
                     "Cellphone": cellPhone,
                     "Email": email,
