@@ -1,5 +1,5 @@
 ﻿const Fetch = (endPoint, data, type, user) => {
-    const server = 'https://nativacrm.api.local/api/v1';
+    const server = 'http://nativa.refocosta.com:8085/api/v1';
     if (type === 'GET') {
         return fetch(server + endPoint, {
             method: type,
