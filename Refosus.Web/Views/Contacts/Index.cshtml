@@ -12,6 +12,7 @@
     </nav>
     <a asp-controller="Contacts" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevos contactos</a>
     <div class="card mt-2">
+        <input type="hidden" id="user" value="@User.Identity.Name" />
         <div class="card-header">
             <div class="card-tools">
                 <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
