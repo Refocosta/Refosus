@@ -61,7 +61,7 @@
         if (this.tasksForm != null) {
             Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
                 if (!responseTypesTasks.error) {
-                    Fetch(this.routeContacts, null, 'GET').then(responseContacts => {
+                    Fetch(this.routeContacts, null, 'GET', document.getElementById('user').value).then(responseContacts => {
                         if (!responseContacts.error) {
                             let contactsList = document.getElementById('contactsList');
                             let typesTasksList = document.getElementById('typesTasksList');

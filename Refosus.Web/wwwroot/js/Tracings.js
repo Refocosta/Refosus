@@ -61,7 +61,7 @@
     store()
     {
         if (this.tracingsForm != null) {
-            Fetch(this.routeContacts, null, 'GET').then(responseContacts => {
+            Fetch(this.routeContacts, null, 'GET', document.getElementById('user').value).then(responseContacts => {
                 if (!responseContacts.error) {
                     Fetch(this.routeTypesObservations, null, 'GET').then(responseTypesObservations => {
                         if (!responseTypesObservations.error) {

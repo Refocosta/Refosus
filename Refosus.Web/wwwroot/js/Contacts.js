@@ -10,6 +10,7 @@
         //ROUTES//
         this.route = "/contacts";
         this.routeChannels = "/channels";
+        this.routeResponsables = "/users";
         //INDEX//
         this.crmContacts = document.getElementById('crmContacts');
         //STORE//
@@ -56,52 +57,69 @@
     store()
     {
         if (this.contactsform != null) {
-            this.contactsform.addEventListener('submit', event => {
-                event.preventDefault();
-                let arrayChannels = [];
-                let arrayTypesChannels = [];
-                const channels = document.getElementsByClassName('channels');
-                const typeschannels = document.getElementsByClassName('typeschannels');
-                for (let index = 0; index < channels.length; index++) {
-                    if (channels[index].checked == true) {
-                        arrayChannels.push(channels[index].value);
+            Fetch(this.routeResponsables, null, 'GET').then(responseResponsable => {
+                if (!responseResponsable.error) {
+                    let selectResponsables = document.getElementById('responsable');
+                    for (let index = 0; index < responseResponsable.message.length; index++) {
+                        selectResponsables.innerHTML += 
+                            `<option value="${responseResponsable.message[index].UserName}" >${responseResponsable.message[index].FirstName + " " + responseResponsable.message[index].LastName}</option>
+                            `;
                     }
+                    this.contactsform.addEventListener('submit', event => {
+                        event.preventDefault();
+                        let arrayChannels = [];
+                        let arrayTypesChannels = [];
+                        const channels = document.getElementsByClassName('channels');
+                        const typeschannels = document.getElementsByClassName('typeschannels');
+                        for (let index = 0; index < channels.length; index++) {
+                            if (channels[index].checked == true) {
+                                arrayChannels.push(channels[index].value);
+                            }
+                        }
+                        for (let index = 0; index < typeschannels.length; index++) {
+                            if (typeschannels[index].checked == true) {
+                                arrayTypesChannels.push(typeschannels[index].value);
+                            }
+                        }
+                        let user = (document.getElementById('responsable').value.length > 0) 
+                                                                            ? document.getElementById('responsable').value
+                                                                            : document.getElementById('user').value;
+                        let name = document.getElementById('name').value;
+                        let cellPhone = document.getElementById('cellPhone').value;
+                        let email = document.getElementById('email').value;
+                        let petition = document.getElementById('petition').value;
+                        let status = 1;
+                        const data = {
+                            "Type": 2,
+                            "User": user,
+                            "Name": name,
+                            "Cellphone": cellPhone,
+                            "Email": email,
+                            "Petition": petition,
+                            "Status": status,
+                            "ChannelId": arrayChannels,
+                            "TypeChannelId": arrayTypesChannels
+                        };
+                        Fetch(this.route, data, 'POST').then(response => {
+                            if (!response.error) {
+                                toastr.success(`Se ha registrado el contacto ${response.message.Name}`, 'OK');
+                                setTimeout(() => {
+                                    location.replace("/Contacts");
+                                }, 1000);
+                            } else {
+                                toastr.error(response.message, 'Ups');
+                            }
+                        });
+                    });
                 }
-                for (let index = 0; index < typeschannels.length; index++) {
-                    if (typeschannels[index].checked == true) {
-                        arrayTypesChannels.push(typeschannels[index].value);
-                    }
-                }
-                let user = document.getElementById('user').value;
-                let name = document.getElementById('name').value;
-                let cellPhone = document.getElementById('cellPhone').value;
-                let email = document.getElementById('email').value;
-                let petition = document.getElementById('petition').value;
-                let status = 1;
-                const data = {
-                    "Type": 2,
-                    "User": user,
-                    "Name": name,
-                    "Cellphone": cellPhone,
-                    "Email": email,
-                    "Petition": petition,
-                    "Status": status,
-                    "ChannelId": arrayChannels,
-                    "TypeChannelId": arrayTypesChannels
-                };
-                Fetch(this.route, data, 'POST').then(response => {
-                    if (!response.error) {
-                        toastr.success(`Se ha registrado el contacto ${response.message.Name}`, 'OK');
-                        setTimeout(() => {
-                            location.replace("/Contacts");
-                        }, 1000);
-                    } else {
-                        toastr.error(response.message, 'Ups');
-                    }
-                });
             });
         }
         return this;
+    }
+
+    save()
+    {
+
     }
 
     show()
