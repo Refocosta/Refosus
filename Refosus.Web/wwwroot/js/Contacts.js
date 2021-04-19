@@ -27,7 +27,7 @@
     index()
     {
         if (this.crmContacts != null) {
-            Fetch(this.route, null, 'GET').then(response => {
+            Fetch(this.route, null, 'GET', document.getElementById('user').value).then(response => {
                 if (!response.error) {
                     for (let index = 0; index < response.message.length; index++) {
                         this.crmContacts.innerHTML +=
@@ -79,7 +79,7 @@
                 let petition = document.getElementById('petition').value;
                 let status = 1;
                 const data = {
-                    "Type": 1,
+                    "Type": 2,
                     "User": user,
                     "Name": name,
                     "Cellphone": cellPhone,
