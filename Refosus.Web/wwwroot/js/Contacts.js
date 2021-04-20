@@ -62,7 +62,9 @@
                     let selectResponsables = document.getElementById('responsable');
                     for (let index = 0; index < responseResponsable.message.length; index++) {
                         selectResponsables.innerHTML += 
-                            `<option value="${responseResponsable.message[index].UserName}" >${responseResponsable.message[index].FirstName + " " + responseResponsable.message[index].LastName}</option>
+                            `<option value="${responseResponsable.message[index].UserName}" >
+                                ${responseResponsable.message[index].FirstName + " " + responseResponsable.message[index].LastName}
+                            </option>
                             `;
                     }
                     this.contactsform.addEventListener('submit', event => {
@@ -100,6 +102,10 @@
                             "ChannelId": arrayChannels,
                             "TypeChannelId": arrayTypesChannels
                         };
+                        document.getElementById('loading').innerHTML = 
+                                                            `<div class="spinner-border text-success" role="status">
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div>`;
                         Fetch(this.route, data, 'POST').then(response => {
                             if (!response.error) {
                                 toastr.success(`Se ha registrado el contacto ${response.message.Name}`, 'OK');
@@ -108,6 +114,7 @@
                                 }, 1000);
                             } else {
                                 toastr.error(response.message, 'Ups');
+                                document.getElementById('loading').innerHTML = '';
                             }
                         });
                     });
@@ -115,11 +122,6 @@
             });
         }
         return this;
-    }
-
-    save()
-    {
-
     }
 
     show()
@@ -131,6 +133,7 @@
                     document.getElementById('nameDetails').value = response.message.Name;
                     document.getElementById('cellPhoneDetails').value = response.message.Cellphone;
                     document.getElementById('emailDetails').value = response.message.Email;
+                    document.getElementById('responsableDetails').value = response.message.User;
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('petitionDetails').value = response.message.Petition;
@@ -184,35 +187,58 @@
                 if (!response.error) {
                     Fetch(`${this.routeChannels}`, null, 'GET').then(responseChannels => {
                         if (!responseChannels.error) {
-                            document.getElementById('nameEdit').value = response.message.Name;
-                            document.getElementById('cellPhoneEdit').value = response.message.Cellphone;
-                            document.getElementById('emailEdit').value = response.message.Email;
-                            document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
-                            document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
-                            document.getElementById('petitionEdit').value = response.message.Petition;
-                            let channelsList = document.getElementById('listChannelsEdit');
-                            channelsList.innerHTML = `<label>Editar Canales asignados</label><ul class="list-group" >`;
-                            response.message.channels.sort(((a, b) => a.Id - b.Id));
-                            for (let index in responseChannels.message) {
-                                for (let i in response.message.channels) {
-                                    if (responseChannels.message[index].Id == response.message.channels[i].Id) {
-                                        channelsList.innerHTML +=
-                                            `<li class="list-group-item" >
-                                                <input  class="channels" type="checkbox" value="${responseChannels.message[index].Id}" checked /><span class="ml-2" >${responseChannels.message[index].Name}<span>
-                                            </li>`;
-                                        responseChannels.message.splice(index, 1);
+                            Fetch(this.routeResponsables, null, 'GET').then(responseResponsable => {
+                                if (!responseResponsable.error) {
+                                    document.getElementById('nameEdit').value = response.message.Name;
+                                    document.getElementById('cellPhoneEdit').value = response.message.Cellphone;
+                                    document.getElementById('emailEdit').value = response.message.Email;
+                                    document.getElementById('createdEdit').value = response.message.created_at.replace('T', ' ').slice(0, 19);
+                                    document.getElementById('updatedEdit').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
+                                    document.getElementById('petitionEdit').value = response.message.Petition;
+                                    let selectResponsable = document.getElementById('responsableEdit');
+                                    for (let index = 0; index < responseResponsable.message.length; index++) {
+                                        if (response.message.User == responseResponsable.message[index].UserName) {
+                                            selectResponsable.innerHTML +=
+                                            `<option value="${responseResponsable.message[index].UserName}" selected>
+                                                ${responseResponsable.message[index].FirstName + " " + responseResponsable.message[index].LastName}
+                                            </option>
+                                            `;
+                                        } else {
+                                            selectResponsable.innerHTML +=
+                                            `<option value="${responseResponsable.message[index].UserName}" >
+                                                ${responseResponsable.message[index].FirstName + " " + responseResponsable.message[index].LastName}
+                                            </option>
+                                            `;
+                                        }
+                                        
                                     }
-                                }
-                                if (responseChannels.message[index] != undefined) {
-                                    channelsList.innerHTML +=
-                                        `<li class="list-group-item" >
-                                        <input class="channels" type="checkbox" value="${responseChannels.message[index].Id}" /><span class="ml-2" >${responseChannels.message[index].Name}</span>
-                                    </li>`;
-                                }
+                                    let channelsList = document.getElementById('listChannelsEdit');
+                                    channelsList.innerHTML = `<label>Editar Canales asignados</label><ul class="list-group" >`;
+                                    response.message.channels.sort(((a, b) => a.Id - b.Id));
+                                    for (let index in responseChannels.message) {
+                                        for (let i in response.message.channels) {
+                                            if (responseChannels.message[index].Id == response.message.channels[i].Id) {
+                                                channelsList.innerHTML +=
+                                                    `<li class="list-group-item" >
+                                                        <input  class="channels" type="checkbox" value="${responseChannels.message[index].Id}" checked /><span class="ml-2" >${responseChannels.message[index].Name}<span>
+                                                    </li>`;
+                                                responseChannels.message.splice(index, 1);
+                                            }
+                                        }
+                                        if (responseChannels.message[index] != undefined) {
+                                            channelsList.innerHTML +=
+                                                `<li class="list-group-item" >
+                                                <input class="channels" type="checkbox" value="${responseChannels.message[index].Id}" /><span class="ml-2" >${responseChannels.message[index].Name}</span>
+                                            </li>`;
+                                        }
 
-                            }
-                            channelsList.innerHTML += `</ul>`;
-                            this.update();
+                                    }
+                                    channelsList.innerHTML += `</ul>`;
+                                    this.update();
+                                } else {
+                                    toastr.error(responseResponsable, 'Ups');
+                                }
+                            });
                         } else {
                             toastr.error(responseChannels.message, 'Ups');
                         }
@@ -252,7 +278,9 @@
                 let email = document.getElementById('emailEdit').value;
                 let petition = document.getElementById('petitionEdit').value;
                 let status = 1;
+                let user = document.getElementById('responsableEdit').value;
                 const data = {
+                    "User": user,
                     "Name": name,
                     "Cellphone": cellPhone,
                     "Email": email,
