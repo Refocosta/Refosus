@@ -189,7 +189,7 @@
     {
         if (this.editId != null) {
             const id = this.editId.getAttribute('key');
-            Fetch(this.routeContacts, null, 'GET').then(responseContacts => {
+            Fetch(this.routeContacts, null, 'GET', document.getElementById('user').value).then(responseContacts => {
                 if (!responseContacts.error) {
                     Fetch(this.routeTypesObservations, null, 'GET').then(responseTypesObservations => {
                         if (!responseTypesObservations.error) {
@@ -316,6 +316,8 @@
                 let price = document.getElementById('priceEdit').value;
                 let sale = document.getElementById('saleEdit').value;
                 let value = document.getElementById('valueEdit').value;
+                price = price.replace(/\./g, "");
+                value = value.replace(/\./g, "");
                 const data = {
                     "ContactsId": parseInt(contactEdit),
                     "TypesObservationsId": parseInt(typeObservationEdit),

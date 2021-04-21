@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Refosus.Web.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [Authorize(Roles = "crmAdministrator")]
     public class ChannelsController : Controller
     {
         public IActionResult Index()
