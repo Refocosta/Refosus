@@ -13,6 +13,7 @@
         this.routeContacts = '/contacts';
         this.routeTypesChannels = '/types-channels';
         this.routeTypesTasks = '/types-tasks';
+        this.routeResponsables = '/users';
         // INDEX //
         this.tracings = document.getElementById('tracings');
         // STORE //
@@ -354,24 +355,33 @@
             moreTask.addEventListener('click', () => {
                 Fetch(this.routeTypesTasks, null, 'GET').then(responseTypesTasks => {
                     if (!responseTypesTasks.error) {
-                        i = i + 1;
-                        document.getElementById('listTask').innerHTML += MoreTask(i);
-                        TypesTasksInTracings(responseTypesTasks.message, i);
-                        let moreTask = document.getElementsByClassName('moreTask');
-                        for (let index = 0; index < moreTask.length; index++) {
-                            moreTask[index].addEventListener('submit', event => {
-                                event.preventDefault();
-                                this.tasks[index] = {
-                                    "Description": document.getElementsByClassName('description')[index].value,
-                                    "Status": status,
-                                    "DeadLine": document.getElementsByClassName('deadline')[index].value,
-                                    "TypesTasksId": parseInt(document.getElementsByClassName('typesTasksList')[index].value)
-                                };
-                                document.getElementsByClassName('addTasks')[index].disabled = true;
-                                toastr.success('Tarea añadida', 'OK');
-                            });
-                        }
-                        this.removeTask();
+                        Fetch(this.routeResponsables, null, 'GET').then(responseResponsable => {
+                            if (!responseResponsable.error) {
+                                i = i + 1;
+                                document.getElementById('listTask').innerHTML += MoreTask(i);
+                                TypesTasksInTracings(responseTypesTasks.message, i);
+                                responsableInTracings(responseResponsable.message, i);
+                                let moreTask = document.getElementsByClassName('moreTask');
+                                for (let index = 0; index < moreTask.length; index++) {
+                                    moreTask[index].addEventListener('submit', event => {
+                                        event.preventDefault();
+                                        let user = (document.getElementsByClassName('responsablesList')[index].value.length > 0) 
+                                                                            ? document.getElementsByClassName('responsablesList')[index].value
+                                                                            : document.getElementById('user').value;
+                                        this.tasks[index] = {
+                                            "Description": document.getElementsByClassName('description')[index].value,
+                                            "Status": status,
+                                            "DeadLine": document.getElementsByClassName('deadline')[index].value,
+                                            "TypesTasksId": parseInt(document.getElementsByClassName('typesTasksList')[index].value),
+                                            "User": user
+                                        };
+                                        document.getElementsByClassName('addTasks')[index].disabled = true;
+                                        toastr.success('Tarea añadida', 'OK');
+                                    });
+                                }
+                                this.removeTask();
+                            }
+                        });
                     } else {
                         toastr.error(responseTypesTasks.message, 'Ups');
                     }
