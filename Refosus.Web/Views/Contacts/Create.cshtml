@@ -19,19 +19,30 @@
             <center><h3>Crea un nuevo contacto</h3></center>
         </div>
         <div class="card-body">
+            <span id="loading" ></span>
             <form id="contactsform">
                 <input type="hidden" id="user" value="@User.Identity.Name" />
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label>Nombre</label>
                         <input id="name" type="text" placeholder="Nombre..." class="form-control" required />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label>Numero celular</label>
                         <input id="cellPhone" type="number" placeholder="Numero..." class="form-control" required />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <label>Email</label>
                         <input id="email" type="email" placeholder="Email..." class="form-control" required />
                     </div>
+                    <div class="col-md-3">
+                        <label>Responsable</label>
+                        <select id="responsable" class="form-control">
+                            <option value="">-- Responsable --</option>
+                        </select>
+                    </div>
                     <div class="col-md-12 mt-2">
+                        <label>Mensaje del contacto</label>
                         <textarea class="form-control" placeholder="Mensaje..." id="petition" required></textarea>
                     </div>
                     <div id="channelsList" class="col-md-6">

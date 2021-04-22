@@ -9,14 +9,20 @@ const MoreTask = (i) => {
         <div class="card-body">
             <form class="moreTask">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Fecha limite de la tarea</label>
                         <input id="deadline" class="form-control deadline" type="datetime-local" required />
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label>Tipo de tarea</label>
                         <select id="typesTasksList" class="form-control typesTasksList_${i} typesTasksList" >
-                            <option value="">--TIPO DE TAREA--</option>
+                            <option value="">-- Tipo de tarea --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Responsable</label>
+                        <select id="responsablesList" class="form-control responsablesList_${i} responsablesList" >
+                            <option value="">-- Responsable --</option>
                         </select>
                     </div>
                 </div>
@@ -44,6 +50,16 @@ const TypesTasksInTracings = (typesTasks, i) => {
             `<option value="${typesTasks[index].Id}">
                 ${typesTasks[index].Name}
             </option>`;
+    }
+}
+
+const responsableInTracings = (responsables, i) => {
+    let responsablesList = document.getElementsByClassName('responsablesList_' + i);
+    for (let index = 0; index < responsables.length; index++) {
+        responsablesList[0].innerHTML +=
+            `<option value="${responsables[index].UserName}">
+                ${responsables[index].FirstName + " " + responsables[index].LastName}
+            </option>`
     }
 }
 

@@ -20,22 +20,29 @@
             <center><h3>Crear tarea</h3></center>
         </div>
         <div class="card-body">
+            <input type="hidden" id="user" value="@User.Identity.Name" />
             <form id="tasksForm"> 
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Selecciona el contacto</label>
                         <select id="contactsList" class="form-control" required>
                             <option value="">-- CONTACTOS --</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Fecha limite de la tarea</label>
                         <input id="deadline" class="form-control" type="datetime-local" required />
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <label>Tipo de tarea</label>
                         <select id="typesTasksList"  class="form-control" required>
                             <option value="">-- Tipo de tarea --</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Responsable</label>
+                        <select id="responsableList" class="form-control">
+                            <option value="" >-- Responsable --</option>
                         </select>
                     </div>
                 </div>

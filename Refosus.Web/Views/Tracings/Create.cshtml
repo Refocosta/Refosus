@@ -12,6 +12,7 @@
     </nav>
     <a asp-controller="Tracings" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
     <div class="card mt-2" >
+        <input type="hidden" id="user" value="@User.Identity.Name" />
         <div class="card-header" >
             <div class="card-tools">
                 <button type="button" class="btn btn-primary-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
@@ -19,6 +20,7 @@
             <center><h3>Crear un nuevo seguimineto</h3></center>
         </div>
         <div class="card-body" >
+            <input type="hidden" id="user" value="@User.Identity.Name" />
             <form id="tracingsForm" >
                 <div class="row" >
                     <div class="col-md-4" >
