@@ -283,6 +283,20 @@
         return this;
     }
 
+    reminder()
+    {
+        Fetch('/tasks/task/reminder', null, 'GET').then(response => {
+            if (!response.error) {
+                for (let index = 0; index < response.message.length; index++) {
+                    toastr.info(response.message[index], 'Cuidado');
+                }
+            } else {
+                toastr.error('Ha ocurrido un error', 'Ups');
+            }
+        });
+        return this;
+    }
+
     dataTable()
     {
         if (document.getElementById('tableTasks') != null) {
@@ -306,4 +320,4 @@
         return this;
     }
 }
-(new Tasks()).index().store().show().edit();
+(new Tasks()).index().store().show().edit().reminder();
