@@ -254,7 +254,7 @@
             this.editTask.addEventListener('click', () => {
                 let description = document.getElementById('descriptionEdit').value;
                 let status = (document.getElementById('statusEdit').value.length > 0 )
-                                                                            ? document.getElementById('statusEdit').value.length
+                                                                            ? document.getElementById('statusEdit').value
                                                                             : 1;
                 let tracingsId = document.getElementById('tracingsEdit').value;
                 let typesTasksId = document.getElementById('typesTasksEdit').value;
