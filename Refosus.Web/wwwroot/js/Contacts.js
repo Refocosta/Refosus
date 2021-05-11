@@ -168,7 +168,9 @@
                             list[index].created_at,
                             list[index].types_channels.Name,
                             list[index].Price,
-                            list[index].Value
+                            list[index].Value,
+                            list[index].QuotationDate,
+                            list[index].SaleDate
                         ]);
                     }
                 } else {

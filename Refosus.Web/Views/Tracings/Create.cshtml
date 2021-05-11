@@ -23,21 +23,21 @@
             <input type="hidden" id="user" value="@User.Identity.Name" />
             <form id="tracingsForm" >
                 <div class="row" >
-                    <div class="col-md-4" >
+                    <div class="col-md-6" >
                         <label>Contacto</label>
                         <select id="listContacts" class="form-control" required>
                             <option value="" >-- Contacto --</option>
                         </select>
                     </div>
-                    <div class="col-md-4" >
+                    <div class="col-md-6" >
                         <label>Tipo de observacion</label>
                         <select id="listTypesObservations" class="form-control" required>
                             <option value="" >-- tipo de observacion --</option>
                         </select>
                     </div>
-                    <div class="col-md-4" >
+                    <div style="display:none" class="col-md-4" >
                         <label>Canal</label>
-                        <select id="listChannels" class="form-control" required>
+                        <select id="listChannels" class="form-control">
                             <option value="" >-- Canal --</option>
                         </select>
                     </div>

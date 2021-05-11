@@ -115,7 +115,7 @@
                 event.preventDefault();
                 let contactId = document.getElementById('listContacts').value;
                 let typeObservationId = document.getElementById('listTypesObservations').value;
-                let channelId = document.getElementById('listChannels').value;
+                let channelId = 1;
                 let observation = document.getElementById('observation').value;
                 let quotation = document.getElementById('quotation').value;
                 let price = document.getElementById('price').value;
@@ -154,10 +154,12 @@
                     document.getElementById('typeObservationDetails').value = response.message.types_observations.Name;
                     document.getElementById('typeChannelDetails').value = response.message.types_channels.Name;
                     document.getElementById('quotationDetails').value = Intl.NumberFormat().format(response.message.Price);
+                    document.getElementById('quotationDateDetails').value = (response.message.QuotationDate != null) ? response.message.QuotationDate.replace('T', ' ').slice(0, 19) : "";
                     document.getElementById('valueDetails').value = Intl.NumberFormat().format(response.message.Value);
+                    document.getElementById('valueDateDetails').value = (response.message.SaleDate != null) ? response.message.SaleDate.replace('T', ' ').slice(0, 19) : "";
                     document.getElementById('createdDetails').value = response.message.created_at.replace('T', ' ').slice(0, 19);
                     document.getElementById('updatedDetails').value = response.message.updated_at.replace('T', ' ').slice(0, 19);
-                    document.getElementById('observationDetails').value = response.message.Observation;
+                    document.getElementById('observationDetails').value = response.message.Observation; 
                     let tasks = document.getElementById('tasks');
                     let list = response.message.tasks.reverse();
                     if (list.length > 0) {

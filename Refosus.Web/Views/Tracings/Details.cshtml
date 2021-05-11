@@ -21,15 +21,15 @@
         <div class="card-body">
             <input type="hidden" id="detailsId" key="@ViewBag.Id" />
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label>Contacto</label>
                     <input id="contactDetails" type="text" class="form-control" readonly />
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label>Tipo de observacion</label>
                     <input id="typeObservationDetails" type="text" class="form-control" readonly />
                 </div>
-                <div class="col-md-4">
+                <div style="display:none" class="col-md-4">
                     <label>Canal</label>
                     <input id="typeChannelDetails" type="text" class="form-control" readonly />
                 </div>
@@ -40,14 +40,24 @@
                     <input id="quotationDetails" type="text" class="form-control" readonly />
                 </div>
                 <div class="col-md-3">
+                    <label>Fecha valor cotizado</label>
+                    <input id="quotationDateDetails" type="text" class="form-control"  readonly />
+                </div>
+                <div class="col-md-3">
                     <label>Valor de venta</label>
                     <input id="valueDetails" type="text" class="form-control" readonly />
                 </div>
-                <div class="col-md-3" >
+                <div class="col-md-3">
+                    <label>Fecha valor venta</label>
+                    <input id="valueDateDetails" type="text" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6" >
                     <label>Fecha de creación</label>
                     <input id="createdDetails" type="text" class="form-control" readonly />
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <label>Fecha de ultima actualización</label>
                     <input id="updatedDetails" type="text" class="form-control" readonly />
                 </div>
