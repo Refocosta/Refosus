@@ -23,6 +23,21 @@ namespace Refosus.Web.Helpers
             }
             return $"~/Message/{folder}/{file}";
         }
+        public async Task<string> UploadFileShoppingAsync(IFormFile File, string folder)
+        {
+            string guid = Guid.NewGuid().ToString();
 
+            string ext = Path.GetExtension(File.FileName);
+            string file = $"{guid}" + ext;
+            string path = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                $"wwwroot\\FileCompras\\{folder}",
+                file);
+            using (FileStream stream = new FileStream(path, FileMode.Create))
+            {
+                await File.CopyToAsync(stream);
+            }
+            return $"/FileCompras/{folder}/{file}";
+        }
     }
 }

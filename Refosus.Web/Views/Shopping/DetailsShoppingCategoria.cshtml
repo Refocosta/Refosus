@@ -1,6 +1,6 @@
-﻿@model Refosus.Web.Models.ShoppingViewModel
+﻿@model Refosus.Web.Data.Entities.ShoppingEntity
 @{
-    ViewData["Title"] = "DetailsShopping";
+    ViewData["Title"] = "DetailsShoppingCategoria";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <section class="content">
@@ -83,49 +83,9 @@
                         <div class="col col-12">
                             @if (Model.State.Name != "Cancelado" && Model.State.Name != "Rechazado" && Model.State.Name != "Finalizado")
                             {
-                                if (Model.Pantalla == 4)
-                                {
-                                    if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "Devuelto" || Model.State.Name == "Entregado")
-                                    {
-                                        <a asp-action="EditShopping" asp-route-id="@Model.Id-@Model.Pantalla" class="btn btn-warning col-sm-2">Editar</a>
-                                    }
-                                }
-                                else
-                                {
-                                    if (Model.State.Name != "Nuevo" || Model.State.Name != "Guardado" || Model.State.Name != "Devuelto" || Model.State.Name != "Entregado")
-                                    {
-                                        if (Model.Pantalla == 1 || Model.Pantalla == 2 || Model.Pantalla == 3 || Model.Pantalla == 6)
-                                        {
-                                        <a asp-action="EditShopping" asp-route-id="@Model.Id-@Model.Pantalla" class="btn btn-warning col-sm-2">Editar</a>
-                                        }
-                                    }
-                                }
+                                <a asp-action="EditShopping" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Editar</a>
                             }
-                            @*BONTON CANCELAR*@
-                            @if (Model.Pantalla == 1)
-                            {
-                                <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
-                            @if (Model.Pantalla == 2)
-                            {
-                                <a asp-action="IndexCategoria" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
-                            @if (Model.Pantalla == 3)
-                            {
-                                <a asp-action="IndexCompras" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
-                            @if (Model.Pantalla == 4)
-                            {
-                                <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
-                            @if (Model.Pantalla == 5)
-                            {
-                                <a asp-action="IndexMeHistory" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
-                            @if (Model.Pantalla == 6)
-                            {
-                                <a asp-action="IndexPending" class="btn btn-danger col-sm-2 ">Cancelar</a>
-                            }
+                            <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
                         </div>
                     </div>
                 </div>

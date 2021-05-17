@@ -11,6 +11,9 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Consecutivo")]
         public int Id { get; set; }
 
+        [Display(Name = "Compañia")]
+        public CompanyEntity Company { get; set; }
+
         [Display(Name = "Creado Por")]
         public UserEntity UserCreate { get; set; }
 
@@ -51,7 +54,7 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Articulos")]
         public IEnumerable<ShoppingTempItems> ItemsTemp { get; set; }
 
-        [Display (Name ="Grupo Asignado")]
+        [Display(Name = "Grupo Asignado")]
         public TP_GroupEntity AssignedGroup { get; set; }
 
         [Display(Name = "Grupo")]

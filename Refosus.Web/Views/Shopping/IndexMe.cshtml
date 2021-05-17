@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Refosus.Web.Data.Entities.ShoppingEntity>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "IndexMe";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
 }
 <section class="content">
@@ -10,12 +10,12 @@
                 <div class="card card-green">
                     <div class="card-header">
                         <div class="card-title col-sm-3">
-                            Administrador de compras
+                            Compras
                         </div>
                         <div class="card-title col-sm-2">
                             @if (User.IsInRole("Administrator") || User.IsInRole("ShoppingCreator"))
                             {
-                                <a asp-action="CreateShopping" asp-route-id="1" class="btn btn-primary ">
+                                <a asp-action="CreateShopping" asp-route-id="4" class="btn btn-primary ">
                                     <i class="oi oi-plus" style="color:white"></i>
                                     Crear Nuevo
                                 </a>
@@ -91,7 +91,7 @@
                                                     @item.Project.Name
                                                 </td>
                                                 <td>
-                                                    <a asp-action="DetailsShopping" asp-route-id="@item.Id-1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                    <a asp-action="DetailsShopping" asp-route-id="@item.Id-4" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
                                                 </td>
                                             </tr>
                                         }
