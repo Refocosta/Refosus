@@ -53,6 +53,9 @@ namespace Refosus.Web.Data
         public DbSet<TP_Shopping_ItemSAPEntity> TP_Shopping_ItemSAPEntity { get; set; }
         public DbSet<TP_Shopping_ItemProvedorEntity> TP_Shopping_ItemProvedorEntity { get; set; }
 
+        public DbSet<GeneralDocumentEntity> GeneralDocumentEntity { get; set; }
+        public DbSet<GeneralDocumentCategoryEntity> GeneralDocumentCategoryEntity { get; set; }
+
         #endregion
 
 

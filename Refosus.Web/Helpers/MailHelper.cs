@@ -15,7 +15,7 @@ namespace Refosus.Web.Helpers
         {
 
             string EmailOrigen = "nativa@refocosta.com";
-            string Password = "Nativ@123";
+            string Password = "Nativ@321";
 
             MailMessage mail = new MailMessage();
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Refosus.Web.Data;
 
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20210520214220_prueba")]
+    partial class prueba
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,27 +342,6 @@ namespace Refosus.Web.Migrations
                     b.ToTable("DocumentTypes");
                 });
 
-            modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentCategoryEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("GeneralDocumentsCategories");
-                });
-
             modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -382,7 +363,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GeneralDocuments");
+                    b.ToTable("GeneralDocumentEntity");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>
