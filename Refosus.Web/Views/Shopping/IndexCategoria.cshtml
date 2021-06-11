@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Refosus.Web.Data.Entities.ShoppingEntity>
+@{
+    ViewData["Title"] = "IndexCategoria";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col-lg-12 connectedSortable">
+                <div class="card card-green">
+                    <div class="card-header">
+                        <div class="card-title col-sm-3">
+                            Compras
+                        </div>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table class="table table-hover table-striped display" id="tblDatos">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.UpdateDateLocal)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.Id)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.UserCreate)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.CreateDateLocal)
+                                            </th>
+                                            <th>
+                                                Asignado a
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.State)
+                                            </th>
+                                            <th>
+                                                @Html.DisplayNameFor(m => m.Project)
+                                            </th>
+                                            <th>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.UpdateDateLocal.ToShortDateString()
+                                                </td>
+                                                <td>
+                                                    @item.Id
+                                                </td>
+                                                <td>
+                                                    @item.UserCreate.FullName
+                                                </td>
+                                                <td>
+                                                    @item.CreateDateLocal.ToShortDateString()
+                                                </td>
+                                                @if (item.UserAssigned != null)
+                                                {
+                                                    <td>
+                                                        @item.UserAssigned.FullName
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        @item.AssignedGroup.Name
+                                                    </td>
+                                                }
+                                                <td>
+                                                    @item.State.Name
+                                                </td>
+                                                <td>
+                                                    @item.Project.Name
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DetailsShopping" asp-route-id="@item.Id-2" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}

@@ -3,80 +3,177 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Agregar articulo</h5>
+                <h5 class="modal-title" id="exampleModalLabel">
+                    Articulos
+                </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body col-sm-12">
                 <div class="row">
-                    <div class="form-group col col-sd-4">
-                        <label asp-for="CodSap" class="control-label"></label>
-                        <input asp-for="CodSap" class="form-control" />
-                        <span asp-validation-for="CodSap" class="text-danger"></span>
+                    <div class="form-group col col-sd-3">
+                        <label asp-for="ItemCodSap" class="control-label"></label>
+                        <input asp-for="ItemCodSap" class="form-control" />
+                        <span asp-validation-for="ItemCodSap" class="text-danger"></span>
                     </div>
-                    <div class="col col-sm-4">
-                        <label asp-for="IdCategory" class="control-label"></label>
-                        <select asp-for="IdCategory" asp-items="Model.Categories" class="form-control"></select>
-                        <span asp-validation-for="IdCategory" class="text-danger"></span>
+                    <div class="form-group col col-sd-3">
+                        <label asp-for="ItemDescription" class="control-label"></label>
+                        <input asp-for="ItemDescription" class="form-control" />
+                        <span asp-validation-for="ItemDescription" class="text-danger"></span>
                     </div>
-                    <div class="col col-sm-4">
-                        <label asp-for="IdSubCategory" class="control-label"></label>
-                        <select asp-for="IdSubCategory" asp-items="Model.SubCategories" class="form-control"></select>
-                        <span asp-validation-for="IdSubCategory" class="text-danger"></span>
+                    <div class="col col-sm-3">
+                        <label asp-for="ItemIdCategory" class="control-label"></label>
+                        <select asp-for="ItemIdCategory" asp-items="Model.Categories" class="form-control"></select>
+                        <span asp-validation-for="ItemIdCategory" class="text-danger"></span>
+                    </div>
+                    <div class="col col-sm-3">
+                        <label asp-for="ItemIdSubCategory" class="control-label"></label>
+                        <select asp-for="ItemIdSubCategory" asp-items="Model.SubCategories" class="form-control"></select>
+                        <span asp-validation-for="ItemIdSubCategory" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col col-sm-4">
-                        <label asp-for="IdUnit" class="control-label"></label>
-                        <select asp-for="IdUnit" asp-items="Model.ShoppingUnits" class="form-control"></select>
-                        <span asp-validation-for="IdUnit" class="text-danger"></span>
+                        <label asp-for="ItemIdUnit" class="control-label"></label>
+                        <select asp-for="ItemIdUnit" asp-items="Model.ShoppingUnits" class="form-control"></select>
+                        <span asp-validation-for="ItemIdUnit" class="text-danger"></span>
                     </div>
                     <div class="col col-sm-4">
-                        <label asp-for="IdMeasure" class="control-label"></label>
-                        <select asp-for="IdMeasure" asp-items="Model.ShoppingMeasures" class="form-control"></select>
-                        <span asp-validation-for="IdMeasure" class="text-danger"></span>
+                        <label asp-for="ItemIdMeasure" class="control-label"></label>
+                        <select asp-for="ItemIdMeasure" asp-items="Model.ShoppingMeasures" class="form-control"></select>
+                        <span asp-validation-for="ItemIdMeasure" class="text-danger"></span>
                     </div>
                     <div class="form-group col col-sd-4">
-                        <label asp-for="Quantity" class="control-label"></label>
-                        <input asp-for="Quantity" class="form-control" />
-                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                        <label asp-for="ItemQuantity" class="control-label"></label>
+                        <input asp-for="ItemQuantity" class="form-control" />
+                        <span asp-validation-for="ItemQuantity" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col col-sd-4">
+                        <label asp-for="ItemMark" class="control-label"></label>
+                        <input asp-for="ItemMark" class="form-control" />
+                        <span asp-validation-for="ItemMark" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col col-sd-4">
+                        <label asp-for="ItemReference" class="control-label"></label>
+                        <input asp-for="ItemReference" class="form-control" />
+                        <span asp-validation-for="ItemReference" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col col-sd-4">
-                        <label asp-for="Description" class="control-label"></label>
-                        <input asp-for="Description" class="form-control" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <label asp-for="ItemInternalOrder" class="control-label"></label>
+                        <input asp-for="ItemInternalOrder" class="form-control" />
+                        <span asp-validation-for="ItemInternalOrder" class="text-danger"></span>
                     </div>
                     <div class="form-group col col-sd-4">
-                        <label asp-for="Reference" class="control-label"></label>
-                        <input asp-for="Reference" class="form-control" />
-                        <span asp-validation-for="Reference" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col col-sd-4">
-                        <label asp-for="Mark" class="control-label"></label>
-                        <input asp-for="Mark" class="form-control" />
-                        <span asp-validation-for="Mark" class="text-danger"></span>
+                        <label asp-for="ItemNumInternalOrder" class="control-label"></label>
+                        <input asp-for="ItemNumInternalOrder" class="form-control" />
+                        <span asp-validation-for="ItemNumInternalOrder" class="text-danger"></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col col-sd-4">
-                        <label asp-for="InternalOrder" class="control-label"></label>
-                        <input asp-for="InternalOrder" class="form-control" />
-                        <span asp-validation-for="InternalOrder" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col col-sd-4">
-                        <label asp-for="NumInternalOrder" class="control-label"></label>
-                        <input asp-for="NumInternalOrder" class="form-control" />
-                        <span asp-validation-for="NumInternalOrder" class="text-danger"></span>
+                        <label asp-for="ItemObservation" class="control-label"></label>
+                        <textarea asp-for="ItemObservation" class="form-control"></textarea>
+                        <span asp-validation-for="ItemObservation" class="text-danger"></span>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" id="btnAddArticle"> Agregar Articulo</button>
+                <button type="submit" class="btn btn-success" id="btnAddArticle"> Actualizar</button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+var CODSAP = document.getElementById("ItemCodSap");
+    CODSAP.addEventListener("change", ItemSAP);
+
+function ItemSAP() {
+
+            document.getElementById("ItemDescription").disabled = false;
+            document.getElementById("ItemIdCategory").disabled = false;
+            document.getElementById("ItemIdCategory").disabled = false;
+            document.getElementById("ItemIdSubCategory").disabled = false;
+            document.getElementById("ItemIdUnit").disabled = false;
+            document.getElementById("ItemIdMeasure").disabled = false;
+            document.getElementById("ItemInternalOrder").disabled = false;
+            document.getElementById("ItemNumInternalOrder").disabled = false;
+
+            $.getJSON("@Url.Content("~/Shopping/ItemSAP")" + "?val=" + CODSAP.value, function (responseData, status) {
+            cboCat.value = responseData.category.id;
+            cboUni.value = responseData.unit.id;
+            fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + responseData.category.id)
+            .then(function (result) {
+            if (result.ok) {
+            return result.json();
+            }
+            })
+            .then(function (data) {
+            var cbo = null;
+            cbo = document.getElementById("ItemIdSubCategory");
+            cbo.innerHTML = "";
+            data.forEach(function (element) {
+            let cbo = document.getElementById("ItemIdSubCategory");
+            let opt = document.createElement("option");
+            opt.appendChild(document.createTextNode(element.text));
+            opt.value = element.value;
+            cbo.appendChild(opt)
+            })
+            cbo.value = responseData.subCategory.id;
+            });
+            fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
+            .then(function (result) {
+            if (result.ok) {
+            return result.json();
+            }
+            })
+            .then(function (data) {
+            var cbo = null;
+            cbo = document.getElementById("ItemIdMeasure");
+            cbo.innerHTML = "";
+            data.forEach(function (element) {
+            let cbo = document.getElementById("ItemIdMeasure");
+            let opt = document.createElement("option");
+            opt.appendChild(document.createTextNode(element.text));
+            opt.value = element.value;
+            cbo.appendChild(opt)
+            })
+            cbo.value = responseData.measure.id;;
+            })
+            document.getElementById("ItemCodSap").value = responseData.codSAP;
+            document.getElementById("ItemDescription").value = responseData.description;
+            document.getElementById("ItemIdCategory").value = responseData.category.id;
+            document.getElementById("ItemIdUnit").value = responseData.unit.id;
+            document.getElementById("ItemReference").value = responseData.reference;
+            document.getElementById("ItemMark").value = responseData.mark;
+            document.getElementById("ItemInternalOrder").value = responseData.internalOrder;
+            document.getElementById("ItemNumInternalOrder").value = responseData.numInternalOrder;
+            document.getElementById("ItemIdSubCategory").value = responseData.subCategory.id;
+            document.getElementById("ItemIdMeasure").value = responseData.measure.id;
+            if (responseData.codSAP != "") {
+            document.getElementById("ItemDescription").disabled = true;
+            document.getElementById("ItemIdCategory").disabled = true;
+            document.getElementById("ItemIdSubCategory").disabled = true;
+            document.getElementById("ItemIdUnit").disabled = false;
+                document.getElementById("ItemIdMeasure").disabled = false;
+            document.getElementById("ItemInternalOrder").disabled = true;
+            document.getElementById("ItemNumInternalOrder").disabled = true;
+            }
+            else {
+            document.getElementById("ItemDescription").disabled = false;
+            document.getElementById("ItemIdCategory").disabled = false;
+            document.getElementById("ItemIdSubCategory").disabled = false;
+            document.getElementById("ItemIdUnit").disabled = false;
+            document.getElementById("ItemIdMeasure").disabled = false;
+            document.getElementById("ItemInternalOrder").disabled = false;
+            document.getElementById("ItemNumInternalOrder").disabled = false;
+            }
+            });
+    };
+</script>

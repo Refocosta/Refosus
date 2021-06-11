@@ -10,6 +10,7 @@ namespace Refosus.Web.Data.Entities
         public int? Id { get; set; }
         public CompanyEntity Company { get; set; }
         public string Name { get; set; }
+        public string Email { get; set; }
         public bool Stade { get; set; }
         public ICollection<TM_User_GroupEntity> Users { get; set; }
     }

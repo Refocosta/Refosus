@@ -440,7 +440,7 @@ namespace Refosus.Web.Helpers
                 IsActive = model.IsActive,
                 Email = model.Email
             };
-        } 
+        }
 
 
         public UserChangeViewModel ToUserChangeViewModelAsync(UserEntity user)
@@ -450,15 +450,15 @@ namespace Refosus.Web.Helpers
                 Companies = _combosHelper.GetComboCompany(),
                 DocumentTypes = _combosHelper.GetComboDocumentType(),
                 PhotoPath = user.PhotoPath,
-                DocumentTypeId =user.TypeDocument.Id,
+                DocumentTypeId = user.TypeDocument.Id,
                 Document = user.Document,
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Address=user.Address,
-                CompanyId=user.Company.Id,
-                Email=user.Email,
-                PhoneNumber=user.PhoneNumber
+                Address = user.Address,
+                CompanyId = user.Company.Id,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber
             };
         }
 
@@ -472,10 +472,11 @@ namespace Refosus.Web.Helpers
             return new ShoppingEntity
             {
                 Id = isNew ? 0 : model.Id,
+                Company = await _context.Companies.SingleOrDefaultAsync(p => p.Id == model.IdCompany),
                 CreateGroup = await _context.TP_Groups.FirstOrDefaultAsync(p => p.Id == model.IdGroupCreate),
                 UserCreate = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserCreate),
 
-                UserAssigned = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserAssign),
+                UserAssigned = await _userHelper.GetUserByIdAsync(model.IdUserAssign),
                 AssignedGroup = await _context.TP_Groups.FirstOrDefaultAsync(p => p.Id == model.IdGroupAssigned),
 
                 State = await _context.ShoppingStates.FirstOrDefaultAsync(p => p.Id == model.IdState),
@@ -487,9 +488,9 @@ namespace Refosus.Web.Helpers
                 UserProjectBoss = await _context.Users.FirstOrDefaultAsync(p => p.Id == model.IdUserProjectBoss),
 
 
-                
-                
-               
+
+
+
                 observations = model.observations,
                 TotalValue = model.TotalValue
             };
@@ -500,8 +501,14 @@ namespace Refosus.Web.Helpers
             ShoppingViewModel modelView = new ShoppingViewModel();
             modelView.Id = model.Id;
             modelView.IdUserCreate = model.UserCreate.Id;
+            modelView.UserCreate = model.UserCreate;
             modelView.CreateDate = model.CreateDate;
             modelView.UpdateDate = model.UpdateDate;
+            if (model.Company != null)
+            {
+                modelView.Company = model.Company;
+                modelView.IdCompany = model.Company.Id;
+            }
             if (model.UserAssigned != null)
             {
                 modelView.UserAssigned = model.UserAssigned;
@@ -514,7 +521,7 @@ namespace Refosus.Web.Helpers
             }
             modelView.State = await _context.ShoppingStates.FirstOrDefaultAsync(s => s.Id == model.State.Id);
             modelView.IdState = model.State.Id;
-            
+
             if (model.AssignedGroup != null)
             {
                 modelView.AssignedGroup = model.AssignedGroup;
@@ -530,8 +537,9 @@ namespace Refosus.Web.Helpers
                 modelView.Project = await _context.Projects.FirstOrDefaultAsync(s => s.Id == model.Project.Id);
                 modelView.IdProject = model.Project.Id;
                 modelView.IdUserProjectBoss = model.UserProjectBoss.Id;
+                modelView.UserProjectBoss = model.UserProjectBoss;
             }
-            
+
             modelView.ShoppingUnits = _combosHelper.GetComboShoppingUnit();
             modelView.ShoppingMeasures = _combosHelper.GetComboShoppingMeasure(0);
             modelView.Categories = _combosHelper.GetComboShoppingCategory();
@@ -540,6 +548,8 @@ namespace Refosus.Web.Helpers
             modelView.ShoppingStates = _combosHelper.GetComboShoppingState();
             modelView.Projects = _combosHelper.GetComboProject();
             modelView.Groups = _combosHelper.GetGroups();
+            modelView.TotalValue = model.TotalValue;
+            modelView.observations = model.observations;
             return modelView;
         }
         #endregion

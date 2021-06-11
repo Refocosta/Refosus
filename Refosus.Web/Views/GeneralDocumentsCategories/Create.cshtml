@@ -1,0 +1,37 @@
+﻿@model Refosus.Web.Data.Entities.GeneralDocumentCategoryEntity
+@{
+    ViewData["Title"] = "CATEGORIAS DOCUMENTOS GENERALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/generalDocumentsCategories">Categorias</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Crear Categoria</li>
+        </ol>
+    </nav>
+    <a asp-controller="GeneralDocumentsCategories" asp-action="Index" class="btn btn-outline-info" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Crear nueva categoria</h3></center>
+        </div>
+        <div class="card-body">
+            <form asp-controller="GeneralDocumentsCategories" asp-action="Store" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Nombre</label>
+                        <input asp-for="Name" class="form-control" type="text" placeholder="Nombre..." required />
+                    </div>
+                    <div class="col-md-6">
+                        <label>Descripcion</label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <hr />
+                <button class="btn btn-outline-success">Registrar</button>
+            </form>
+        </div>
+    </div>
+</div>

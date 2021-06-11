@@ -16,70 +16,134 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <input asp-for="Id" class="form-control" />
+                            <input asp-for="Pantalla" class="form-control" hidden />
+                            <input asp-for="DeleteItem" class="form-control" hidden />
+                            <input asp-for="DeleteItemTemp" class="form-control" hidden />
+                            <input asp-for="CreateDate" class="form-control" hidden />
+                            <input asp-for="UpdateDate" class="form-control" hidden />
+                            <input asp-for="EditTempItem" class="form-control" hidden />
+                            <input asp-for="EditItem" class="form-control" hidden />
                             <input asp-for="Operation" class="form-control" hidden />
+                            @if (Model.Groups.Count() == 1)
+                            {
+                                <input asp-for="IdGroupCreate" class="form-control" hidden />
+                            }
                             <div class="row">
                                 <div class="col col-sm-12">
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-
                                     <div class="row">
-
                                         <div class="col col-sm-3">
                                             <label asp-for="IdUserCreate" class="control-label"></label>
                                             <select asp-for="IdUserCreate" asp-items="Model.Users" class="form-control" disabled></select>
                                             <span asp-validation-for="IdUserCreate" class="text-danger"></span>
                                         </div>
                                         <div class="col col-sm-3">
-                                            <label asp-for="CreateDate" class="control-label"></label>
-                                            <input asp-for="CreateDate" class="form-control" disabled />
-                                            <span asp-validation-for="CreateDate" class="text-danger"></span>
+                                            <label asp-for="CreateDateLocal" class="control-label"></label>
+                                            <input asp-for="CreateDateLocal" class="form-control" disabled />
+                                            <span asp-validation-for="CreateDateLocal" class="text-danger"></span>
                                         </div>
                                         <div class="col col-sm-3">
-                                            <label asp-for="UpdateDate" class="control-label"></label>
-                                            <input asp-for="UpdateDate" class="form-control" disabled />
-                                            <span asp-validation-for="UpdateDate" class="text-danger"></span>
+                                            <label asp-for="UpdateDateLocal" class="control-label"></label>
+                                            <input asp-for="UpdateDateLocal" class="form-control" disabled />
+                                            <span asp-validation-for="UpdateDateLocal" class="text-danger"></span>
                                         </div>
-                                        <div class="col col-sm-3">
-                                            <label asp-for="IdUserAssign" class="control-label"></label>
-                                            <select asp-for="IdUserAssign" asp-items="Model.Users" class="form-control" disabled></select>
-                                            <span asp-validation-for="IdUserAssign" class="text-danger"></span>
-                                        </div>
-
+                                        @if (Model.UserAssigned != null)
+                                        {
+                                            <div class="col col-sm-3">
+                                                <label asp-for="IdUserAssign" class="control-label"></label>
+                                                <select asp-for="IdUserAssign" asp-items="Model.Users" class="form-control" disabled></select>
+                                                <span asp-validation-for="IdUserAssign" class="text-danger"></span>
+                                            </div>
+                                            <input asp-for="IdGroupAssigned" class="form-control" hidden />
+                                        }
+                                        else
+                                        {
+                                            <div class="col col-sm-3">
+                                                <label asp-for="IdGroupAssigned" class="control-label"></label>
+                                                <select asp-for="IdGroupAssigned" asp-items="Model.Groups" class="form-control" disabled></select>
+                                                <span asp-validation-for="IdGroupAssigned" class="text-danger"></span>
+                                            </div>
+                                            <input asp-for="IdUserAssign" class="form-control" hidden />
+                                        }
+                                    </div>
+                                    <div class="row">
                                         <div class="col col-sm-4">
                                             <label asp-for="IdState" class="control-label"></label>
                                             <select asp-for="IdState" asp-items="Model.ShoppingStates" class="form-control" disabled></select>
                                             <span asp-validation-for="IdState" class="text-danger"></span>
                                         </div>
-                                        @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Por Autorización")
-                                        {
-                                            <div class="col col-sm-4">
-                                                <label asp-for="IdProject" class="control-label"></label>
-                                                <select asp-for="IdProject" asp-items="Model.Projects" class="form-control"></select>
-                                                <span asp-validation-for="IdProject" class="text-danger"></span>
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div class="col col-sm-4">
-                                                <label asp-for="IdProject" class="control-label"></label>
-                                                <select asp-for="IdProject" asp-items="Model.Projects" class="form-control" disabled></select>
-                                                <span asp-validation-for="IdProject" class="text-danger"></span>
-                                            </div>
-                                        }
 
+                                        <div class="col col-sm-4">
+                                            <label asp-for="IdCompany" class="control-label"></label>
+                                            <select asp-for="IdCompany" asp-items="Model.Companies" class="form-control" disabled></select>
+                                            <span asp-validation-for="IdCompany" class="text-danger"></span>
+                                        </div>
+
+                                        <div class="col col-sm-4">
+                                            <label asp-for="IdProject" class="control-label"></label>
+                                            <select asp-for="IdProject" asp-items="Model.Projects" class="form-control" disabled></select>
+                                            <span asp-validation-for="IdProject" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col col-sm-4">
                                             <label asp-for="IdUserProjectBoss" class="control-label"></label>
                                             <div><select asp-for="IdUserProjectBoss" asp-items="Model.Users" class="form-control" disabled></select></div>
                                             <span asp-validation-for="IdUserProjectBoss" class="text-danger"></span>
                                         </div>
+                                        @if (Model.Groups.Count() > 1)
+                                        {
+                                            <div class="col col-sm-4">
+                                                <label asp-for="IdGroupCreate" class="control-label"></label>
+                                                <div><select asp-for="IdGroupCreate" asp-items="Model.Groups" class="form-control" disabled></select></div>
+                                                <span asp-validation-for="IdGroupCreate" class="text-danger"></span>
+                                            </div>
+                                        }
+                                        @if (Model.Groups.Count() == 0)
+                                        {
+                                            <br />
+                                            <input asp-for="IdGroupCreate" class="form-control" hidden />
+                                            <span class="text-danger">
+                                                No cuenta con un grupo asignado, contacte al administrador de la aplicacion.
+                                            </span>
+                                        }
+                                        @if (Model.State.Name == "En Cotización" || Model.State.Name == "Autorizado" || Model.State.Name == "Por Autorización" || Model.State.Name == "En Compra" || Model.State.Name == "En Entrega" || Model.State.Name == "Entregado" || Model.State.Name == "Finalizado")
+                                        {
+                                            <div class="col col-sm-3">
+                                                <label asp-for="TotalValue" class="control-label"></label>
+                                                <input asp-for="TotalValue" class="form-control" disabled />
+                                                <span asp-validation-for="TotalValue" class="text-danger"></span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="col col-sm-4">
+                                                <label asp-for="observations" class="control-label"></label>
+                                                <textarea asp-for="observations" class="form-control"></textarea>
+                                                <span asp-validation-for="IdProject" class="text-danger"></span>
+                                            </div>
+                                        }
+
                                     </div>
+                                    @if (Model.State.Name == "En Cotización" || Model.State.Name == "Autorizado" || Model.State.Name == "Por Autorización" || Model.State.Name == "En Compra" || Model.State.Name == "En Entrega" || Model.State.Name == "Entregado" || Model.State.Name == "Finalizado")
+                                    {
+                                        <div class="row">
+
+                                            <div class="col col-sm-4">
+                                                <label asp-for="observations" class="control-label"></label>
+                                                <textarea asp-for="observations" class="form-control"></textarea>
+                                                <span asp-validation-for="IdProject" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    }
                                     <br />
                                     <div class="row">
                                         <div class="col col-sm-12">
                                             <div class="card card-success">
                                                 <div class="card-header">
                                                     <div class="card-title">
-                                                        @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                        @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "Devuelto")
                                                         {
                                                             <button id="PlusArticle" type="button" class="btn btn-primary addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
                                                         }
@@ -95,13 +159,13 @@
                                                             <thead>
                                                                 <tr>
                                                                     <th>
-                                                                        @Html.DisplayNameFor(model => model.CodSap)
+                                                                        @Html.DisplayNameFor(model => model.ItemCodSap)
                                                                     </th>
                                                                     <th>
-                                                                        @Html.DisplayNameFor(model => model.Description)
+                                                                        @Html.DisplayNameFor(model => model.ItemDescription)
                                                                     </th>
                                                                     <th>
-                                                                        @Html.DisplayNameFor(model => model.Reference)
+                                                                        @Html.DisplayNameFor(model => model.ItemReference)
                                                                     </th>
                                                                     <th>
                                                                         @Html.DisplayNameFor(model => model.Categories)
@@ -117,9 +181,10 @@
                                                                         @Html.DisplayNameFor(model => model.ShoppingMeasures)
                                                                     </th>
                                                                     <th>
-                                                                        @Html.DisplayNameFor(model => model.Quantity)
+                                                                        @Html.DisplayNameFor(model => model.ItemQuantity)
                                                                     </th>
-                                                                    <th></th>
+                                                                    <th>
+                                                                    </th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -133,7 +198,7 @@
                                                                             @Html.DisplayFor(modelItem => item.Description)
                                                                         </td>
                                                                         <td>
-                                                                            @Html.DisplayFor(modelItem => item.Refence)
+                                                                            @Html.DisplayFor(modelItem => item.Reference)
                                                                         </td>
                                                                         <td>
                                                                             @Html.DisplayFor(modelItem => item.Category.Name)
@@ -152,9 +217,10 @@
                                                                             @Html.DisplayFor(modelItem => item.Quantity)
                                                                         </td>
                                                                         <td>
-                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "Devuelto")
                                                                             {
-                                                                                <button data-id="" type="button" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                                <button type="button" onclick="ItempTemp(@item.Id)" class="btn btn-warning addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                                <button type="button" data-id="@item.Id" class="btn btn-danger deleteTempItem" data-toggle="modal" data-target="#DeleteDialogItemTemp"><i class="oi oi-trash" style="color:white"></i></button>
                                                                             }
                                                                         </td>
                                                                     </tr>
@@ -169,7 +235,7 @@
                                                                             @Html.DisplayFor(modelItem => item.Description)
                                                                         </td>
                                                                         <td>
-                                                                            @Html.DisplayFor(modelItem => item.Refence)
+                                                                            @Html.DisplayFor(modelItem => item.Reference)
                                                                         </td>
                                                                         <td>
                                                                             @Html.DisplayFor(modelItem => item.Category.Name)
@@ -188,9 +254,31 @@
                                                                             @Html.DisplayFor(modelItem => item.Quantity)
                                                                         </td>
                                                                         <td>
-                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "En Cotización" || Model.State.Name == "Devuelto")
+                                                                            @if (Model.State.Name == "Nuevo" || Model.State.Name == "Guardado" || Model.State.Name == "Devuelto")
                                                                             {
-                                                                                <button data-id="" type="button" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#deleteDialog"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                                <button type="button" onclick="Itemp(@item.Id)" class="btn btn-warning addArticle" data-toggle="modal" data-target="#addArticle"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                                <button type="button" data-id="@item.Id" class="btn btn-danger deleteItem" data-toggle="modal" data-target="#DeleteDialogItemTemp"><i class="oi oi-trash" style="color:white"></i></button>
+                                                                            }
+                                                                            @if (Model.State.Name == "En Cotización")
+                                                                            {
+                                                                                <button type="button" onclick="ItempCoti(@item.Id)" class="btn btn-warning EditItemShoppingDialog" data-toggle="modal" data-target="#EditItemShoppingDialog"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                            }
+                                                                            @if (Model.State.Name == "Por Autorización" && item.State.Nombre == "Nuevo")
+                                                                            {
+                                                                                <button type="button" onclick="ItempCoti(@item.Id)" class="btn btn-warning EditItemShoppingDialog" data-toggle="modal" data-target="#EditItemShoppingDialog"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                                <button type="button" onclick="edititem(@item.Id)" class="btn btn-secondary AutorizarArticuloDialog" data-toggle="modal" data-target="#AutorizarArticuloDialog"><i class="oi oi-check" style="color:white"></i></button>
+                                                                                <button type="button" onclick="edititem(@item.Id)" class="btn btn-danger RechazarArticuloDialog" data-toggle="modal" data-target="#RechazarArticuloDialog"><i class="oi oi-circle-x" style="color:white"></i></button>
+
+                                                                            }
+                                                                            @if (Model.State.Name == "Autorizado" && item.State.Nombre == "Autorizado")
+                                                                            {
+                                                                                <button type="button" onclick="ItempCoti(@item.Id)" class="btn btn-warning EditItemShoppingDialog" data-toggle="modal" data-target="#EditItemShoppingDialog"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                                <button type="button" onclick="edititem(@item.Id)" class="btn btn-secondary EntregarArticuloDialog" data-toggle="modal" data-target="#EntregarArticuloDialog"><i class="oi oi-check" style="color:white"></i></button>
+                                                                            }
+                                                                            @if ((Model.State.Name == "En entrega" || Model.State.Name == "Entregado") && item.State.Nombre == "Entregado")
+                                                                            {
+                                                                                <button type="button" onclick="ItempCoti(@item.Id)" class="btn btn-warning EditItemShoppingDialog" data-toggle="modal" data-target="#EditItemShoppingDialog"><i class="oi oi-pencil" style="color:white"></i></button>
+                                                                                <button type="button" onclick="edititem(@item.Id)" class="btn btn-secondary RecibirArticuloDialog" data-toggle="modal" data-target="#RecibirArticuloDialog"><i class="oi oi-check" style="color:white"></i></button>
                                                                             }
                                                                         </td>
                                                                     </tr>
@@ -208,34 +296,87 @@
                         <div class="card-footer ">
                             @if (Model.State.Name != "Cancelado" && Model.State.Name != "Rechazado" && Model.State.Name != "Entregado")
                             {
-                                <input type="submit" value="Guardar" class="btn btn-primary col-sm-2" id="btnSaveShopping" />
+                            <button type="submit" class="btn btn-success col-sm-2" id="btnSaveReg">Guardar</button>
                             }
-                            @if (Model.State.Name == "Devuelto")
+                            @if (Model.State.Name == "Guardado" || Model.State.Name == "Devuelto")
                             {
-                                <button type="submit" class="btn btn-success col-sm-2" id="btnSendShopping">Enviar Compra</button>
+                            <button type="submit" class="btn btn-success col-sm-2" id="btnSendShopping">Guardar y enviar</button>
                             }
                             @if (Model.State.Name == "En Cotización")
                             {
-                                <input type="submit" value="Enviar Cotización" class="btn btn-success col-sm-2" id="" />
-                                <input type="button" value="Devolver Compra" class="btn btn-warning ReturnedShopping col-sm-2" data-toggle="modal" data-target="#ReturnedShoppingDialog" />
-                                <input type="button" value="Cancelar Compra" class="btn btn-danger CancelShopping col-sm-2" data-toggle="modal" data-target="#CancelShoppingDialog" />
+                            <input type="button" value="Enviar Cotización" class="btn btn-success SendQuotation col-sm-2" data-toggle="modal" data-target="#SendQuotationDialog" />
+                            <input type="button" value="Devolver Compra" class="btn btn-warning ReturnedShopping col-sm-2" data-toggle="modal" data-target="#ReturnedShoppingDialog" />
+                            <input type="button" value="Cancelar Compra" class="btn btn-danger CancelShopping col-sm-2" data-toggle="modal" data-target="#CancelShoppingDialog" />
                             }
                             @if (Model.State.Name == "Por Autorización")
                             {
-                                <input type="submit" value="Autorizar" class="btn btn-success col-sm-2" id="" />
-                                <input type="submit" value="Rechazar" class="btn btn-danger col-sm-2" id="" />
-                            }
-                            @if (Model.State.Name == "Autorizado")
+                                //if (User.IsInRole("ShoppingAutorizathor"))
+                                //{
+                            <input type="button" value="Autorizar" class="btn btn-success AuthorizeShopping col-sm-2" data-toggle="modal" data-target="#AuthorizeShoppingDialog" />
+                            <input type="button" value="Rechazar" class="btn btn-danger RefuseShopping col-sm-2" data-toggle="modal" data-target="#RefuseShoppingDialog" />
+                                    //}
+                                }
+                            @if (Model.State.Name == "En Entrega" || Model.State.Name == "Autorizado")
                             {
-                                <input type="submit" value="Entregar Compra" class="btn btn-success col-sm-2" id="" />
-                                <input type="submit" value="Cancelar Compra" class="btn btn-danger col-sm-2" id="" />
+                            <input type="button" value="Entregar Compra" class="btn btn-success col-sm-2 FullDeliver col-sm-2" data-toggle="modal" data-target="#FullDeliverDialog" />
+                            @if (Model.State.Name == "Autorizado")
+                                {
+                            <input type="button" value="Cancelar Compra" class="btn btn-danger CancelShopping col-sm-2" data-toggle="modal" data-target="#CancelShoppingDialog" />
+                                }
                             }
+                            @if (Model.State.Name == "Entregado")
+                            {
+                            <input type="button" value="Recibir Compra" class="btn btn-success col-sm-2 RecibirCompra col-sm-2" data-toggle="modal" data-target="#RecibirCompraDialog" />
+
+                            }
+                            @*BOTON CANCELAR*@
+                            @if (Model.Pantalla == 1)
+                            {
                             <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
+                            @if (Model.Pantalla == 2)
+                            {
+                            <a asp-action="IndexCategoria" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
+                            @if (Model.Pantalla == 3)
+                            {
+                            <a asp-action="IndexCompras" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
+                            @if (Model.Pantalla == 4)
+                            {
+                            <a asp-action="IndexMe" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
+                            @if (Model.Pantalla == 5)
+                            {
+                            <a asp-action="IndexMeHistory" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
+                            @if (Model.Pantalla == 6)
+                            {
+                            <a asp-action="IndexPending" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                            }
                         </div>
                     </div>
+                    @if (Model.State.Name == "Guardado" || Model.State.Name == "Devuelto")
+                    {
                     <partial name="_AddArticleDialog" />
+                    }
+                    @if (Model.State.Name == "En Cotización" || Model.State.Name == "Por Autorización" || Model.State.Name == "Autorizado" || Model.State.Name == "Entregado" || Model.State.Name == "En Entrega")
+                    {
+                    <partial name="_EditArticleDialog" />
+                    }
                     <partial name="_CancelShoppingDialog" />
                     <partial name="_ReturnedShoppingDialog" />
+                    <partial name="_SendQuotationDialog" />
+                    <partial name="_AuthorizeShoppingDialog" />
+                    <partial name="_RefuseShoppingDialog" />
+                    <partial name="_FullDeliverDialog" />
+                    <partial name="_RecibirCompraDialog" />
+                    <partial name="_DeleteDialogItemTemp" />
+                    <partial name="_EntregarArticuloDialog" />
+                    <partial name="_AutorizarArticuloDialog" />
+                    <partial name="_RechazarArticuloDialog" />
+                    <partial name="_RecibirCompraDialog" />
+                    <partial name="_RecibirArticuloDialog" />
                 </form>
             </section>
         </div>
@@ -246,13 +387,59 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-<script>
+    <script>
         $('#myModal').on('shown.bs.modal', function () {
             $('#myInput').trigger('focus')
         })
-
         $(document).ready(function () {
 
+            $('#tblDatos1').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+
+            $("#btnYesEditShopping").click(function () {
+                Enable();
+            });
+
+
+            $("#btnSaveReg").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "1";
+            });
+            $("#btnYesSendQuotation").click(function () {
+                document.getElementById("Operation").value = "2";
+                Enable();
+            });
+            $("#btnYesAuthorizeShopping").click(function () {
+                document.getElementById("Operation").value = "3";
+                Enable();
+            });
+            $("#btnYesRefuseShopping").click(function () {
+                document.getElementById("Operation").value = "4";
+                Enable();
+            });
+            $("#btnYesEntregarArticulo").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "5";
+            });
+            $("#btnYesFullDeliver").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "6";
+            });
             $("#btnYesCancelShopping").click(function () {
                 Enable();
                 document.getElementById("Operation").value = "7";
@@ -261,65 +448,126 @@
                 Enable();
                 document.getElementById("Operation").value = "8";
             });
-
-
             $("#btnSendShopping").click(function () {
                 Enable();
                 document.getElementById("Operation").value = "9";
             });
             $("#btnAddArticle").click(function () {
+                Enable();
+            });
+            $("#PlusArticle").click(function () {
                 document.getElementById("Operation").value = "10";
+                Clear();
+            });
+            var item_to_deleteTemp;
+            $('.deleteTempItem').click((e) => {
+                item_to_deleteTemp = e.currentTarget.dataset.id;
+                document.getElementById("DeleteItemTemp").value = item_to_deleteTemp;
+                document.getElementById("DeleteItem").value = 0;
+
+            });
+            var item_to_delete;
+            $('.deleteItem').click((e) => {
+                item_to_delete = e.currentTarget.dataset.id;
+                document.getElementById("DeleteItem").value = item_to_delete;
+                document.getElementById("DeleteItemTemp").value = 0;
+            });
+            $("#btnYesDeleteTemp").click(function () {
+                document.getElementById("Operation").value = "12";
+                Enable();
+            });
+            $("#btnYesAutorizarArticulo").click(function () {
+                document.getElementById("Operation").value = "13";
                 Enable();
             });
 
+            //Agregar Proveedor
+            $("#btnYesAddproveedor").click(function () {
+                document.getElementById("Operation").value = "14";
+                Enable();
+            });
 
-
-
-
-            function Enable() {
-                document.getElementById("IdUserCreate").disabled = false;
-                document.getElementById("CreateDate").disabled = false;
-                document.getElementById("UpdateDate").disabled = false;
-                document.getElementById("IdUserAssign").disabled = false;
-                document.getElementById("IdState").disabled = false;
-                document.getElementById("IdUserProjectBoss").disabled = false;
-            };
+            $("#btnYesRecibircompra").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "15";
+            });
+            $("#btnYesEntregarArticulo").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "16";
+            });
+            $("#btnYesRechazarArticulo").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "17";
+            });
+            $("#btnYesRecibirArticulo").click(function () {
+                Enable();
+                document.getElementById("Operation").value = "18";
+            });
         });
+    //Var Category Combo
+        var cboCat = document.getElementById("ItemIdCategory");
+    cboCat.addEventListener("change", CombosSubCategory);
+    //Var Unit-Measure Combo
+        var cboUni = document.getElementById("ItemIdUnit");
+    cboUni.addEventListener("change", CombosMedida);
+    //Var BossProject
+    var cboProject = document.getElementById("IdProject");
+    cboProject.addEventListener("change", UserProjectBoss);
+
+    function edititem(tem) {
+        document.getElementById("EditItem").value = tem;
+    }
+    function Enable() {
+        document.getElementById("IdUserCreate").disabled = false;
+        document.getElementById("CreateDateLocal").disabled = false;
+        document.getElementById("UpdateDateLocal").disabled = false;
+        document.getElementById("IdUserAssign").disabled = false;
+        document.getElementById("IdState").disabled = false;
+        document.getElementById("IdCompany").disabled = false;
+        document.getElementById("IdProject").disabled = false;
+        document.getElementById("IdUserProjectBoss").disabled = false;
+        document.getElementById("IdGroupAssigned").disabled = false;
+        document.getElementById("IdGroupCreate").disabled = false;
 
 
-
-
-        //Var Category Combo
-        var cboCat = document.getElementById("IdCategory");
-        cboCat.addEventListener("change", CombosSubCategory);
-        //Var Unit-Measure Combo
-        var cboUni = document.getElementById("IdUnit");
-        cboUni.addEventListener("change", CombosMedida);
-        //Var BossProject
-        var cboProject = document.getElementById("IdProject");
-        cboProject.addEventListener("change", UserProjectBoss);
-        function Enable() {
-            document.getElementById("IdUserCreate").disabled = false;
-            document.getElementById("CreateDate").disabled = false;
-            document.getElementById("UpdateDate").disabled = false;
-            document.getElementById("IdUserAssign").disabled = false;
-            document.getElementById("IdState").disabled = false;
-            document.getElementById("IdUserProjectBoss").disabled = false;
+        document.getElementById("ItemCodSap").disabled = false;
+        document.getElementById("ItemDescription").disabled = false;
+        document.getElementById("ItemIdCategory").disabled = false;
+        document.getElementById("ItemIdSubCategory").disabled = false;
+        document.getElementById("ItemIdUnit").disabled = false;
+        document.getElementById("ItemIdMeasure").disabled = false;
+        document.getElementById("ItemQuantity").disabled = false;
+        document.getElementById("ItemMark").disabled = false;
+        document.getElementById("ItemReference").disabled = false;
+        document.getElementById("ItemInternalOrder").disabled = false;
+        document.getElementById("ItemNumInternalOrder").disabled = false;
+        document.getElementById("ItemObservation").disabled = false;
         };
-        function Clear() {
-            document.getElementById("CodSap").value = null;
-            document.getElementById("IdCategory").value = 0;
-            document.getElementById("IdSubCategory").value = 0;
-            document.getElementById("IdUnit").value = 0;
-            document.getElementById("IdMeasure").value = 0;
-            document.getElementById("Quantity").value = 0;
-            document.getElementById("Description").value = null;
-            document.getElementById("Reference").value = null;
-            document.getElementById("Mark").value = null;
-            document.getElementById("InternalOrder").value = null;
-            document.getElementById("NumInternalOrder").value = null;
+    function Clear() {
+        document.getElementById("ItemDescription").disabled = false;
+        document.getElementById("ItemIdCategory").disabled = false;
+        document.getElementById("ItemIdCategory").disabled = false;
+        document.getElementById("ItemIdSubCategory").disabled = false;
+        document.getElementById("ItemIdUnit").disabled = false;
+        document.getElementById("ItemIdMeasure").disabled = false;
+        document.getElementById("ItemInternalOrder").disabled = false;
+        document.getElementById("ItemNumInternalOrder").disabled = false;
+
+
+        document.getElementById("ItemCodSap").value = null;
+        document.getElementById("ItemDescription").value = null;
+        document.getElementById("ItemIdCategory").value = 0;
+        document.getElementById("ItemIdSubCategory").value = 0;
+        document.getElementById("ItemIdUnit").value = 0;
+        document.getElementById("ItemIdMeasure").value = 0;
+        document.getElementById("ItemQuantity").value = 0;
+        document.getElementById("ItemReference").value = null;
+        document.getElementById("ItemMark").value = null;
+        document.getElementById("ItemInternalOrder").value = null;
+        document.getElementById("ItemNumInternalOrder").value = null;
+        document.getElementById("ItemObservation").value = null;
         };
-        function CombosSubCategory() {
+    function CombosSubCategory() {
         fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + cboCat.value)
             .then(function (result) {
                 if (result.ok) {
@@ -328,18 +576,18 @@
             })
             .then(function (data) {
                 var cbo = null;
-                cbo = document.getElementById("IdSubCategory");
+                cbo = document.getElementById("ItemIdSubCategory");
                 cbo.innerHTML = "";
                 data.forEach(function (element) {
-                    let cbo = document.getElementById("IdSubCategory");
+                    let cbo = document.getElementById("ItemIdSubCategory");
                     let opt = document.createElement("option");
                     opt.appendChild(document.createTextNode(element.text));
                     opt.value = element.value;
                     cbo.appendChild(opt)
                 })
-            })
+            });
         };
-        function CombosMedida() {
+    function CombosMedida() {
         fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
             .then(function (result) {
                 if (result.ok) {
@@ -348,18 +596,18 @@
             })
             .then(function (data) {
                 var cbo = null;
-                cbo = document.getElementById("IdMeasure");
+                cbo = document.getElementById("ItemIdMeasure");
                 cbo.innerHTML = "";
                 data.forEach(function (element) {
-                    let cbo = document.getElementById("IdMeasure");
+                    let cbo = document.getElementById("ItemIdMeasure");
                     let opt = document.createElement("option");
                     opt.appendChild(document.createTextNode(element.text));
                     opt.value = element.value;
                     cbo.appendChild(opt)
                 })
             })
-        };
-        function UserProjectBoss() {
+    };
+    function UserProjectBoss() {
             if (cboProject.value!=0)
             fetch("@Url.Content("~/Shopping/UserProjectBoss")" + "?UBP=" + cboProject.value)
             .then(function (result) {
@@ -370,7 +618,275 @@
                 .then(function (data) {
                     document.getElementById("IdUserProjectBoss").value = data;
                 })
-    };
-</script>
+        };
+
+
+
+
+
+
+    function ItempTemp(item) {
+        document.getElementById("Operation").value = "11";
+
+        $.getJSON("@Url.Content("~/Shopping/ItemTemp")" + "?val=" + item, function (responseData, status) {
+            cboCat.value = responseData.category.id;
+            cboUni.value = responseData.unit.id;
+            fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + responseData.category.id)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdSubCategory");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdSubCategory");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.subCategory.id;
+            });
+            fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdMeasure");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdMeasure");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.measure.id;;
+            })
+            document.getElementById("EditItem").value = 0;
+            document.getElementById("EditTempItem").value = responseData.id;
+            document.getElementById("ItemCodSap").value = responseData.codSAP;
+            document.getElementById("ItemDescription").value = responseData.description;
+            document.getElementById("ItemIdCategory").value = responseData.category.id;
+            document.getElementById("ItemIdUnit").value = responseData.unit.id;
+            document.getElementById("ItemQuantity").value = responseData.quantity;
+            document.getElementById("ItemReference").value = responseData.reference;
+            document.getElementById("ItemMark").value = responseData.mark;
+            document.getElementById("ItemInternalOrder").value = responseData.internalOrder;
+            document.getElementById("ItemNumInternalOrder").value = responseData.numInternalOrder;
+            document.getElementById("ItemObservation").value = responseData.observation;
+
+            document.getElementById("ItemIdSubCategory").value = responseData.subCategory.id;
+            document.getElementById("ItemIdMeasure").value = responseData.measure.id;
+            document.getElementById("ItemDescription").disabled = false;
+            document.getElementById("ItemIdCategory").disabled = false;
+            document.getElementById("ItemIdSubCategory").disabled = false;
+            document.getElementById("ItemIdUnit").disabled = false;
+            document.getElementById("ItemIdMeasure").disabled = false;
+            document.getElementById("ItemInternalOrder").disabled = false;
+            document.getElementById("ItemNumInternalOrder").disabled = false;
+    });
+        };
+    function Itemp(item) {
+        document.getElementById("Operation").value = "11";
+
+        $.getJSON("@Url.Content("~/Shopping/Item")" + "?val=" + item, function (responseData, status) {
+            cboCat.value = responseData.category.id;
+            cboUni.value = responseData.unit.id;
+            fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + responseData.category.id)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdSubCategory");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdSubCategory");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.subCategory.id;
+            });
+            fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdMeasure");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdMeasure");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.measure.id;;
+            })
+            document.getElementById("EditItem").value = responseData.id;
+            document.getElementById("EditTempItem").value =0;
+            document.getElementById("ItemCodSap").value = responseData.codSAP;
+            document.getElementById("ItemDescription").value = responseData.description;
+            document.getElementById("ItemIdCategory").value = responseData.category.id;
+            document.getElementById("ItemIdUnit").value = responseData.unit.id;
+            document.getElementById("ItemQuantity").value = responseData.quantity;
+            document.getElementById("ItemReference").value = responseData.reference;
+            document.getElementById("ItemMark").value = responseData.mark;
+            document.getElementById("ItemInternalOrder").value = responseData.internalOrder;
+            document.getElementById("ItemNumInternalOrder").value = responseData.numInternalOrder;
+            document.getElementById("ItemObservation").value = responseData.observation;
+
+
+
+            document.getElementById("ItemIdSubCategory").value = responseData.subCategory.id;
+            document.getElementById("ItemIdMeasure").value = responseData.measure.id;
+            document.getElementById("ItemDescription").disabled = false;
+            document.getElementById("ItemIdCategory").disabled = false;
+            document.getElementById("ItemIdSubCategory").disabled = false;
+            document.getElementById("ItemIdUnit").disabled = false;
+            document.getElementById("ItemIdMeasure").disabled = false;
+            document.getElementById("ItemInternalOrder").disabled = false;
+            document.getElementById("ItemNumInternalOrder").disabled = false;
+
+
+    });
+        };
+
+        function ItempCoti(item) {
+            document.getElementById("Operation").value = "11";
+            document.getElementById("EditItem").value = item;
+
+        $.getJSON("@Url.Content("~/Shopping/Item")" + "?val=" + item, function (responseData, status) {
+            cboCat.value = responseData.category.id;
+            cboUni.value = responseData.unit.id;
+            fetch("@Url.Content("~/Shopping/CombosSubCategory")" + "?val=" + responseData.category.id)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdSubCategory");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdSubCategory");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.subCategory.id;
+            });
+            fetch("@Url.Content("~/Shopping/CombosMeasure")" + "?val=" + cboUni.value)
+            .then(function (result) {
+                if (result.ok) {
+                    return result.json();
+                }
+            })
+            .then(function (data) {
+                var cbo = null;
+                cbo = document.getElementById("ItemIdMeasure");
+                cbo.innerHTML = "";
+                data.forEach(function (element) {
+                    let cbo = document.getElementById("ItemIdMeasure");
+                    let opt = document.createElement("option");
+                    opt.appendChild(document.createTextNode(element.text));
+                    opt.value = element.value;
+                    cbo.appendChild(opt)
+                })
+                cbo.value = responseData.measure.id;;
+            })
+            document.getElementById("EditItem").value = responseData.id;
+            document.getElementById("EditTempItem").value =0;
+            document.getElementById("ItemCodSap").value = responseData.codSAP;
+            document.getElementById("ItemDescription").value = responseData.description;
+            document.getElementById("ItemIdCategory").value = responseData.category.id;
+            document.getElementById("ItemIdUnit").value = responseData.unit.id;
+            document.getElementById("ItemQuantity").value = responseData.quantity;
+            document.getElementById("ItemReference").value = responseData.reference;
+            document.getElementById("ItemMark").value = responseData.mark;
+            document.getElementById("ItemInternalOrder").value = responseData.internalOrder;
+            document.getElementById("ItemNumInternalOrder").value = responseData.numInternalOrder;
+            document.getElementById("ItemObservation").value = responseData.observation;
+            document.getElementById("ItemIdSubCategory").value = responseData.subCategory.id;
+            document.getElementById("ItemIdMeasure").value = responseData.measure.id;
+            document.getElementById("ItemUnitCost").value = responseData.valorunidad;
+            document.getElementById("ItemFullCost").value = responseData.valortotal;
+            document.getElementById("ItemCodSap").disabled = true;
+            document.getElementById("ItemDescription").disabled = true;
+            document.getElementById("ItemIdCategory").disabled = true;
+            document.getElementById("ItemIdSubCategory").disabled = true;
+            document.getElementById("ItemIdUnit").disabled = true;
+            document.getElementById("ItemIdMeasure").disabled = true;
+            document.getElementById("ItemQuantity").disabled = true;
+            document.getElementById("ItemReference").disabled = true;
+            document.getElementById("ItemMark").disabled = true;
+            document.getElementById("ItemInternalOrder").disabled = true;
+            document.getElementById("ItemNumInternalOrder").disabled = true;
+            document.getElementById("ItemUnitCost").value = responseData.valorUnidad;
+            document.getElementById("ItemFullCost").value = responseData.valorTotal;
+            document.getElementById("ItemUnitCost").disabled = false;
+            document.getElementById("ItemFullCost").disabled = false;
+            $("EditItemShoppingDialog").load("miJsp")
+        });
+            fetch("@Url.Content("~/Shopping/ItemProveedor")" + "?val=" + item)
+                .then(function (result) {
+                    if (result.ok) {
+                        return result.json();
+                    }
+                })
+                .then(function (data) {
+                    $("#tblProvedor").empty();
+                    $("#tblProvedor").append(
+                        '<thead>' +
+                        '<tr>' +
+                        '<td>Nombre</td>' +
+                        '<td>Telefono</td>' +
+                        '<td>Precio Unidad</td>' +
+                        '<td>Cantidad</td>' +
+                        '<td>Precio Total</td>' +
+                        '<td>Archivo</td>' +
+                        '</tr>' +
+                        '</thead>' +
+                        "<tbody >"
+                    );
+                    data.forEach(function (element) {
+                        var te = element.precioTotal;
+                        $("#tblProvedor").append(
+                            "<tr>"+
+                            "<td>" + element.name +"</td>"+
+                            "<td>" + element.telefono +"</td>"+
+                            "<td>" + element.cantidad +"</td>"+
+                            "<td>" + element.precioUnidad +"</td>"+
+                            "<td>" + element.precioTotal +"</td>"+
+                            "<td>" +
+                            "<a href=\"" + window.location.protocol + element.filePath + "\" download=\"" + element.fileName + "\" class=\"btn btn-info\">" +
+                                                "<i class=\"oi oi-cloud-download style=\"color:white\"></i>"+
+                            "</a>" +
+                            "</td>" +
+                            "</tr>"
+                        );
+                    })
+                    $("#tblProvedor").append(
+                        "</tbody >"
+                    );
+                });
+        };
+    </script>
 }
 

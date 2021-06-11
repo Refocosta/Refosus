@@ -1,0 +1,218 @@
+﻿@model Refosus.Web.Data.Entities.ShoppingEntity
+@{
+    ViewData["Title"] = "DetailsShoppingCategoria";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <section class="col col-lg-12 connectedSortable">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <a class="card-title">Detalles de la compra</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="col col-md-12">
+                            <div class="row">
+                                <div class="form-group col col-3">
+                                    <label class="control-label">Consecutivo</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Id)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UserCreate)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UserCreate.FullName)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.CreateDateLocal)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.CreateDateLocal)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UpdateDateLocal)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UpdateDateLocal)" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if (Model.UserAssigned != null)
+                                {
+                                    <div class="form-group col col-3">
+                                        <label class="control-label">@Html.DisplayNameFor(model => model.UserAssigned)</label>
+                                        <input class="form-control" value="  @Html.DisplayFor(model => model.UserAssigned.FullName)" disabled>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="form-group col col-3">
+                                        <label class="control-label">@Html.DisplayNameFor(model => model.AssignedGroup)</label>
+                                        <input class="form-control" value="  @Html.DisplayFor(model => model.AssignedGroup.Name)" disabled>
+                                    </div>
+                                }
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.State)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.State.Name)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.Project)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.Project.Name)" disabled>
+                                </div>
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.UserProjectBoss)</label>
+                                    <input class="form-control" value="  @Html.DisplayFor(model => model.UserProjectBoss.FullName)" disabled>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @if (Model.State.Name == "En Autorización" || Model.State.Name == "En Cotización" || Model.State.Name == "Por Autorizar" || Model.State.Name == "En Compra" || Model.State.Name == "En Entrega" || Model.State.Name == "Entregado" || Model.State.Name == "Finalizado")
+                                {
+
+                                    <div class="form-group col col-3">
+                                        <label class="control-label">@Html.DisplayNameFor(model => model.TotalValue)</label>
+                                        <input class="form-control" value="  @Html.DisplayFor(model => model.TotalValue)" disabled>
+                                    </div>
+
+                                }
+                                <div class="form-group col col-3">
+                                    <label class="control-label">@Html.DisplayNameFor(model => model.observations)</label>
+                                    <textarea class="form-control" readonly> @Html.DisplayFor(model => model.observations) </textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer ">
+                        <div class="col col-12">
+                            @if (Model.State.Name != "Cancelado" && Model.State.Name != "Rechazado" && Model.State.Name != "Finalizado")
+                            {
+                                <a asp-action="EditShopping" asp-route-id="@Model.Id" class="btn btn-warning col-sm-2">Editar</a>
+                            }
+                            <a asp-action="Index" class="btn btn-danger col-sm-2 ">Cancelar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-success">
+                    <div class="card-header">
+                        <a class="card-title">Articulos</a>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive">
+                                <table class="table table-hover table-striped display" id="tblDatos1">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Codigo SAP
+                                            </th>
+                                            <th>
+                                                Descripción
+                                            </th>
+                                            <th>
+                                                Referencia
+                                            </th>
+                                            <th>
+                                                Categoria
+                                            </th>
+                                            <th>
+                                                Sub Categoria
+                                            </th>
+                                            <th>
+                                                Unidades
+                                            </th>
+                                            <th>
+                                                Medida
+                                            </th>
+                                            <th>
+                                                Cantidad
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.Items)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.CodSAP)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Description)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Reference)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.SubCategory.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Unit.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Measure.Name)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Quantity)
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $('#myModal').on('shown.bs.modal', function () {
+            $('#myInput').trigger('focus')
+        })
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+            $('#tblDatos1').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}
+

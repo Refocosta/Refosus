@@ -651,6 +651,16 @@ namespace Refosus.Web.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GeneralDocuments",
+                columns: table => new
+                {
+                    Alias = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
+                    Path = table.Column<string>(nullable: false),
+                    Ext = table.Column<string>(nullable: false)
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",

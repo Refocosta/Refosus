@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Refosus.Web.Data.Entities.GeneralDocumentCategoryEntity>
+@{
+    ViewData["Title"] = "CATEGORIAS DOCUMENTOS GENERALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Categorias de documentos generales</li>
+        </ol>
+    </nav>
+    <a asp-controller="GeneralDocumentsCategories" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nueva categoria</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Categorias de documentos generales</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <div class="row">
+                @foreach (var g in Model)
+                {
+                    <div class="card ml-3" style="width: 18rem;">
+                        <div class="card-header">
+                            <h5 class="card-title">@g.Name</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@g.Description.</p>
+                            <hr />
+                            <a href="/generalDocuments" class="btn btn-outline-info" role="button">Ver documentos generales</a>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-outline-primary">Editar</button>
+                                <button type="button" class="btn btn-outline-danger">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

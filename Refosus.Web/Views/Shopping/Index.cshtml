@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<Refosus.Web.Data.Entities.ShoppingEntity>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
@@ -9,11 +9,17 @@
             <section class="col-lg-12 connectedSortable">
                 <div class="card card-green">
                     <div class="card-header">
-                        <div class="card-title col-sm-2">
-                            Admin Compras
+                        <div class="card-title col-sm-3">
+                            Administrador de compras
                         </div>
                         <div class="card-title col-sm-2">
-                            @*Compras*@
+                            @if (User.IsInRole("Administrator") || User.IsInRole("ShoppingCreator"))
+                            {
+                                <a asp-action="CreateShopping" asp-route-id="1" class="btn btn-primary ">
+                                    <i class="oi oi-plus" style="color:white"></i>
+                                    Crear Nuevo
+                                </a>
+                            }
                         </div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
@@ -26,83 +32,69 @@
                                     <thead>
                                         <tr>
                                             <th>
-                                                Fecha Actualizacion
+                                                @Html.DisplayNameFor(m => m.UpdateDateLocal)
                                             </th>
                                             <th>
-                                                Consecutivo
+                                                @Html.DisplayNameFor(m => m.Id)
                                             </th>
                                             <th>
-                                               Solicitado Por
+                                                @Html.DisplayNameFor(m => m.UserCreate)
                                             </th>
                                             <th>
-                                                Fecha Creacion
+                                                @Html.DisplayNameFor(m => m.CreateDateLocal)
                                             </th>
                                             <th>
-                                                Asignado A
+                                                Asignado a
                                             </th>
                                             <th>
-                                                Estado
+                                                @Html.DisplayNameFor(m => m.State)
                                             </th>
                                             <th>
-                                                Proyecto
+                                                @Html.DisplayNameFor(m => m.Project)
                                             </th>
                                             <th>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                26-10-2020
-                                            </td>
-                                            <td>
-                                                1000
-                                            </td>
-                                            <td>
-                                                Didney Nieto
-                                            </td>
-                                            <td>
-                                                26-10-2020
-                                            </td>
-                                            <td>
-                                                Yecid Triana
-                                            </td>
-                                            <td>
-                                                Nuevo
-                                            </td>
-                                            <td>
-                                                Principal
-                                            </td>
-                                            <td>
-                                                <a asp-action="DetailsMessage" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                25-10-2020
-                                            </td>
-                                            <td>
-                                                1001
-                                            </td>
-                                            <td>
-                                                Joaquin Suarez
-                                            </td>
-                                            <td>
-                                                24-10-2020
-                                            </td>
-                                            <td>
-                                                Yecid Triana
-                                            </td>
-                                            <td>
-                                                Cotizacion
-                                            </td>
-                                            <td>
-                                                Principal
-                                            </td>
-                                            <td>
-                                                <a asp-action="DetailsMessage" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
-                                            </td>
-                                        </tr>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @item.UpdateDateLocal.ToShortDateString()
+                                                </td>
+                                                <td>
+                                                    @item.Id
+                                                </td>
+                                                <td>
+                                                    @item.UserCreate.FullName
+                                                </td>
+                                                <td>
+                                                    @item.CreateDateLocal.ToShortDateString()
+                                                </td>
+                                                @if (item.UserAssigned != null)
+                                                {
+                                                    <td>
+                                                        @item.UserAssigned.FullName
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        @item.AssignedGroup.Name
+                                                    </td>
+                                                }
+                                                <td>
+                                                    @item.State.Name
+                                                </td>
+                                                <td>
+                                                    @item.Project.Name
+                                                </td>
+                                                <td>
+                                                    <a asp-action="DetailsShopping" asp-route-id="@item.Id-1" class="btn btn-info"><i class="oi oi-list" style="color:white"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -113,40 +105,27 @@
         </div>
     </div>
 </section>
-
-
-
-
-
-
-
-
-
-
-
-
-
-@*
-<div class="col-lg-8 col-8">
-    <div class="small-box bg-warning">
-        <div class="inner">
-            <div class="col col-8">
-                <h3>
-                    Refocosta y su equipo
-                    <br />
-                    TI se encuentran trabajando
-                    <br />
-                    en la creación de nuevas
-                    <br />
-                    experiencias.
-                </h3>
-            </div>
-            <div class="col col-6">
-            </div>
-        </div>
-        <div class="icon">
-            <i class="oi oi-info"></i>
-        </div>
-    </div>
-</div>
-*@
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tblDatos').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}

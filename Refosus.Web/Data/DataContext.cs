@@ -47,9 +47,14 @@ namespace Refosus.Web.Data
         public DbSet<ShoppingCategoryEntity> ShoppingCategories { get; set; }
         public DbSet<ShoppingTempItems> ShoppingTempItems { get; set; }
         public DbSet<ShoppingItemsEntity> ShoppingItems { get; set; }
-        public DbSet<TP_Shoping_Item_StateEntity> TP_Shoping_Item_State { get; set; }
+        public DbSet<TP_Shopping_Item_StateEntity> TP_Shopping_Item_State { get; set; }
         public DbSet<TP_Shopping_ArticleEntity> TP_Shopping_Article { get; set; }
         public DbSet<TP_Shopping_Usu_Apr_GroEntity> TP_Shopping_Usu_Apr_Gro { get; set; }
+        public DbSet<TP_Shopping_ItemSAPEntity> TP_Shopping_ItemSAPEntity { get; set; }
+        public DbSet<TP_Shopping_ItemProvedorEntity> TP_Shopping_ItemProvedorEntity { get; set; }
+
+        public DbSet<GeneralDocumentEntity> GeneralDocumentEntity { get; set; }
+        public DbSet<GeneralDocumentCategoryEntity> GeneralDocumentCategoryEntity { get; set; }
 
         #endregion
 

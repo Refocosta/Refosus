@@ -1,103 +1,190 @@
 ﻿@model Refosus.Web.Models.ShoppingViewModel
-    <form asp-action="CreateShopping" enctype="multipart/form-data">
-        <div class="modal fade" id="addArticle" tabindex="-1" role="dialog" aria-labelledby="addArticleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Actualizar Articulo</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="CodSap" class="control-label"></label>
-                                <input asp-for="CodSap" class="form-control" />
-                                <span asp-validation-for="CodSap" class="text-danger"></span>
-                            </div>
 
-                            <div class="col col-sm-4">
-                                <label asp-for="IdCategory" class="control-label"></label>
-                                <select asp-for="IdCategory" asp-items="Model.Categories" class="form-control"></select>
-                                <span asp-validation-for="IdCategory" class="text-danger"></span>
-                            </div>
-                            <div class="col col-sm-4">
-                                <label asp-for="IdSubCategory" class="control-label"></label>
-                                <select asp-for="IdSubCategory" asp-items="Model.SubCategories" class="form-control"></select>
-                                <span asp-validation-for="IdSubCategory" class="text-danger"></span>
-                            </div>
+<div class="modal fade" id="EditItemShoppingDialog" tabindex="-1" role="dialog" aria-labelledby="EditItemModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editar articulo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body col-sm-12">
+                    <div class="row">
+                        <div class="form-group col col-sd-3">
+                            <label asp-for="ItemCodSap" class="control-label"></label>
+                            <input asp-for="ItemCodSap" class="form-control" />
+                            <span asp-validation-for="ItemCodSap" class="text-danger"></span>
                         </div>
-                        <div class="row">
-
-                            <div class="col col-sm-4">
-                                <label asp-for="IdUnit" class="control-label"></label>
-                                <select asp-for="IdUnit" asp-items="Model.ShoppingUnits" class="form-control"></select>
-                                <span asp-validation-for="IdUnit" class="text-danger"></span>
-                            </div>
-                            <div class="col col-sm-4">
-                                <label asp-for="IdMeasure" class="control-label"></label>
-                                <select asp-for="IdMeasure" asp-items="Model.ShoppingMeasures" class="form-control"></select>
-                                <span asp-validation-for="IdMeasure" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="Quantity" class="control-label"></label>
-                                <input asp-for="Quantity" class="form-control" />
-                                <span asp-validation-for="Quantity" class="text-danger"></span>
-                            </div>
+                        <div class="form-group col col-sd-3">
+                            <label asp-for="ItemDescription" class="control-label"></label>
+                            <input asp-for="ItemDescription" class="form-control" />
+                            <span asp-validation-for="ItemDescription" class="text-danger"></span>
                         </div>
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="Description" class="control-label"></label>
-                                <input asp-for="Description" class="form-control" />
-                                <span asp-validation-for="Description" class="text-danger"></span>
-                            </div>
-
-
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="Reference" class="control-label"></label>
-                                <input asp-for="Reference" class="form-control" />
-                                <span asp-validation-for="Reference" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="Mark" class="control-label"></label>
-                                <input asp-for="Mark" class="form-control" />
-                                <span asp-validation-for="Mark" class="text-danger"></span>
-                            </div>
+                        <div class="col col-sm-3">
+                            <label asp-for="ItemIdCategory" class="control-label"></label>
+                            <select asp-for="ItemIdCategory" asp-items="Model.Categories" class="form-control"></select>
+                            <span asp-validation-for="ItemIdCategory" class="text-danger"></span>
                         </div>
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">Precio Unidad</label>
-                                <input class="form-control" />
-                                <span class="text-danger"></span>
-                            </div>
-                            <div class="form-group col col-sd-4">
-                                <label class="control-label">Cantidad Entregada</label>
-                                <input class="form-control" />
-                                <span class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="InternalOrder" class="control-label"></label>
-                                <input asp-for="InternalOrder" class="form-control" />
-                                <span asp-validation-for="InternalOrder" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col col-sd-4">
-                                <label asp-for="NumInternalOrder" class="control-label"></label>
-                                <input asp-for="NumInternalOrder" class="form-control" />
-                                <span asp-validation-for="NumInternalOrder" class="text-danger"></span>
-                            </div>
+                        <div class="col col-sm-3">
+                            <label asp-for="ItemIdSubCategory" class="control-label"></label>
+                            <select asp-for="ItemIdSubCategory" asp-items="Model.SubCategories" class="form-control"></select>
+                            <span asp-validation-for="ItemIdSubCategory" class="text-danger"></span>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="submit"class="btn btn-success" id="btnAddArticle">Entregar Total</button>
-                        <button type="submit"class="btn btn-warning" id="btnAddArticle">Entregar Parcial</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <div class="row">
+                        <div class="col col-sm-4">
+                            <label asp-for="ItemIdUnit" class="control-label"></label>
+                            <select asp-for="ItemIdUnit" asp-items="Model.ShoppingUnits" class="form-control"></select>
+                            <span asp-validation-for="ItemIdUnit" class="text-danger"></span>
+                        </div>
+                        <div class="col col-sm-4">
+                            <label asp-for="ItemIdMeasure" class="control-label"></label>
+                            <select asp-for="ItemIdMeasure" asp-items="Model.ShoppingMeasures" class="form-control"></select>
+                            <span asp-validation-for="ItemIdMeasure" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemQuantity" class="control-label"></label>
+                            <input asp-for="ItemQuantity" class="form-control" />
+                            <span asp-validation-for="ItemQuantity" class="text-danger"></span>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemMark" class="control-label"></label>
+                            <input asp-for="ItemMark" class="form-control" />
+                            <span asp-validation-for="ItemMark" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemReference" class="control-label"></label>
+                            <input asp-for="ItemReference" class="form-control" />
+                            <span asp-validation-for="ItemReference" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemInternalOrder" class="control-label"></label>
+                            <input asp-for="ItemInternalOrder" class="form-control" />
+                            <span asp-validation-for="ItemInternalOrder" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemNumInternalOrder" class="control-label"></label>
+                            <input asp-for="ItemNumInternalOrder" class="form-control" />
+                            <span asp-validation-for="ItemNumInternalOrder" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemUnitCost" class="control-label"></label>
+                            <input asp-for="ItemUnitCost" class="form-control" />
+                            <span asp-validation-for="ItemUnitCost" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemFullCost" class="control-label"></label>
+                            <input asp-for="ItemFullCost" class="form-control" />
+                            <span asp-validation-for="ItemFullCost" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col col-sd-4">
+                            <label asp-for="ItemObservation" class="control-label"></label>
+                            <textarea asp-for="ItemObservation" class="form-control"></textarea>
+                            <span asp-validation-for="ItemObservation" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row" id="Proveedor" style="display:none;">
+                        <div class="card card-blue">
+                            <div class="card-header">
+                                Proovedor
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="form-group col col-sd-4">
+                                        <label asp-for="ProoNombre" class="control-label"></label>
+                                        <input asp-for="ProoNombre" class="form-control" />
+                                        <span asp-validation-for="ProoNombre" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col col-sd-4">
+                                        <label asp-for="ProoTelefono" class="control-label"></label>
+                                        <input asp-for="ProoTelefono" class="form-control" />
+                                        <span asp-validation-for="ProoTelefono" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col col-sd-4">
+                                        <label asp-for="ProoCantidad" class="control-label"></label>
+                                        <input asp-for="ProoCantidad" class="form-control" />
+                                        <span asp-validation-for="ProoCantidad" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col col-sd-4">
+                                        <label asp-for="ProoValorUnidad" class="control-label"></label>
+                                        <input asp-for="ProoValorUnidad" class="form-control" />
+                                        <span asp-validation-for="ProoValorUnidad" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group col col-sd-4">
+                                        <label asp-for="File" class="control-label"></label>
+                                        <input asp-for="File" type="file" multiple="multiple" class="form-control" />
+                                        <span asp-validation-for="File" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-warning" id="btnYesAddproveedor">Agregar</button>
+                                    <button type="button" class="btn btn-danger"  onclick="AddProveedor()">Cancelar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-12">
+
+                            <div class="card card-success">
+                                <div class="card-header">
+                                    <div class="card-title">
+                                        @if (Model.State.Name != "Por Autorización" && Model.State.Name != "Autorizado")
+                                        {
+                                            <button id="PlusProveedor" type="button" onclick="AddProveedor()" class="btn btn-primary addProveedor" data-toggle="modal" data-target="#addArticle"><i class="oi oi-plus" style="color:white"></i></button>
+                                        }
+                                        Provedores
+                                    </div>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i></button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="col-md-12 table-responsive">
+                                        <table class="table table-hover table-striped display" id="tblProvedor">
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    @if (Model.State.Name != "Por Autorización" && Model.State.Name != "Autorizado")
+                    {
+                        <button type="submit" class="btn btn-warning" id="btnYesEditShopping">Actualizar</button>
+                    }
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                 </div>
             </div>
         </div>
-        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function AddProveedor() {
+        var x = document.getElementById("Proveedor");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+        }
+        document.getElementById("ProoNombre").value = "";
+        document.getElementById("ProoTelefono").value = "";
+        document.getElementById("ProoCantidad").value = 0;
+        document.getElementById("ProoValorUnidad").value = 0;
+        document.getElementById("File").value = "";
+    }
+</script>
