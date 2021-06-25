@@ -28,24 +28,29 @@
     index()
     {
         if (this.crmContacts != null) {
+            document.getElementById('loading').innerHTML = `<hr /><center>Cargando, espere un momento porfavor
+                                                            <br />
+                                                            <div class="spinner-border text-success" role="status">
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div></center><hr />`;
             Fetch(this.route, null, 'GET', document.getElementById('user').value).then(response => {
                 if (!response.error) {
-                    for (let index = 0; index < response.message.length; index++) {
-                        this.crmContacts.innerHTML +=
-                            `<tr>
-                                <td>${response.message[index].Id}</td>
-                                <td>${response.message[index].Name}</td>
-                                <td>${response.message[index].Cellphone}</td>
-                                <td>${response.message[index].Email}</td>
-                                <td><span class="badge bg-success">Activo</span></td>
-                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
-                                <td><a href="Contacts/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
-                                <td><a href="Contacts/Edit/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
-                                <td><button key="${response.message[index].Id}" class="btn btn-outline-primary deleteContacts" >Eliminar</button></td>
-                            </tr>`;
-                    }
+                    this.crmContacts.innerHTML = response.message.map(contact => {
+                        return `<tr>
+                            <td>${contact.Id}</td>
+                            <td>${contact.Name}</td>
+                            <td>${contact.Cellphone}</td>
+                            <td>${contact.Email}</td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                            <td>${contact.created_at.replace('T', ' ').slice(0, 19)}</td>
+                            <td><a href="Contacts/Details/${contact.Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
+                            <td><a href="Contacts/Edit/${contact.Id}" ><button class="btn btn-outline-primary" >Editar</button></a></td>
+                            <td><button key="${contact.Id}" class="btn btn-outline-primary deleteContacts" >Eliminar</button></td>
+                        </tr>`;
+                    }).join("<br>")
+                    document.getElementById('loading').innerHTML = '';
+                    this.dataTable();
                     this.disable();
-                    this.dataTable();       
                 } else {
                     toastr.error(response.message, 'Ups');
                 }

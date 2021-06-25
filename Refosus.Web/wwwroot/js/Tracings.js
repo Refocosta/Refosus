@@ -31,25 +31,31 @@
     index()
     {
         if (this.tracings != null) {
+            document.getElementById('loading').innerHTML = `<hr /><center>Cargando, espere un momento porfavor
+                                                            <br />
+                                                            <div class="spinner-border text-success" role="status">
+                                                                <span class="sr-only">Loading...</span>
+                                                            </div></center><hr />`;
             Fetch(this.route, null, 'GET').then(response => {
+                console.log(response);
                 if (!response.error) {
-                    for (let index = 0; index < response.message.length; index++) {
+                    this.tracings.innerHTML = response.message.map(tracing => {
                         let button;
-                        if (response.message[index].Auto != 1) {
-                            button = `<td><a href="Tracings/Edit/${response.message[index].Id}"><button class="btn btn-outline-primary">Editar</button></a></td>`;
+                        if (tracing.Auto != 1) {
+                            button = `<td><a href="Tracings/Edit/${tracing.Id}"><button class="btn btn-outline-primary">Editar</button></a></td>`;
                         } else {
                             button = `<td><a><button class="btn btn-outline-primary" disabled>Editar</button></a></td></tr>`;
                         }
-                        this.tracings.innerHTML +=
-                            `<tr>
-                                <td>${response.message[index].Id}</td>
-                                <td>${response.message[index].contacts.Name}</td>
-                                <td>${response.message[index].types_observations.Name}</td>
-                                <td>${response.message[index].Observation.slice(0, 90)}...</td>
-                                <td>${response.message[index].created_at.replace('T', ' ').slice(0, 19)}</td>
-                                <td><a href="Tracings/Details/${response.message[index].Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
-                                ${button}`
-                    }
+                        return `<tr>
+                                    <td>${tracing.Id}</td>
+                                    <td>${tracing.contacts.Name}</td>
+                                    <td>${tracing.types_observations.Name}</td>
+                                    <td>${tracing.Observation.slice(0, 90)}...</td>
+                                    <td>${tracing.created_at.replace('T', ' ').slice(0, 19)}</td>
+                                    <td><a href="Tracings/Details/${tracing.Id}" ><button class="btn btn-outline-primary" >Ver</button></a></td>
+                                    ${button}`
+                    }).join("<br>");
+                    document.getElementById('loading').innerHTML = '';
                     this.dataTable();
                 } else {
                     toastr.error(response.message, 'Ups');
