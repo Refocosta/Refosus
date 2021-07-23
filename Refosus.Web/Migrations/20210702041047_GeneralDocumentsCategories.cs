@@ -15,6 +15,11 @@ namespace Refosus.Web.Migrations
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false)
+
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeneralDocumentsCategories", x => x.Id);
                 });
         }
 

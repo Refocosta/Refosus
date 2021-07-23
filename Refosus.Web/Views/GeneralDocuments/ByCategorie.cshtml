@@ -1,0 +1,66 @@
+@model IEnumerable<Refosus.Web.Data.Entities.GeneralDocumentEntity>
+@{
+    ViewData["Title"] = "DOCUMENTOS GENERALES";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Documentos geneales</li>
+        </ol>
+    </nav>
+    <a asp-controller="GeneralDocumentsCategories" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <a asp-controller="GeneralDocuments" asp-action="Create" asp-route-id="@ViewBag.Id" class="btn btn-outline-info" role="button">Agregar nuevo documento</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Documentos generales</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo</th>
+                        <th>Alias</th>
+                        <th>Nombre del archivo</th>
+                        <th>Descargar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in Model)
+                    {
+                <tr>
+                    <td>@g.Id</td>
+                    @if (g.Ext == ".pdf")
+                    {
+                        <td><i class="far fa-file-pdf fa-2x"></i></td>
+                    }
+                    else if (g.Ext == ".docx")
+                    {
+                        <td><i class="far fa-file-word fa-2x"></i></td>
+                    }
+                    else if (g.Ext == ".png" || g.Ext == ".PNG" || g.Ext == ".jpg")
+                    {
+                        <td><i class="far fa-file-image fa-2x"></i></td>
+                    }
+                    else if (g.Ext == ".xlsx")
+                    {
+                        <td><i class="far fa-file-word fa-2x"></i></td>
+                    }
+                    <td>@g.Alias</td>
+                    <td>@g.Name</td>
+                    <td><a href="@Url.Content(g.Path)" download="@g.Name"><i class="fas fa-download fa-2x"></i></td>
+                    <td><a asp-controller="GeneralDocuments" asp-action="Edit" asp-route-id="@g.Id" ><i class="far fa-edit fa-2x"></i></a></td>
+                    <td><a asp-controller="GeneralDocuments" asp-action="Delete" asp-route-id="@g.Id" ><i class="far fa-trash-alt fa-2x"></i></a></td>
+                </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

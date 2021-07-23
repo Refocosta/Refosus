@@ -28,12 +28,12 @@
                         <div class="card-body">
                             <p class="card-text">@g.Description.</p>
                             <hr />
-                            <a href="/generalDocuments" class="btn btn-outline-info" role="button">Ver documentos generales</a>
+                            <a asp-controller="GeneralDocuments" asp-action="ByCategorie" asp-route-id="@g.Id" class="btn btn-outline-info" role="button">Ver documentos generales</a>
                         </div>
                         <div class="card-footer">
                             <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-outline-primary">Editar</button>
-                                <button type="button" class="btn btn-outline-danger">Eliminar</button>
+                                <a asp-controller="GeneralDocumentsCategories" asp-action="Edit" asp-route-id="@g.Id" class="btn btn-outline-primary" role="button">Editar</a>
+                                <a asp-controller="GeneralDocumentsCategories" asp-action="Delete" asp-route-id="@g.Id" class="btn btn-outline-danger" role="button">Eliminar</a>
                             </div>
                         </div>
                     </div>

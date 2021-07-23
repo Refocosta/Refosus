@@ -10,8 +10,8 @@ using Refosus.Web.Data;
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210520214220_prueba")]
-    partial class prueba
+    [Migration("20210702041047_GeneralDocumentsCategories")]
+    partial class GeneralDocumentsCategories
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -342,6 +342,27 @@ namespace Refosus.Web.Migrations
                     b.ToTable("DocumentTypes");
                 });
 
+            modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentCategoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeneralDocumentsCategories");
+                });
+
             modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -363,7 +384,7 @@ namespace Refosus.Web.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GeneralDocumentEntity");
+                    b.ToTable("GeneralDocuments");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>

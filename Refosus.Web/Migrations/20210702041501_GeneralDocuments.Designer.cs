@@ -10,7 +10,7 @@ using Refosus.Web.Data;
 namespace Refosus.Web.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210519181009_GeneralDocuments")]
+    [Migration("20210702041501_GeneralDocuments")]
     partial class GeneralDocuments
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -340,6 +340,51 @@ namespace Refosus.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("DocumentTypes");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentCategoryEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeneralDocumentsCategories");
+                });
+
+            modelBuilder.Entity("Refosus.Web.Data.Entities.GeneralDocumentEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Alias")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ext")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GeneralDocuments");
                 });
 
             modelBuilder.Entity("Refosus.Web.Data.Entities.MenuEntity", b =>

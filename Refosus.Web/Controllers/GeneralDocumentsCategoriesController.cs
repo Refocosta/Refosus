@@ -18,7 +18,7 @@ namespace Refosus.Web.Controllers
         }
         public IActionResult Index()
         {
-            return View(ctx.GeneralDocumentCategoryEntity.ToList());
+            return View(ctx.GeneralDocumentCategoryEntity.Where(x => x.Status == 1).ToList());
         }
         public IActionResult Create()
         {
@@ -31,6 +31,37 @@ namespace Refosus.Web.Controllers
             generalDocumentCategory.Status = 1;
             ctx.Add(generalDocumentCategory);
             ctx.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var edit = ctx.GeneralDocumentCategoryEntity.Find(id);
+            return View(edit);
+        }
+
+        [BindProperty]
+        public GeneralDocumentCategoryEntity generalDocumentCategoryUpdate { get; set; }
+        public IActionResult Update()
+        {
+            var update = ctx.GeneralDocumentCategoryEntity.Find(generalDocumentCategoryUpdate.Id);
+            if (update != null)
+            {
+                update.Name = generalDocumentCategoryUpdate.Name;
+                update.Description = generalDocumentCategoryUpdate.Description;
+                ctx.SaveChanges();
+            }
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var delete = ctx.GeneralDocumentCategoryEntity.Find(id);
+            if (delete != null)
+            {
+                delete.Status = 0;
+                ctx.SaveChanges();
+            }
             return RedirectToAction("Index");
         }
     }
