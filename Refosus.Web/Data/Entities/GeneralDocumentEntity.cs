@@ -20,5 +20,14 @@ namespace Refosus.Web.Data.Entities
         public string Path { get; set; }
         [Display(Name = "Ext")]
         public string Ext { get; set; }
+        [Display(Name = "Estado")]
+        public int Status { get; set; }
+        [Display(Name = "Categoria documento general")]
+        public int GeneralDocumentsCategoriesId { get; set; }
+        [DataType(DataType.DateTime)]
+        [Display(Name = "Fecha de importe")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
+        public DateTime CreateAt { get; set; }
+
     }
 }

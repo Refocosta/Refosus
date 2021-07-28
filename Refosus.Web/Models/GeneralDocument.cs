@@ -18,5 +18,7 @@ namespace Refosus.Web.Models
         public string Path { get; set; }
         public string Ext { get; set; }
         public IFormFile File { get; set; }
+        public int Status { get; set; }
+        public int GeneralDocumentsCategoriesId { get; set; }
     }
 }

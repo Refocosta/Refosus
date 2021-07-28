@@ -1,4 +1,4 @@
-@model Refosus.Web.Models.GeneralDocument
+@model Refosus.Web.Data.Entities.GeneralDocumentEntity
 @{
     ViewData["Title"] = "CREAR DOCUMENTO GENERAL";
     Layout = "~/Views/Shared/_Refosus1.cshtml";
@@ -9,31 +9,26 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item"><a asp-controller="GeneralDocuments" asp-action="ByCategorie" asp-route-id="@ViewBag.Id" >Lista de documentos</a></li>
+            <li class="breadcrumb-item"><a asp-controller="GeneralDocuments" asp-action="ByCategorie" asp-route-id="@ViewBag.IdCate">Lista de documentos</a></li>
             <li class="breadcrumb-item active" aria-current="page">Crear documnto general</li>
         </ol>
     </nav>
     <div class="card mt-2">
         <div class="card-header">
-            <center><h3>Crear documnto general</h3></center>
+            <center><h3>Editar documento general</h3></center>
         </div>
         <div class="card-body table-responsive">
-            <form asp-controller="GeneralDocuments" asp-action="Store" enctype="multipart/form-data" method="post">
-                <input asp-for="GeneralDocumentsCategoriesId" value="@ViewBag.Id" type="hidden" />
+            <form asp-controller="GeneralDocuments" asp-action="Update" enctype="multipart/form-data" method="post">
                 <div class="row">
+                    <input asp-for="Id" type="hidden" />
                     <div class="col-md-6">
                         <label>Nombre del documento</label>
                         <input asp-for="Alias" class="form-control" placeholders="Documento..." required />
                     </div>
                     <div class="col-md-6">
-                        <label>Adjunto</label>
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="inputGroupFile01">Subir archivo</label>
-                            <input asp-for="File" type="file" class="form-control" required />
-                        </div>
+                        <button class="btn btn-outline-success mt-4">Editar</button>
                     </div>
                 </div>
-                <button class="btn btn-outline-success" >Registrar</button>
             </form>
         </div>
     </div>
