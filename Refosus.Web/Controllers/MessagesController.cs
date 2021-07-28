@@ -1669,7 +1669,6 @@ namespace Refosus.Web.Controllers
             UserEntity user = await _userHelper.GetUserAsync(User.Identity.Name);
             List<MessageEntity> list = await
                 _context.Messages
-                .Where(t => t.Company.Id == user.Company.Id)
                 .Where(t => t.StateBill.Name == "Nuevo")
                 .Where(t => t.User == user)
                 .Where(t => t.Ceco != null)

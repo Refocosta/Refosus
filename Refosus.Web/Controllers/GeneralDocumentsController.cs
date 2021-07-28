@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Refosus.Web.Data;
 using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
@@ -10,6 +11,7 @@ using System.IO;
 
 namespace Refosus.Web.Controllers
 {
+    [Authorize(Roles = "generalDocumentsAdministrator")]
     public class GeneralDocumentsController : Controller
     {
         DataContext ctx;
