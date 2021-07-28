@@ -59,6 +59,7 @@ namespace Refosus.Web.Controllers
         public IActionResult Edit(int id)
         {
             var edit = ctx.GeneralDocumentEntity.Find(id);
+            ViewBag.IdCate = edit.GeneralDocumentsCategoriesId;
             return View(edit);
         }
 

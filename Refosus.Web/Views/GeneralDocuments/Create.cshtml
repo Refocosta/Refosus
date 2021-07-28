@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item"><a href="/Generaldocuments">Lista de documentos</a></li>
+            <li class="breadcrumb-item"><a asp-controller="GeneralDocuments" asp-action="ByCategorie" asp-route-id="@ViewBag.Id" >Lista de documentos</a></li>
             <li class="breadcrumb-item active" aria-current="page">Crear documnto general</li>
         </ol>
     </nav>
