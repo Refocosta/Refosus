@@ -1,0 +1,55 @@
+﻿@model IEnumerable<Refosus.Web.Data.Entities.CaseEntity>
+@{
+    ViewData["Title"] = "CASOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Casos y mantenimiento</li>
+        </ol>
+    </nav>
+    <a asp-controller="Cases" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevo caso</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Casos registrados</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tema</th>
+                        <th>Remitente</th>
+                        <th>Responsable</th>
+                        <th>Estado</th>
+                        <th>Ver</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var g in Model)
+                    {
+                    <tr>
+                        <td>@g.Id</td>
+                        <td>@g.Issue</td>
+                        <td>@g.Sender</td>
+                        <td>@g.Responsable</td>
+                        @if (g.Status == 1)
+                        {
+                            <td><span class="badge bg-success">Activo</span></td>
+                        }
+                        <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id" ><i class="fas fa-eye fa-2x"></i></a></td>
+                        <td><i class="far fa-edit fa-2x"></i></td>
+                        <td><i class="far fa-trash-alt fa-2x"></i></td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

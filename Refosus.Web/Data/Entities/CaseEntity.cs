@@ -18,7 +18,7 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Remitente")]
         public string Sender { get; set; }
         [Display(Name = "TipoCaso")]
-        public int TypesCasesId { get; set; }
+        public TypeCaseEntity TypesCases { get; set; }
         [Display(Name = "Estado")]
         public int Status { get; set; }
         [Display(Name = "Prioridad")]
@@ -34,7 +34,7 @@ namespace Refosus.Web.Data.Entities
         [Display(Name = "Horas")]
         public double Hours { get; set; }
         [Display(Name = "TipoUnidadNegocio")]
-        public int BusinessUnitsId { get; set; }
+        public BusinessUnitEntity BusinessUnits { get; set; }
         [Display(Name = "Ubicacion")]
         public string Ubication { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
@@ -43,7 +43,5 @@ namespace Refosus.Web.Data.Entities
         public DateTime ClosingDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime CreatedAt { get; set; }
-
-
     }
 }

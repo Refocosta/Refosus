@@ -1,0 +1,82 @@
+@model Refosus.Web.Data.Entities.CaseEntity
+@{
+    ViewData["Title"] = "CASOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a href="/Home/Menu">Casos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Detalles</li>
+        </ol>
+    </nav>
+    <a asp-controller="Cases" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Detalles</h3></center>
+        </div>
+        <div class="card-body">
+            <label>Tema</label>
+            <input readonly asp-for="Issue" class="form-control" type="text" />
+            <label>Descripcion</label>
+            <textarea asp-for="Issue" class="form-control" readonly ></textarea>
+            <div class="row" >
+                <div class="col-md-3">
+                    <label>Remitente</label>
+                    <input readonly asp-for="Sender" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Codigo</label>
+                    <input readonly asp-for="Code" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Prioridad</label>
+                    <input readonly asp-for="Priority" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Responsable</label>
+                    <input readonly asp-for="Responsable" class="form-control" type="text" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Tipo de caso</label>
+                    <input readonly value="@Html.DisplayNameFor(model => model.Code)" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Cumplimiento</label>
+                </div>
+                <div class="col-md-3">
+                    <label>Unidad de negocio</label>
+                </div>
+                <div class="col-md-3">
+                    <label>Ubicacion</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Horas utilizadas</label>
+                    <input readonly asp-for="Hours" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Fecha limite</label>
+                    <input readonly asp-for="DeadLine" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Fecha de cerrado</label>
+                    <input readonly asp-for="ClosingDate" class="form-control" type="text" />
+                </div>
+                <div class="col-md-3">
+                    <label>Fecha de creacion</label>
+                    <input readonly asp-for="CreatedAt" class="form-control" type="text" />
+                </div>
+            </div>
+            <label>Solucion</label>
+            <textarea asp-for="Solution" class="form-control" readonly ></textarea>
+            
+        </div>
+    </div>
+</div>
