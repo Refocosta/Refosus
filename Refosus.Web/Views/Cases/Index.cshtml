@@ -48,7 +48,10 @@
                             <td>@g.Responsable</td>
                             @if (g.Status == 1)
                             {
-                                <td><span class="badge bg-success">Abierto</span></td>
+                                <td><span class="badge bg-info">Abierto</span></td>
+                            } else if (g.Status == 2)
+                            {
+                                <td><span class="badge bg-success">Cerrado</span></td>
                             }
                             <td>@g.DeadLine</td>
                             <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id"><span style="color:dimgrey"><i class="fas fa-eye fa-2x"></i></span></a></td>

@@ -23,7 +23,7 @@ namespace Refosus.Web.Controllers
         }
         public IActionResult Index()
         {
-            return View(ctx.CaseEntity.Where(x => x.Status == 1).ToList());
+            return View(ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).ToList());
         }
 
         public IActionResult Create()
@@ -50,7 +50,7 @@ namespace Refosus.Web.Controllers
 
         public IActionResult Details(int id)
         {
-            CaseEntity details = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
+            CaseEntity details = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
             if (details == null)
             {
                 RedirectToAction("Index");
@@ -60,7 +60,7 @@ namespace Refosus.Web.Controllers
 
         public IActionResult Edit(int id)
         {
-            CaseEntity edit = ctx.CaseEntity.Where(x => x.Id == id).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
+            CaseEntity edit = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
             ViewBag.typesCases = ctx.TypeCaseEntity.ToList();
             ViewBag.businessUnits = ctx.BusinessUnitEntity.ToList();
             ViewBag.usersList = ctx.Users.ToList();
@@ -89,12 +89,29 @@ namespace Refosus.Web.Controllers
 
         public IActionResult Solution(int id)
         {
-            return View();
+            CaseEntity solution = ctx.CaseEntity.Find(id);
+            if (solution == null)
+            {
+                RedirectToAction("Index");
+            }
+            return View(solution);
         }
 
+        [BindProperty]
+        public CaseEntity caseEntitySolution { get; set; }
         public IActionResult StoreSolution()
         {
-            return Json(true);
+            CaseEntity update = ctx.CaseEntity.Find(caseEntitySolution.Id);
+            
+            if (update != null)
+            {
+                update.Solution = caseEntitySolution.Solution;
+                update.Hours = caseEntitySolution.Hours;
+                update.ClosingDate = System.DateTime.Now.ToUniversalTime();
+                update.Status = 2;
+                ctx.SaveChanges();
+            }
+            return RedirectToAction("Index");
         }
 
         public IActionResult Delete(int id)
