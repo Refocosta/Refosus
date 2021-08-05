@@ -38,8 +38,7 @@ namespace Refosus.Web.Controllers
         public CaseEntity caseEntity { get; set; }
         public IActionResult Store()
         {
-            var sender = User.Identity.Name;
-            caseEntity.Sender = sender;
+            caseEntity.Sender = User.Identity.Name;
             caseEntity.Status = 1;
             caseEntity.Code = this.Random();
             caseEntity.Solution = "Este caso aún no tiene respuesta";
@@ -68,9 +67,24 @@ namespace Refosus.Web.Controllers
             return View(edit);
         }
 
-        public IActionResult Update(int id)
+        [BindProperty]
+        public CaseEntity caseEntityUpdate { get; set; }
+        public IActionResult Update()
         {
-            return Json(true);
+            CaseEntity update = ctx.CaseEntity.Find(caseEntityUpdate.Id);
+            if (update != null)
+            {
+                update.Issue = caseEntityUpdate.Issue;
+                update.Description = caseEntityUpdate.Description;
+                update.Sender = User.Identity.Name;
+                update.TypesCasesId = caseEntityUpdate.TypesCasesId;
+                update.Priority = caseEntityUpdate.Priority;
+                update.Responsable = caseEntityUpdate.Responsable;
+                update.BusinessUnitsId = caseEntityUpdate.BusinessUnitsId;
+                update.Ubication = caseEntityUpdate.Ubication;
+                ctx.SaveChanges();
+            }
+            return RedirectToAction("Edit", new { id = caseEntityUpdate.Id });
         }
 
         public IActionResult Solution(int id)

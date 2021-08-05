@@ -19,7 +19,8 @@
             <center><h3>Editar caso</h3></center>
         </div>
         <div class="card-body">
-            <form asp-controller="Cases" asp-action="Update" method="pots">
+            <form asp-controller="Cases" asp-action="Update" method="post">
+                <input asp-for="Id" type="hidden"/>
                 <label>Tema del caso</label>
                 <input asp-for="Issue" class="form-control" type="text" required />
                 <label>Descripcion del caso</label>

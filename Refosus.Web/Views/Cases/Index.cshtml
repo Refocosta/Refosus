@@ -26,10 +26,12 @@
                     <tr>
                         <th>#</th>
                         <th>Tema</th>
+                        <th>Codigo</th>
                         <th>Remitente</th>
                         <th>Responsable</th>
                         <th>Estado</th>
-                        <th>Ver</th>
+                        <th>Fecha limite</th>
+                        <th>Detalles</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                         <th>Solucionar</th>
@@ -41,16 +43,18 @@
                         <tr>
                             <td>@g.Id</td>
                             <td>@g.Issue</td>
+                            <td>@g.Code</td>
                             <td>@g.Sender</td>
                             <td>@g.Responsable</td>
                             @if (g.Status == 1)
                             {
-                                <td><span class="badge bg-success">Aierto</span></td>
+                                <td><span class="badge bg-success">Abierto</span></td>
                             }
+                            <td>@g.DeadLine</td>
                             <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id"><span style="color:dimgrey"><i class="fas fa-eye fa-2x"></i></span></a></td>
                             <td><a asp-controller="Cases" asp-action="Edit" asp-route-id="@g.Id"><span style="color:lightskyblue"><i class="far fa-edit fa-2x"></i></span></a></td>
                             <td><a asp-controller="Cases" asp-action="Delete" asp-route-id="@g.Id"><span style="color:red"><i class="far fa-trash-alt fa-2x"></i></span></a></td>
-                            <td><span style="color:lawngreen"><i class="fas fa-check-circle fa-2x"></i></span></td>
+                            <td><a asp-controller="Cases" asp-action="Solution" asp-route-id="@g.Id"><span style="color:lawngreen"><i class="fas fa-check-circle fa-2x"></i></span></a></td>
                         </tr>
                     }
                 </tbody>
