@@ -13,6 +13,9 @@
         </ol>
     </nav>
     <a asp-controller="Cases" asp-action="Create" class="btn btn-outline-info" role="button">Agregar nuevo caso</a>
+    <a asp-controller="Cases" asp-action="Create" class="btn btn-outline-info" role="button">Agregar un tipo de caso</a>
+    <a asp-controller="Cases" asp-action="Create" class="btn btn-outline-info" role="button">Agregar una unidad de negocio</a>
+    <a asp-controller="Cases" asp-action="Thrash" class="btn btn-outline-warning" role="button">Papelera</a>
     <div class="card mt-2">
         <div class="card-header">
             <center><h3>Casos registrados</h3></center>
@@ -29,24 +32,26 @@
                         <th>Ver</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
+                        <th>Solucionar</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var g in Model)
                     {
-                    <tr>
-                        <td>@g.Id</td>
-                        <td>@g.Issue</td>
-                        <td>@g.Sender</td>
-                        <td>@g.Responsable</td>
-                        @if (g.Status == 1)
-                        {
-                            <td><span class="badge bg-success">Activo</span></td>
-                        }
-                        <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id" ><i class="fas fa-eye fa-2x"></i></a></td>
-                        <td><i class="far fa-edit fa-2x"></i></td>
-                        <td><i class="far fa-trash-alt fa-2x"></i></td>
-                    </tr>
+                        <tr>
+                            <td>@g.Id</td>
+                            <td>@g.Issue</td>
+                            <td>@g.Sender</td>
+                            <td>@g.Responsable</td>
+                            @if (g.Status == 1)
+                            {
+                                <td><span class="badge bg-success">Aierto</span></td>
+                            }
+                            <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id"><span style="color:dimgrey"><i class="fas fa-eye fa-2x"></i></span></a></td>
+                            <td><a asp-controller="Cases" asp-action="Edit" asp-route-id="@g.Id"><span style="color:lightskyblue"><i class="far fa-edit fa-2x"></i></span></a></td>
+                            <td><a asp-controller="Cases" asp-action="Delete" asp-route-id="@g.Id"><span style="color:red"><i class="far fa-trash-alt fa-2x"></i></span></a></td>
+                            <td><span style="color:lawngreen"><i class="fas fa-check-circle fa-2x"></i></span></td>
+                        </tr>
                     }
                 </tbody>
             </table>

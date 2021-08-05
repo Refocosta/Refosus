@@ -43,5 +43,8 @@ namespace Refosus.Web.Data.Entities
         public DateTime ClosingDate { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd hh:mm:ss tt}", ApplyFormatInEditMode = false)]
         public DateTime CreatedAt { get; set; }
+
+        public int TypesCasesId { get; set; }
+        public int BusinessUnitsId { get; set; }
     }
 }

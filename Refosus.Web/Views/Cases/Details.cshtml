@@ -9,7 +9,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
-            <li class="breadcrumb-item"><a href="/Home/Menu">Casos</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cases" asp-action="Index">Casos</a></li>
             <li class="breadcrumb-item active" aria-current="page">Detalles</li>
         </ol>
     </nav>
@@ -22,7 +22,7 @@
             <label>Tema</label>
             <input readonly asp-for="Issue" class="form-control" type="text" />
             <label>Descripcion</label>
-            <textarea asp-for="Issue" class="form-control" readonly ></textarea>
+            <textarea class="form-control" asp-for="Description" readonly ></textarea>
             <div class="row" >
                 <div class="col-md-3">
                     <label>Remitente</label>
@@ -34,7 +34,18 @@
                 </div>
                 <div class="col-md-3">
                     <label>Prioridad</label>
-                    <input readonly asp-for="Priority" class="form-control" type="text" />
+                    @if (Model.Priority == 1)
+                    {
+                        <input readonly value="Alto" class="form-control" type="text" />
+                    }
+                    else if (Model.Priority == 2)
+                    {
+                        <input readonly value="Medio" class="form-control" type="text" />
+                    }
+                    else
+                    {
+                        <input readonly value="Bajo" class="form-control" type="text" />
+                    }
                 </div>
                 <div class="col-md-3">
                     <label>Responsable</label>
@@ -44,16 +55,19 @@
             <div class="row">
                 <div class="col-md-3">
                     <label>Tipo de caso</label>
-                    <input readonly value="@Html.DisplayNameFor(model => model.Code)" class="form-control" type="text" />
+                    <input readonly asp-for="TypesCases.Case" class="form-control" type="text" />
                 </div>
                 <div class="col-md-3">
                     <label>Cumplimiento</label>
+                    <input readonly asp-for="Fulfillment" class="form-control" type="text" />
                 </div>
                 <div class="col-md-3">
                     <label>Unidad de negocio</label>
+                    <input readonly asp-for="BusinessUnits.Business" class="form-control" type="text" />
                 </div>
                 <div class="col-md-3">
                     <label>Ubicacion</label>
+                    <input readonly asp-for="Ubication" class="form-control" type="text" />
                 </div>
             </div>
             <div class="row">
@@ -65,7 +79,7 @@
                     <label>Fecha limite</label>
                     <input readonly asp-for="DeadLine" class="form-control" type="text" />
                 </div>
-                <div class="col-md-3">
+                    <div class="col-md-3">
                     <label>Fecha de cerrado</label>
                     <input readonly asp-for="ClosingDate" class="form-control" type="text" />
                 </div>
@@ -75,8 +89,7 @@
                 </div>
             </div>
             <label>Solucion</label>
-            <textarea asp-for="Solution" class="form-control" readonly ></textarea>
-            
+            <textarea class="form-control" asp-for="Solution" readonly></textarea>
         </div>
     </div>
 </div>
