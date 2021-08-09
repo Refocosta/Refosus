@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Refosus.Web.Controllers
 {
-    [Authorize(Roles = "maintenanceAdministrator")]
     public class CasesController : Controller
     {
         DataContext ctx;
@@ -21,11 +20,14 @@ namespace Refosus.Web.Controllers
         {
             ctx = _context;
         }
+
+        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceAdministrator")]
         public IActionResult Index()
         {
-            return View(ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).ToList());
+            return View(ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Where(x => x.Sender == User.Identity.Name || x.Responsable == User.Identity.Name).ToList());
         }
 
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
         public IActionResult Create()
         {
             ViewBag.typesCases = ctx.TypeCaseEntity.ToList();
@@ -36,6 +38,7 @@ namespace Refosus.Web.Controllers
 
         [BindProperty]
         public CaseEntity caseEntity { get; set; }
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
         public IActionResult Store()
         {
             caseEntity.Sender = User.Identity.Name;
@@ -48,19 +51,25 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
         public IActionResult Details(int id)
         {
             CaseEntity details = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
             if (details == null)
             {
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             return View(details);
         }
 
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
         public IActionResult Edit(int id)
         {
             CaseEntity edit = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
+            if (edit == null)
+            {
+                return RedirectToAction("Index");
+            }
             ViewBag.typesCases = ctx.TypeCaseEntity.ToList();
             ViewBag.businessUnits = ctx.BusinessUnitEntity.ToList();
             ViewBag.usersList = ctx.Users.ToList();
@@ -69,6 +78,7 @@ namespace Refosus.Web.Controllers
 
         [BindProperty]
         public CaseEntity caseEntityUpdate { get; set; }
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
         public IActionResult Update()
         {
             CaseEntity update = ctx.CaseEntity.Find(caseEntityUpdate.Id);
@@ -87,18 +97,20 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Edit", new { id = caseEntityUpdate.Id });
         }
 
+        [Authorize(Roles = "maintenanceAdministrator")]
         public IActionResult Solution(int id)
         {
-            CaseEntity solution = ctx.CaseEntity.Find(id);
+            CaseEntity solution = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 3).FirstOrDefault();
             if (solution == null)
             {
-                RedirectToAction("Index");
+                return RedirectToAction("Index");
             }
             return View(solution);
         }
 
         [BindProperty]
         public CaseEntity caseEntitySolution { get; set; }
+        [Authorize(Roles = "maintenanceAdministrator")]
         public IActionResult StoreSolution()
         {
             CaseEntity update = ctx.CaseEntity.Find(caseEntitySolution.Id);
@@ -114,6 +126,7 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "maintenanceAdministrator")]
         public IActionResult Delete(int id)
         {
             var delete = ctx.CaseEntity.Find(id);
@@ -126,11 +139,13 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = "maintenanceAdministrator")]
         public IActionResult Thrash()
         {
             return View();
         }
 
+        [Authorize(Roles = "maintenanceAdministrator")]
         public IActionResult Enable()
         {
             return Json(true);
