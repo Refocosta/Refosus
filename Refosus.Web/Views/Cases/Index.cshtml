@@ -43,39 +43,43 @@
                 <tbody>
                     @foreach (var g in Model)
                     {
-                        <tr>
-                            <td>@g.Id</td>
-                            <td>@g.Issue</td>
-                            <td>@g.Code</td>
-                            <td>@g.Sender</td>
-                            <td>@g.Responsable</td>
-                            @if (g.Status == 1)
+                    <tr>
+                        <td>@g.Id</td>
+                        <td>@g.Issue</td>
+                        <td>@g.Code</td>
+                        <td>@g.Sender</td>
+                        <td>@g.Responsable</td>
+                        @if (g.Status == 1)
+                        {
+                            <td><span class="badge bg-info">Abierto</span></td>
+                        }
+                        else if (g.Status == 2)
+                        {
+                            <td><span class="badge bg-success">Cerrado</span></td>
+                        }
+                        else
+                        {
+                            <td><span class="badge bg-warning">Vencido</span></td>
+                        }
+                        <td>@g.DeadLine</td>
+                        <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id"><span style="color:dimgrey"><i class="fas fa-eye fa-2x"></i></span></a></td>
+                        <td><a asp-controller="Cases" asp-action="Edit" asp-route-id="@g.Id"><span style="color:lightskyblue"><i class="far fa-edit fa-2x"></i></span></a></td>
+                        <td><a asp-controller="Cases" asp-action="Delete" asp-route-id="@g.Id"><span style="color:red"><i class="far fa-trash-alt fa-2x"></i></span></a></td>
+                        @if (g.Status == 1 || g.Status == 3)
+                        {
+                            if (User.IsInRole("maintenanceAdministrator"))
                             {
-                                <td><span class="badge bg-info">Abierto</span></td>
+                                <td><a asp-controller="Cases" asp-action="Solution" asp-route-id="@g.Id"><span style="color:lawngreen"><i class="fas fa-check-circle fa-2x"></i></span></a></td>
                             }
-                            else if (g.Status == 2)
+                        }
+                        else
+                        {
+                            if (User.IsInRole("maintenanceAdministrator"))
                             {
-                                <td><span class="badge bg-success">Cerrado</span></td>
+                                <td><span style="color: dimgrey"><i class="fas fa-check-circle fa-2x"></i></span></td>
                             }
-                            <td>@g.DeadLine</td>
-                            <td><a asp-controller="Cases" asp-action="Details" asp-route-id="@g.Id"><span style="color:dimgrey"><i class="fas fa-eye fa-2x"></i></span></a></td>
-                            <td><a asp-controller="Cases" asp-action="Edit" asp-route-id="@g.Id"><span style="color:lightskyblue"><i class="far fa-edit fa-2x"></i></span></a></td>
-                            <td><a asp-controller="Cases" asp-action="Delete" asp-route-id="@g.Id"><span style="color:red"><i class="far fa-trash-alt fa-2x"></i></span></a></td>
-                            @if (g.Status == 1 || g.Status == 3)
-                            {
-                                if (User.IsInRole("maintenanceAdministrator"))
-                                {
-                                    <td><a asp-controller="Cases" asp-action="Solution" asp-route-id="@g.Id"><span style="color:lawngreen"><i class="fas fa-check-circle fa-2x"></i></span></a></td>
-                                }
-                            }
-                            else
-                            {
-                                if (User.IsInRole("maintenanceAdministrator"))
-                                {
-                                    <td><span style="color: dimgrey"><i class="fas fa-check-circle fa-2x"></i></span></td>
-                                }
-                            }
-                        </tr>
+                        }
+                    </tr>
                     }
                 </tbody>
             </table>
