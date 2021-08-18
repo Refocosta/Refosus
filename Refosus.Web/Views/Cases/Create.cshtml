@@ -19,66 +19,82 @@
             <center><h3>Agregar nuevo caso</h3></center>
         </div>
         <div class="card-body">
-            <form asp-controller="Cases" asp-action="Store"  method="post">
-                <label>Tema del caso</label>
-                <input asp-for="Issue" class="form-control" type="text" required />
-                <label>Descripcion del caso</label>
-                <textarea asp-for="Description" class="form-control" required></textarea>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Tipo de caso</label>
-                        <select asp-for="TypesCasesId" class="form-control" required>
-                            <option value="">-- TIPO DE CASO --</option>
-                            @foreach (var item in ViewBag.typesCases)
-                            {
-                                <option value="@item.Id">@item.Case</option>
-                            }
+            @if (User.IsInRole("maintenanceCreatorAdministrator"))
+            {
+                <form asp-controller="Cases" asp-action="Store" method="post">
+                    <label>Tema del caso</label>
+                    <input asp-for="Issue" class="form-control" type="text" required />
+                    <label>Descripcion del caso</label>
+                    <textarea asp-for="Description" class="form-control" required></textarea>
+                    <input type="hidden" asp-for="TypesCasesId" value="1" />
+                    <input type="hidden" asp-for="BusinessUnitsId" value="1" />
+                    <hr />
+                    <button class="btn btn-outline-success">Registrar</button>
+                </form>
+            }
+            else
+            {
+                <form asp-controller="Cases" asp-action="Store" method="post">
+                    <label>Tema del caso</label>
+                    <input asp-for="Issue" class="form-control" type="text" required />
+                    <label>Descripcion del caso</label>
+                    <textarea asp-for="Description" class="form-control" required></textarea>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Tipo de caso</label>
+                            <select asp-for="TypesCasesId" class="form-control" required>
+                                <option value="">-- TIPO DE CASO --</option>
+                                @foreach (var item in ViewBag.typesCases)
+                                {
+                                    <option value="@item.Id">@item.Case</option>
+                                }
 
-                        </select>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Unidad de negocio</label>
+                            <select asp-for="BusinessUnitsId" class="form-control" required>
+                                <option value="">-- UNIDAD DE NEGOCIO --</option>
+                                @foreach (var item in ViewBag.businessUnits)
+                                {
+                                    <option value="@item.Id">@item.Business</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Ubicacion</label>
+                            <input asp-for="Ubication" class="form-control" type="text" required />
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label>Unidad de negocio</label>
-                        <select asp-for="BusinessUnitsId" class="form-control" required>
-                            <option value="">-- UNIDAD DE NEGOCIO --</option>
-                            @foreach (var item in ViewBag.businessUnits)
-                            {
-                                <option value="@item.Id">@item.Business</option>
-                            }
-                        </select>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Prioridad</label>
+                            <select asp-for="Priority" class="form-control" required>
+                                <option value="">-- PRIORIDAD --</option>
+                                <option value="1">Urgente</option>
+                                <option value="2">Alta</option>
+                                <option value="3">Normal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Responsable</label>
+                            <select asp-for="Responsable" class="form-control" required>
+                                <option value="">-- RESPONSABLE --</option>
+                                @foreach (var item in ViewBag.usersList)
+                                {
+                                    <option value="@item.Email">@item.FullName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Fecha limite</label>
+                            <input asp-for="DeadLine" class="form-control" type="datetime-local" required />
+                        </div>
                     </div>
-                    <div class="col-md-4">
-                        <label>Ubicacion</label>
-                        <input asp-for="Ubication" class="form-control" type="text" required />
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <label>Prioridad</label>
-                        <select asp-for="Priority" class="form-control" required>
-                            <option value="">-- PRIORIDAD --</option>
-                            <option value="1">Alta</option>
-                            <option value="2">Media</option>
-                            <option value="3">Baja</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Responsable</label>
-                        <select asp-for="Responsable" class="form-control" required>
-                            <option value="">-- RESPONSABLE --</option>
-                            @foreach (var item in ViewBag.usersList)
-                            {
-                                <option value="@item.Email">@item.FullName</option>
-                            }
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label>Fecha limite</label>
-                        <input asp-for="DeadLine" class="form-control" type="datetime-local" required />
-                    </div>
-                </div>
-                <hr />
-                <button class="btn btn-outline-success" >Registrar</button>
-            </form>
+                    <hr />
+                    <button class="btn btn-outline-success">Registrar</button>
+                </form>
+            }
         </div>
     </div>
     <br />
