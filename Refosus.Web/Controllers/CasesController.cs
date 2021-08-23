@@ -21,13 +21,24 @@ namespace Refosus.Web.Controllers
             ctx = _context;
         }
 
-        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceAdministrator")]
-        public IActionResult Index()
+        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceAdministrator, maintenanceFilterAdministrator")]
+        public IActionResult Index(string? message)
         {
-            return View(ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Where(x => x.Sender == User.Identity.Name || x.Responsable == User.Identity.Name).ToList());
+            ViewBag.message = message;
+            List<CaseEntity> facade;
+            if (User.IsInRole("maintenanceFilterAdministrator"))
+            {
+                facade = ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).ToList();
+            }
+            else
+            {
+                facade = ctx.CaseEntity.Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Where(x => x.Sender == User.Identity.Name || x.Responsable == User.Identity.Name).ToList();
+            }
+
+            return View(facade);
         }
 
-        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Create()
         {
             ViewBag.typesCases = ctx.TypeCaseEntity.ToList();
@@ -38,20 +49,22 @@ namespace Refosus.Web.Controllers
 
         [BindProperty]
         public CaseEntity caseEntity { get; set; }
-        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
+        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Store()
         {
-            caseEntity.Sender = User.Identity.Name;
+            caseEntity.Responsable = (String.IsNullOrEmpty(caseEntity.Responsable)) ? "filter@refocosta.com" : caseEntity.Responsable;
+            caseEntity.Sender = (String.IsNullOrEmpty(caseEntity.Sender)) ? User.Identity.Name : caseEntity.Sender;
             caseEntity.Status = 1;
             caseEntity.Code = this.Random();
             caseEntity.Solution = "Este caso aún no tiene respuesta";
             caseEntity.CreatedAt = System.DateTime.Now.ToUniversalTime();
+            caseEntity.DeadLine = (caseEntity.DeadLine == DateTime.MinValue) ? DateTime.Today.AddDays(1) : caseEntity.DeadLine;
             ctx.Add(caseEntity);
             ctx.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
+        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Details(int id)
         {
             CaseEntity details = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
@@ -62,7 +75,7 @@ namespace Refosus.Web.Controllers
             return View(details);
         }
 
-        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
+        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Edit(int id)
         {
             CaseEntity edit = ctx.CaseEntity.Where(x => x.Id == id).Where(x => x.Status == 1 || x.Status == 2 || x.Status == 3).Include(t => t.TypesCases).Include(t => t.BusinessUnits).FirstOrDefault();
@@ -78,7 +91,7 @@ namespace Refosus.Web.Controllers
 
         [BindProperty]
         public CaseEntity caseEntityUpdate { get; set; }
-        [Authorize(Roles = "maintenanceAdministrator, maintenanceCreatorAdministrator")]
+        [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Update()
         {
             CaseEntity update = ctx.CaseEntity.Find(caseEntityUpdate.Id);
@@ -86,7 +99,7 @@ namespace Refosus.Web.Controllers
             {
                 update.Issue = caseEntityUpdate.Issue;
                 update.Description = caseEntityUpdate.Description;
-                update.Sender = User.Identity.Name;
+                update.Sender = (!String.IsNullOrEmpty(update.Sender)) ? update.Sender : User.Identity.Name;
                 update.TypesCasesId = caseEntityUpdate.TypesCasesId;
                 update.Priority = caseEntityUpdate.Priority;
                 update.Responsable = caseEntityUpdate.Responsable;
@@ -126,7 +139,7 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "maintenanceAdministrator")]
+        [Authorize(Roles = "maintenanceFilterAdministrator")]
         public IActionResult Delete(int id)
         {
             var delete = ctx.CaseEntity.Find(id);
@@ -139,16 +152,27 @@ namespace Refosus.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [Authorize(Roles = "maintenanceAdministrator")]
+        [Authorize(Roles = "maintenanceFilterAdministrator")]
         public IActionResult Thrash()
         {
             return View();
         }
 
-        [Authorize(Roles = "maintenanceAdministrator")]
+        [Authorize(Roles = "maintenanceFilterAdministrator")]
         public IActionResult Enable()
         {
             return Json(true);
+        }
+
+        public IActionResult Atention(int id)
+        {
+            CaseEntity update = ctx.CaseEntity.Find(id);
+            if (update != null)
+            {
+                update.Fulfillment = 2;
+                ctx.SaveChanges();
+            }
+            return RedirectToAction("Index", new { message = "Se ha hecho el llamado de atención del caso " + update.Code });
         }
 
         private String Random()

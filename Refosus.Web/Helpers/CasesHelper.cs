@@ -25,7 +25,7 @@ namespace Refosus.Web.Helpers
         public Task StartAsync(CancellationToken cancellationToken)
         {
             
-            timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(10));
+            timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromHours(12));
             return Task.CompletedTask;
         }
 
