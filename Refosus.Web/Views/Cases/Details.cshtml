@@ -36,15 +36,15 @@
                     <label>Prioridad</label>
                     @if (Model.Priority == 1)
                     {
-                        <input readonly value="Alto" class="form-control" type="text" />
+                        <input readonly value="Urgente" class="form-control" type="text" />
                     }
                     else if (Model.Priority == 2)
                     {
-                        <input readonly value="Medio" class="form-control" type="text" />
+                        <input readonly value="Alto" class="form-control" type="text" />
                     }
                     else
                     {
-                        <input readonly value="Bajo" class="form-control" type="text" />
+                        <input readonly value="Normal" class="form-control" type="text" />
                     }
                 </div>
                 <div class="col-md-3">

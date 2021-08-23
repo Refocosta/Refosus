@@ -10,6 +10,7 @@ using Refosus.Web.Data.Entities;
 using Refosus.Web.Models;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
+using FluentDateTime;
 
 namespace Refosus.Web.Controllers
 {
@@ -58,7 +59,7 @@ namespace Refosus.Web.Controllers
             caseEntity.Code = this.Random();
             caseEntity.Solution = "Este caso aún no tiene respuesta";
             caseEntity.CreatedAt = System.DateTime.Now.ToUniversalTime();
-            caseEntity.DeadLine = (caseEntity.DeadLine == DateTime.MinValue) ? DateTime.Today.AddDays(1) : caseEntity.DeadLine;
+            caseEntity.DeadLine = (caseEntity.DeadLine == DateTime.MinValue) ? DateTime.Now.AddBusinessDays(1) : caseEntity.DeadLine;
             ctx.Add(caseEntity);
             ctx.SaveChanges();
             return RedirectToAction("Index");

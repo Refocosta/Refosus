@@ -33,18 +33,23 @@ namespace Refosus.Web.Helpers
         {
             using (var scope = serviceScopeFactory.CreateScope())
             {
-                var now = System.DateTime.Now.ToUniversalTime();
-                var ctx = scope.ServiceProvider.GetRequiredService<DataContext>();
-                var cases = ctx.CaseEntity.Where(x => x.Status == 1 && now > x.DeadLine).ToList();
-                if (cases != null)
+                DayOfWeek day = DateTime.Now.DayOfWeek;
+                if (day != DayOfWeek.Saturday && day != DayOfWeek.Sunday)
                 {
-                    foreach (var item in cases)
+                    var now = System.DateTime.Now.ToUniversalTime();
+                    var ctx = scope.ServiceProvider.GetRequiredService<DataContext>();
+                    var cases = ctx.CaseEntity.Where(x => x.Status == 1 && now > x.DeadLine).ToList();
+                    if (cases != null)
                     {
-                        item.Status = 3;
-                        ctx.SaveChanges();
-                        logger.LogInformation("Cambios efectuados");
+                        foreach (var item in cases)
+                        {
+                            item.Status = 3;
+                            ctx.SaveChanges();
+                            logger.LogInformation("Cambios efectuados");
+                        }
                     }
                 }
+                
             }
         }
 
