@@ -20,7 +20,7 @@
         </div>
         <div class="card-body">
             <form asp-controller="Cases" asp-action="Update" method="post">
-                <input asp-for="Id" type="hidden"/>
+                <input asp-for="Id" type="hidden" />
                 <label>Tema del caso</label>
                 <input asp-for="Issue" class="form-control" type="text" required />
                 <label>Descripcion del caso</label>
@@ -76,9 +76,12 @@
                         <label>Fecha limite</label>
                         <input asp-for="DeadLine" class="form-control" type="date" required />
                     </div>
+
                 </div>
+                <label>Diagnostigo inicial</label>
+                <textarea asp-for="Solution" class="form-control"></textarea>
                 <hr />
-                <button class="btn btn-outline-success" >Editar caso</button>
+                <button class="btn btn-outline-success">Editar caso</button>
             </form>
         </div>
     </div>

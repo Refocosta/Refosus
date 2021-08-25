@@ -64,6 +64,7 @@ namespace Refosus.Web
             services.AddScoped<ISecurityHelper, SecurityHelper>();
             services.AddScoped<IFileHelper, FileHelper>();
             services.AddScoped<IMailHelper, MailHelper>();
+            services.AddScoped<ICaseTrait, CasesTrait>();
             services.AddControllersWithViews();
             services.AddControllers();
         }
