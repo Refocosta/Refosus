@@ -56,6 +56,11 @@ namespace Refosus.Web.Data
         public DbSet<GeneralDocumentEntity> GeneralDocumentEntity { get; set; }
         public DbSet<GeneralDocumentCategoryEntity> GeneralDocumentCategoryEntity { get; set; }
 
+        public DbSet<TypeCaseEntity> TypeCaseEntity { get; set; }
+        public DbSet<BusinessUnitEntity> BusinessUnitEntity { get; set; }
+
+        public DbSet<CaseEntity> CaseEntity { get; set; }
+
         #endregion
 
 

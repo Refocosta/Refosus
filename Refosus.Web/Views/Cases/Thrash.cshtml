@@ -1,0 +1,67 @@
+@model IEnumerable<Refosus.Web.Data.Entities.CaseEntity>
+@{
+    ViewData["Title"] = "CASOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Casos y mantenimiento</li>
+        </ol>
+    </nav>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Casos eliminados</h3></center>
+        </div>
+        <div class="card-body table-responsive">
+            <table id="thrash" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tema</th>
+                        <th>Codigo</th>
+                        <th>Habilitar</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Issue</td>
+                            <td>@item.Code</td>
+                            <td><a asp-controller="Cases" asp-action="Enable" asp-route-id="@item.Id"><button class="btn btn-outline-success">Habilitar</button></a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#thrash').DataTable({
+                "language": {
+                    "lengthMenu": "Mostrar _MENU_ registros",
+                    "zeroRecords": "No se encontraron resultados",
+                    "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sSearch": "Buscar:",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "sProcessing": "Procesando...",
+                }
+            });
+        });
+    </script>
+}

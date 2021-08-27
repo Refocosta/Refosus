@@ -1,0 +1,88 @@
+@model Refosus.Web.Data.Entities.CaseEntity
+@{
+    ViewData["Title"] = "CASOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cases" asp-action="Index">Casos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+        </ol>
+    </nav>
+    <a asp-controller="Cases" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Editar caso</h3></center>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Cases" asp-action="Update" method="post">
+                <input asp-for="Id" type="hidden" />
+                <label>Tema del caso</label>
+                <input asp-for="Issue" class="form-control" type="text" required />
+                <label>Descripcion del caso</label>
+                <textarea asp-for="Description" class="form-control" required></textarea>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Tipo de caso</label>
+                        <select asp-for="TypesCasesId" class="form-control" required>
+                            <option value="">-- TIPO DE CASO --</option>
+                            @foreach (var item in ViewBag.typesCases)
+                            {
+                                <option value="@item.Id">@item.Case</option>
+                            }
+
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Unidad de negocio</label>
+                        <select asp-for="BusinessUnitsId" class="form-control" required>
+                            <option value="">-- UNIDAD DE NEGOCIO --</option>
+                            @foreach (var item in ViewBag.businessUnits)
+                            {
+                                <option value="@item.Id">@item.Business</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Ubicacion</label>
+                        <input asp-for="Ubication" class="form-control" type="text" required />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label>Prioridad</label>
+                        <select asp-for="Priority" class="form-control" required>
+                            <option value="">-- PRIORIDAD --</option>
+                            <option value="1">Urgente</option>
+                            <option value="2">Alta</option>
+                            <option value="3">Normal</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Responsable</label>
+                        <select asp-for="Responsable" class="form-control" required>
+                            <option value="">-- RESPONSABLE --</option>
+                            @foreach (var item in ViewBag.usersList)
+                            {
+                                <option value="@item.Email">@item.FullName</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label>Fecha limite</label>
+                        <input asp-for="DeadLine" class="form-control" type="date" required />
+                    </div>
+
+                </div>
+                <label>Diagnostigo inicial</label>
+                <textarea asp-for="Solution" class="form-control"></textarea>
+                <hr />
+                <button class="btn btn-outline-success">Editar caso</button>
+            </form>
+        </div>
+    </div>
+</div>

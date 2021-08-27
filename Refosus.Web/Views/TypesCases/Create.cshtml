@@ -1,0 +1,35 @@
+﻿@model Refosus.Web.Models.TypeCase;
+@{
+    ViewData["Title"] = "TIPOS DE CASOS";
+    Layout = "~/Views/Shared/_Refosus1.cshtml";
+}
+<br />
+<div class="container col-md-11">
+    <br />
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/Home/Menu">Nativa</a></li>
+            <li class="breadcrumb-item"><a asp-controller="Cases" asp-action="Index">Casos</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Agregar nuevo tipo de caso</li>
+        </ol>
+    </nav>
+    <a asp-controller="Cases" asp-action="Index" class="btn btn-outline-primary" role="button">Atras</a>
+    <div class="card mt-2">
+        <div class="card-header">
+            <center><h3>Agregar nuevo tipo de caso</h3></center>
+        </div>
+        <div class="card-body">
+            <form asp-controller="TypesCases" asp-action="Store" method="post">
+                <div class="row">
+                    <div class="col-md-6">
+                        <label>Tipo de caso</label>
+                        <input asp-for="Case" class="form-control" type="text" required />
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-outline-success mt-4">Registrar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
