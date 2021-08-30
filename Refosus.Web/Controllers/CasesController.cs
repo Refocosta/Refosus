@@ -57,7 +57,7 @@ namespace Refosus.Web.Controllers
         [Authorize(Roles = "maintenanceCreatorAdministrator, maintenanceFilterAdministrator")]
         public IActionResult Store()
         {
-            caseEntity.Responsable = (String.IsNullOrEmpty(caseEntity.Responsable)) ? "filter@refocosta.com" : caseEntity.Responsable;
+            caseEntity.Responsable = (String.IsNullOrEmpty(caseEntity.Responsable)) ? "yecidr@refocosta.com" : caseEntity.Responsable;
             caseEntity.Sender = (String.IsNullOrEmpty(caseEntity.Sender)) ? User.Identity.Name : caseEntity.Sender;
             caseEntity.Status = 1;
             caseEntity.Code = helper.Random();
