@@ -125,6 +125,7 @@ namespace Refosus.Web.Controllers
                 update.BusinessUnitsId = caseEntityUpdate.BusinessUnitsId;
                 update.Ubication = caseEntityUpdate.Ubication;
                 update.Solution = caseEntityUpdate.Solution;
+                update.DeadLine = caseEntityUpdate.DeadLine;
                 ctx.SaveChanges();
                 var dependencies = new List<dynamic>();
                 dependencies.Add(new
@@ -198,19 +199,41 @@ namespace Refosus.Web.Controllers
             }
             delete.Status = 0;
             ctx.SaveChanges();
+            var dependencies = new List<dynamic>();
+            dependencies.Add(new
+            {
+                CaseId = delete.Id,
+                CaseCode = delete.Code,
+                CaseDeadline = delete.DeadLine,
+                CaseResponsable = delete.Responsable,
+            });
+            string[] sender = new string[1];
+            sender[0] = delete.Sender;
+            string[] responsable = new string[1];
+            responsable[0] = delete.Responsable;
+            helper.mailTypeDelete(sender, dependencies, 1);
+            helper.mailTypeDelete(responsable, dependencies, 2);
             return RedirectToAction("Index");
         }
 
         [Authorize(Roles = "maintenanceFilterAdministrator")]
         public IActionResult Thrash()
         {
-            return View();
+            var thrash = ctx.CaseEntity.Where(x => x.Status == 0).ToList();
+            return View(thrash);
         }
 
         [Authorize(Roles = "maintenanceFilterAdministrator")]
-        public IActionResult Enable()
+        public IActionResult Enable(int id)
         {
-            return Json(true);
+            var enable = ctx.CaseEntity.Find(id);
+            if (enable == null)
+            {
+                return RedirectToAction("Index");
+            }
+            enable.Status = 1;
+            ctx.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         public IActionResult Atention(int id)

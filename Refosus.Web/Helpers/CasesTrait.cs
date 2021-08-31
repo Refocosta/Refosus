@@ -23,7 +23,7 @@ namespace Refosus.Web.Helpers
 
             foreach (var item in dependencies)
             {
-               subject = "Nuevo Caso No. " + item.CaseId;
+                subject = "Nuevo Caso No. " + item.CaseId;
                if (typeMail == 1)
                {
                    body = "<strong>Hola</strong>,<br/><br/>Hemos registrado tu solicitud con el código <strong>" + item.CaseCode + "</strong>"+ 
@@ -54,7 +54,7 @@ namespace Refosus.Web.Helpers
                 if (typeMail == 1)
                 {
                     body = "<strong>Hola</strong>," +
-                    "<br/><br/>Tu caso<strong>" + item.CaseCode + "</strong>" + " ha sido asignado a " + item.CaseResponsable +
+                    "<br/><br/>Tu caso <strong>" + item.CaseCode + "</strong>" + " ha sido asignado a " + item.CaseResponsable +
                     "<br/>la fecha estimada de solución es <strong>" + item.CaseDeadline + "</strong>" +
                     "<br/>recuerda que puedes hacer seguimiento en https://nativa.refocosta.com/Cases ingresando con tu nombre de usuario y contraseña." +
                     "<br/>si en la fecha estimada de solución no has recibido una respuesta, puedes ingresar a tu cuenta y hacer un <strong>“llamado de atención”</strong> para que este sea agilizado." +
@@ -72,9 +72,31 @@ namespace Refosus.Web.Helpers
             return (mailer.sendMail(to, subject, body));
         }
 
-        public Boolean mailTypeDelete()
+        public Boolean mailTypeDelete(string[] to, List<dynamic> dependencies, int typeMail)
         {
-            return true;
+            string subject = "";
+            string body = "";
+            foreach (var item in dependencies)
+            {
+                subject = "Actualización del caso No. " + item.CaseId;
+                if (typeMail == 1)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/><br/>Tu caso <strong>" + item.CaseCode + "</strong>" + " ha sido deshabilitado"+
+                    "<br/>por favor comunicate con el responsable de tu caso <strong>" + item.CaseResponsable + "</strong> para verificar las razones" +
+                    "<br/>recuerda que puedes hacer seguimiento en https://nativa.refocosta.com/Cases ingresando con tu nombre de usuario y contraseña." +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+
+                if (typeMail == 2)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/><br/>El caso <strong>" + item.CaseCode + "</strong> ha sido deshabilitado" +
+                    "<br/>por favor verifcia las razones" +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+            }
+            return (mailer.sendMail(to, subject, body));
         }
 
         public Boolean mailTypeSolution(string[] to, List<dynamic> dependencies, int typeMail)
@@ -97,16 +119,38 @@ namespace Refosus.Web.Helpers
                 {
                     body = "<strong>Hola</strong>," +
                     "<br/>Se ha solucionado el caso <strong>" + item.CaseCode + "</strong>, ha sido cerrado el <strong>" + item.CaseClosingDate + "</strong>" +
-                    "<br/>el responsable de solucionar tu solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/>el responsable de solucionar el solicitud a sido " + item.CaseResponsable + "</strong>" +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
             }
             return (mailer.sendMail(to, subject, body));
         }
 
-        public Boolean mailTypeeExpiration()
+        public Boolean mailTypeExpiration(string[] to, List<dynamic> dependencies, int typeMail)
         {
-            return true;
+            string subject = "";
+            string body = "";
+            foreach (var item in dependencies)
+            {
+                subject = "Vencimiento del caso No. " + item.CaseId;
+                if (typeMail == 1)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/><br/>Tu caso <strong>" + item.CaseCode + "</strong> se ha vencido el <strong>" + item.CaseClosingDate + "</strong>" +
+                    "<br/>el responsable de solucionar tu solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/>recuerda que puedes hacer un <strong>“llamado de atención”</strong> para que este sea agilizado." +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+
+                if (typeMail == 2)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/>El caso <strong>" + item.CaseCode + "</strong>, se ha vencido el <strong>" + item.CaseClosingDate + "</strong>" +
+                    "<br/>el responsable de solucionar el solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+            }
+            return (mailer.sendMail(to, subject, body));
         }
 
         public Boolean mailTypeReminder()
