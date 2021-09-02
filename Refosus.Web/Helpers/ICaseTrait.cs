@@ -14,5 +14,6 @@ namespace Refosus.Web.Helpers
         public Boolean mailTypeSolution(string[] to, List<dynamic> dependencies, int typeMail);
         public Boolean mailTypeExpiration(string[] to, List<dynamic> dependencies, int typeMail);
         public Boolean mailTypeReminder();
+        public Boolean mailTypeAtention(string[] to, List<dynamic> dependencies, int typeMail);
     }
 }

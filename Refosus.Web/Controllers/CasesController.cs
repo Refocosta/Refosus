@@ -71,7 +71,9 @@ namespace Refosus.Web.Controllers
             {
                 CaseId = ctx.CaseEntity.Max(item => item.Id),
                 CaseCode = caseEntity.Code,
-                CaseDeadline = caseEntity.DeadLine
+                CaseDeadline = caseEntity.DeadLine,
+                CaseIssue = caseEntity.Issue,
+                CaseDescription = caseEntity.Description
 
             });
             string[] sender = new string[1];
@@ -133,7 +135,8 @@ namespace Refosus.Web.Controllers
                     CaseId = update.Id,
                     CaseCode = update.Code,
                     CaseDeadline = update.DeadLine,
-                    CaseResponsable = update.Responsable
+                    CaseResponsable = update.Responsable,
+                    CaseIssue = update.Issue,
                 });
                 string[] sender = new string[1];
                 sender[0] = update.Sender;
@@ -177,7 +180,8 @@ namespace Refosus.Web.Controllers
                     CaseCode = update.Code,
                     CaseDeadline = update.DeadLine,
                     CaseResponsable = update.Responsable,
-                    CaseClosingDate = update.ClosingDate
+                    CaseClosingDate = update.ClosingDate,
+                    CaseIssue = update.Issue
                 });
                 string[] sender = new string[1];
                 sender[0] = update.Sender;
@@ -243,6 +247,22 @@ namespace Refosus.Web.Controllers
             {
                 update.Fulfillment = 2;
                 ctx.SaveChanges();
+                var dependencies = new List<dynamic>();
+                dependencies.Add(new
+                {
+                    CaseId = update.Id,
+                    CaseCode = update.Code,
+                    CaseDeadline = update.DeadLine,
+                    CaseResponsable = update.Responsable,
+                    CaseIssue = update.Issue
+                });
+                string[] sender = new string[1];
+                sender[0] = update.Sender;
+                string[] responsable = new string[2];
+                responsable[0] = "jsuarez@refocosta.com";
+                responsable[1] = update.Responsable;
+                helper.mailTypeAtention(sender, dependencies, 1);
+                helper.mailTypeAtention(responsable, dependencies, 2);
             }
             return RedirectToAction("Index", new { message = "Se ha hecho el llamado de atención del caso " + update.Code });
         }
