@@ -59,7 +59,14 @@
                 </div>
                 <div class="col-md-3">
                     <label>Cumplimiento</label>
-                    <input readonly asp-for="Fulfillment" class="form-control" type="text" />
+                    @if (Model.Fulfillment == 1 || Model.Fulfillment == 0)
+                    {
+                        <input readonly value="Sin cambios" class="form-control" type="text" />
+                    }
+                    else if (Model.Fulfillment == 2)
+                    {
+                        <input readonly value="Llamado de atencion" class="form-control" type="text" />
+                    }
                 </div>
                 <div class="col-md-3">
                     <label>Unidad de negocio</label>
@@ -72,7 +79,7 @@
             </div>
             <div class="row">
                 <div class="col-md-3">
-                    <label>Horas utilizadas</label>
+                    <label>Minutos utilizados</label>
                     <input readonly asp-for="Hours" class="form-control" type="text" />
                 </div>
                 <div class="col-md-3">

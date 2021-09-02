@@ -48,27 +48,19 @@ namespace Refosus.Web.Helpers
                         item.Status = 3;
                         ctx.SaveChanges();
                         logger.LogInformation("Cambios efectuados");
-                        var dependencies = new List<dynamic>();
-                        dependencies.Add(new
-                        {
-                            CaseId = item.Id,
-                            CaseCode = item.Code,
-                            CaseDeadline = item.DeadLine,
-                            CaseResponsable = item.Responsable
-                        });
                         string[] sender = new string[1];
                         sender[0] = item.Sender;
                         string[] responsable = new string[1];
                         responsable[0] = item.Responsable;
                         string subject = "Vencimiento del caso No. " + item.Id;
                         string bodySender = "<strong>Hola</strong>," +
-                        "<br/><br/>Tu caso <strong>" + item.Code + "</strong> se ha vencido el <strong>" + item.DeadLine + "</strong>" +
-                        "<br/>el responsable de solucionar tu solicitud a sido " + item.Responsable + "</strong>" +
+                        "<br/><br/>Tu caso <strong>" + item.Issue + "</strong> con el codigo <strong>" + item.Code + "</strong> se ha vencido el <strong>" + item.DeadLine + "</strong>" +
+                        "<br/>el responsable de solucionar tu solicitud es " + item.Responsable + "</strong>" +
                         "<br/>recuerda que puedes hacer un <strong>“llamado de atención”</strong> para que este sea agilizado." +
                         "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                         string bodyResponsable = "<strong>Hola</strong>," +
-                        "<br/>El caso <strong>" + item.Code + "</strong>, se ha vencido el <strong>" + item.DeadLine + "</strong>" +
-                        "<br/>el responsable de solucionar el solicitud a sido " + item.Responsable + "</strong>" +
+                        "<br/>El caso <strong>" + item.Issue + "</strong> con el codigo <strong>" + item.Code + "</strong>, se ha vencido el <strong>" + item.DeadLine + "</strong>" +
+                        "<br/>el responsable de solucionar la solicitud es " + item.Responsable + "</strong>" +
                         "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                         helper.sendMail(sender, subject, bodySender);
                         helper.sendMail(responsable, subject, bodyResponsable);
@@ -92,7 +84,7 @@ namespace Refosus.Web.Helpers
                         responsable[0] = item.Responsable;
                         string subject = "Recordatorio del caso No. " + item.Id;
                         string body = "<strong>Hola</strong>," +
-                        "<br/>El caso <strong>" + item.Code + "</strong>, está vencido desde <strong>" + item.DeadLine + "</strong>" +
+                        "<br/>El caso <strong>" + item.Issue + "</strong> con el codigo <strong>" + item.Code + "</strong>, está vencido desde <strong>" + item.DeadLine + "</strong>" +
                         "<br/>por favor soluciona el caso" +
                         "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                         helper.sendMail(responsable, subject, body);

@@ -26,8 +26,9 @@ namespace Refosus.Web.Helpers
                 subject = "Nuevo Caso No. " + item.CaseId;
                if (typeMail == 1)
                {
-                   body = "<strong>Hola</strong>,<br/><br/>Hemos registrado tu solicitud con el código <strong>" + item.CaseCode + "</strong>"+ 
-                   "<br/>pronto recibirás un correo en el que se asignará una persona para atenderlo"+
+                   body = "<strong>Hola</strong>,<br/><br/>Hemos registrado tu solicitud <strong>"+ item.CaseIssue + "</strong> con el código <strong>" + item.CaseCode + "</strong>"+
+                   "<br/>descripción del caso: " + item.CaseDescription +
+                   "<br/>pronto recibirás un correo en el que se asignará una persona para atenderlo" +
                    "<br/>esta respuesta debe llegar antes de <strong>" + item.CaseDeadline + "</strong>"+
                    "<br/>recuerda estar pediente del estado de tu caso."+
                    "<br/><br />Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
@@ -35,7 +36,8 @@ namespace Refosus.Web.Helpers
 
                if (typeMail == 2)
                {
-                    body = "<strong>Hola</strong>,<br/><br/>Se ha registrado el caso con el codigo <strong>" + item.CaseCode + "</strong>" +
+                    body = "<strong>Hola</strong>,<br/><br/>Se ha registrado el caso <strong>"+ item.CaseIssue + "</strong> con el codigo <strong>" + item.CaseCode + "</strong>" +
+                   "<br/>descripción del caso: " + item.CaseDescription +
                    "<br/>por favor asigna el caso a la persona que debe solucionarlo antes de <strong>" + item.CaseDeadline + "</strong>" +
                    "<br/><br />Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
@@ -54,7 +56,7 @@ namespace Refosus.Web.Helpers
                 if (typeMail == 1)
                 {
                     body = "<strong>Hola</strong>," +
-                    "<br/><br/>Tu caso <strong>" + item.CaseCode + "</strong>" + " ha sido asignado a " + item.CaseResponsable +
+                    "<br/><br/>Tu caso  <strong>" + item.CaseIssue + "</strong>" + " con el codigo <strong>"+ item.CaseCode +"</strong> ha sido asignado a " + item.CaseResponsable +
                     "<br/>la fecha estimada de solución es <strong>" + item.CaseDeadline + "</strong>" +
                     "<br/>recuerda que puedes hacer seguimiento en https://nativa.refocosta.com/Cases ingresando con tu nombre de usuario y contraseña." +
                     "<br/>si en la fecha estimada de solución no has recibido una respuesta, puedes ingresar a tu cuenta y hacer un <strong>“llamado de atención”</strong> para que este sea agilizado." +
@@ -64,7 +66,7 @@ namespace Refosus.Web.Helpers
                 if (typeMail == 2)
                 {
                     body = "<strong>Hola</strong>," +
-                    "<br/><br/>El caso <strong>" + item.CaseCode + "</strong> te ha sido asignado" +
+                    "<br/><br/>El caso <strong>" + item.CaseIssue + "</strong> con el codigo <strong>" + item.CaseCode + "</strong> te ha sido asignado" +
                     "<br/>por favor solucionalo antes de <strong>" + item.CaseDeadline + "</strong>" +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
@@ -109,8 +111,8 @@ namespace Refosus.Web.Helpers
                 if (typeMail == 1)
                 {
                     body = "<strong>Hola</strong>," +
-                    "<br/><br/>Tu caso <strong>"+ item.CaseCode + "</strong> ha sido cerrado el <strong>" + item.CaseClosingDate + "</strong>" +
-                    "<br/>el responsable de solucionar tu solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/><br/>Tu caso <strong>" + item.CaseIssue + "</strong> con el codigo <strong>"+ item.CaseCode + "</strong> ha sido cerrado el <strong>" + item.CaseClosingDate + "</strong>" +
+                    "<br/>el responsable de solucionar tu solicitud ha sido " + item.CaseResponsable + "</strong>" +
                     "<br/>recuerda que puedes hacer seguimiento en https://nativa.refocosta.com/Cases ingresando con tu nombre de usuario y contraseña." +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
@@ -118,8 +120,8 @@ namespace Refosus.Web.Helpers
                 if (typeMail == 2)
                 {
                     body = "<strong>Hola</strong>," +
-                    "<br/>Se ha solucionado el caso <strong>" + item.CaseCode + "</strong>, ha sido cerrado el <strong>" + item.CaseClosingDate + "</strong>" +
-                    "<br/>el responsable de solucionar el solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/>Se ha solucionado el caso <strong>"+ item.CaseIssue + "</strong> con el codigo <strong>" + item.CaseCode + "</strong>, ha sido cerrado el <strong>" + item.CaseClosingDate + "</strong>" +
+                    "<br/>el responsable de solucionar el solicitud ha sido " + item.CaseResponsable + "</strong>" +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
             }
@@ -137,7 +139,7 @@ namespace Refosus.Web.Helpers
                 {
                     body = "<strong>Hola</strong>," +
                     "<br/><br/>Tu caso <strong>" + item.CaseCode + "</strong> se ha vencido el <strong>" + item.CaseClosingDate + "</strong>" +
-                    "<br/>el responsable de solucionar tu solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/>el responsable de solucionar tu solicitud ha sido " + item.CaseResponsable + "</strong>" +
                     "<br/>recuerda que puedes hacer un <strong>“llamado de atención”</strong> para que este sea agilizado." +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
@@ -146,7 +148,7 @@ namespace Refosus.Web.Helpers
                 {
                     body = "<strong>Hola</strong>," +
                     "<br/>El caso <strong>" + item.CaseCode + "</strong>, se ha vencido el <strong>" + item.CaseClosingDate + "</strong>" +
-                    "<br/>el responsable de solucionar el solicitud a sido " + item.CaseResponsable + "</strong>" +
+                    "<br/>el responsable de solucionar la solicitud ha sido " + item.CaseResponsable + "</strong>" +
                     "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
                 }
             }
@@ -156,6 +158,33 @@ namespace Refosus.Web.Helpers
         public Boolean mailTypeReminder()
         {
             return true;
+        }
+
+        public Boolean mailTypeAtention(string[] to, List<dynamic> dependencies, int typeMail)
+        {
+            string subject = "";
+            string body = "";
+            foreach (var item in dependencies)
+            {
+                subject = "Llamado de atención del caso No. " + item.CaseId;
+                if (typeMail == 1)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/><br/>Has hecho un llamado de atención del caso <strong>" + item.CaseIssue + "</strong> con el codigo <strong>" + item.CaseCode + "</strong> el cual se ha vencido el <strong>" + item.CaseDeadline + "</strong>" +
+                    "<br/>el responsable de solucionar tu solicitud es " + item.CaseResponsable + "</strong>" +
+                    "<br/>te pedimos disculpas por la demora y atenderemos tu caso para darte una respuesta lo mas pronto posible." +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+
+                if (typeMail == 2)
+                {
+                    body = "<strong>Hola</strong>," +
+                    "<br/>Se ha hecho un llamado de atención del caso <strong>"+ item.CaseIssue + "</strong> con el codigo <strong>" + item.CaseCode + "</strong>, se ha vencido el <strong>" + item.CaseDeadline + "</strong>" +
+                    "<br/>el responsable de solucionar la solicitud es " + item.CaseResponsable + "</strong>" +
+                    "<br /><br/>Atentamente,<br/>" + "Equipo de Soporte - Refocosta.<br/>";
+                }
+            }
+            return (mailer.sendMail(to, subject, body));
         }
 
         public String Random()
